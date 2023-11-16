@@ -1,0 +1,189 @@
+import QtQuick
+import QtQuick.Window
+import QtQuick.Layouts
+import QtQuick.Controls
+import QtQuick.Controls.Fusion
+
+Window {
+  width: 1920
+  height: 1080
+  visible: true
+  title: qsTr("Mupai")
+  FontLoader {
+    id: fuentePrincipal
+    source: "fonts/Avenir.otf"
+  }
+
+  FontLoader {
+    id: fuenteSecundaria
+    source: "fonts/Avenir_regular.otf"
+  }
+
+  Rectangle {
+    id: mainArea
+    width: parent.width
+    height: parent.height
+
+    GridLayout {
+      id: gridLayout
+      width: parent.width
+      height: parent.height
+
+      Item {
+        id: item1
+        Layout.fillWidth: true
+        Layout.fillHeight: true
+
+        Rectangle {
+          width: parent.width
+          height: parent.height
+          color: "#493299"
+
+          Text {
+            id: bienvenido
+            text: qsTr("Bienvenido a")
+            font.family: fuentePrincipal.font.family
+            font.pixelSize: 25
+            anchors.topMargin: 60
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: "#FFFFFF"
+          }
+        }
+      }
+
+      Item {
+        id: item2
+        Layout.fillWidth: true
+        Layout.fillHeight: true
+        Layout.alignment: Qt.AlignVCenter
+
+        Rectangle {
+          id: rectangle
+          width: parent.width
+          height: 350
+          anchors.verticalCenter: parent.verticalCenter
+
+          Text {
+            id: inicieSesion
+            text: qsTr("Inicie sesión")
+            font.family: fuentePrincipal.font.family
+            font.pixelSize: 25
+            anchors.topMargin: 20
+            anchors.horizontalCenter: parent.horizontalCenter
+          }
+
+          Button {
+            id: googleButton
+            anchors.top: inicieSesion.bottom
+            highlighted: false
+            flat: true
+            focusPolicy: Qt.StrongFocus
+            width: 40
+            height: 40
+            anchors.topMargin: 10
+            anchors.horizontalCenter: inicieSesion.horizontalCenter
+            Image {
+              height: parent.height / 2
+              source: "images/google.svg"
+              fillMode: Image.PreserveAspectFit
+              anchors.verticalCenter: googleButton.verticalCenter
+              anchors.horizontalCenter: googleButton.horizontalCenter
+            }
+
+            background: Rectangle {
+              border.color: "#495057"
+              radius: 10
+            }
+
+            HoverHandler {
+              acceptedDevices: PointerDevice.Mouse
+              cursorShape: Qt.PointingHandCursor
+            }
+          }
+
+          Text {
+            id: utilizarEmail
+            text: qsTr("o utiliza tu email y clave")
+            font.pixelSize: 15
+            font.weight: 200
+            font.family: fuenteSecundaria.font.family
+            anchors.top: googleButton.bottom
+            anchors.topMargin: 20
+            anchors.horizontalCenter: googleButton.horizontalCenter
+          }
+
+          TextField {
+            id: email
+            width: parent.width / 2
+            height: 40
+            font.pixelSize: 12
+            font.family: fuentePrincipal.font.family
+            placeholderText: qsTr("Correo electrónico")
+            anchors.top: utilizarEmail.bottom
+            anchors.topMargin: 4
+            anchors.horizontalCenter: utilizarEmail.horizontalCenter
+            bottomPadding: 10
+            topPadding: 10
+            leftPadding: 10
+            background: Rectangle {
+              color: "#EEEDEF"
+              radius: 10
+            }
+          }
+
+          TextField {
+            id: clave
+            width: parent.width / 2
+            height: 40
+            placeholderText: qsTr("Contraseña")
+            font.pixelSize: 12
+            font.family: fuentePrincipal.font.family
+            anchors.top: email.bottom
+            anchors.topMargin: 20
+            anchors.horizontalCenter: email.horizontalCenter
+            bottomPadding: 10
+            topPadding: 10
+            leftPadding: 10
+            background: Rectangle {
+              color: "#EEEDEF"
+              radius: 10
+            }
+          }
+
+          Button {
+            id: loginButton
+            width: parent.width / 4
+            height: 40
+
+            contentItem: Text {
+              text: "Iniciar sesión"
+              horizontalAlignment: Text.AlignHCenter
+              //verticalAlignment: Text.AlignVCenter
+              anchors.verticalCenter: parent.verticalCenter
+              color: "#FFFFFF"
+              font.family: fuentePrincipal.font.family
+              font.bold: true
+            }
+
+            background: Rectangle {
+              color: "#493299"
+              border.color: "#493299"
+              radius: 10
+            }
+
+            HoverHandler {
+              acceptedDevices: PointerDevice.Mouse
+              cursorShape: Qt.PointingHandCursor
+            }
+
+            anchors.top: clave.bottom
+            flat: true
+            anchors.topMargin: 30
+            anchors.horizontalCenter: clave.horizontalCenter
+            bottomPadding: 10
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>fonts/Avenir.otf</file>
+        <file>images/google.svg</file>
+        <file>fonts/Avenir_regular.otf</file>
+        <file>images/White.png</file>
+        <file>images/Logo.png</file>
+        <file>images/Icon.png</file>
+        <file>images/Center.png</file>
+    </qresource>
+</RCC>
