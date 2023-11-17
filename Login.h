@@ -31,7 +31,7 @@ signals:
 
 private:
 
-    QString m_email;
+    QString m_email = "kmsdkfmlskdmf";
     QString m_password;
 };
 

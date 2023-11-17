@@ -6,7 +6,6 @@ QT += quick
 
 SOURCES += \
         Login.cpp \
-        login.cpp \
         main.cpp
 
 RESOURCES += qml.qrc
@@ -24,4 +23,3 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     Login.h \
-    login.h

@@ -3,6 +3,7 @@ import QtQuick.Window
 import QtQuick.Layouts
 import QtQuick.Controls
 import QtQuick.Controls.Fusion
+import app.Login
 
 Window {
   width: 1024
@@ -179,6 +180,7 @@ Window {
             font.pixelSize: 12
             font.family: fuentePrincipal.font.family
             placeholderText: qsTr("Correo electrónico")
+            onTextChanged: Login.m_email = text
             anchors.top: utilizarEmail.bottom
             anchors.topMargin: 20
             anchors.horizontalCenter: utilizarEmail.horizontalCenter
@@ -200,6 +202,7 @@ Window {
             font.family: fuentePrincipal.font.family
             anchors.top: email.bottom
             anchors.topMargin: 20
+            onTextChanged: Login.m_password = text
             anchors.horizontalCenter: email.horizontalCenter
             bottomPadding: 10
             topPadding: 10
@@ -214,6 +217,10 @@ Window {
             id: loginButton
             width: parent.width / 4
             height: 40
+            onClicked: {
+              Login.loguearse_con_google()
+              console.log("Mensaje:" + Login.m_email)
+            }
 
             topPadding: 10
             contentItem: Text {

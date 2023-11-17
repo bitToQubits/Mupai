@@ -25,7 +25,11 @@ void Login::loguearse()
 
 void Login::loguearse_con_google()
 {
+    m_email = "Te has logueado de manera exitosa! " + m_email;
+    m_password = "Tu clave es: " + m_password;
 
+    emit emailChanged();
+    emit passwordChanged();
 }
 
 void Login::ir_a_registro()
