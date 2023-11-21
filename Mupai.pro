@@ -1,4 +1,7 @@
 QT += quick
+QT += sql
+QT += core
+QT += gui
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -6,6 +9,7 @@ QT += quick
 
 SOURCES += \
         Login.cpp \
+        Register.cpp \
         main.cpp
 
 RESOURCES += qml.qrc
@@ -23,3 +27,15 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     Login.h \
+    Register.h \
+    database.h \
+    session.h
+
+win32: LIBS += -L'C:/Program Files/MySQL/MySQL Connector C 6.1/lib/' -llibmysql
+
+INCLUDEPATH += 'C:/Program Files/MySQL/MySQL Connector C 6.1/include'
+DEPENDPATH += 'C:/Program Files/MySQL/MySQL Connector C 6.1/include'
+
+DISTFILES += \
+    login.qml \
+    registro.qml

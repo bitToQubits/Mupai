@@ -1,7 +1,9 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QIcon>
+#include <QSettings>
 #include "Login.h"
+#include "Register.h"
 
 int main(int argc, char *argv[])
 {
@@ -9,11 +11,15 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
     QGuiApplication app(argc, argv);
+
     app.setWindowIcon(QIcon(":/images/Icon.png"));
     QQmlApplicationEngine engine;
 
     Login *login = new Login(&app);
     qmlRegisterSingletonInstance("app.Login", 1,0, "Login", login);
+
+    Register *registro = new Register(&app);
+    qmlRegisterSingletonInstance("app.registro", 1,0, "Register", registro);
 
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,

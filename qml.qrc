@@ -8,5 +8,7 @@
         <file>images/Logo.png</file>
         <file>images/Icon.png</file>
         <file>images/Center.png</file>
+        <file>registro.qml</file>
+        <file>login.qml</file>
     </qresource>
 </RCC>
