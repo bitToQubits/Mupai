@@ -1,7 +1,6 @@
-QT += quick
-QT += sql
-QT += core
-QT += gui
+QT += quick sql core gui concurrent network multimedia
+CONFIG += c++17
+DEFINES += QT_DEPRECATED_WARNINGS QT_NO_WARNING_OUTPUT
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -10,7 +9,12 @@ QT += gui
 SOURCES += \
         Login.cpp \
         Register.cpp \
-        main.cpp
+        main.cpp \
+        app/src/controller/ChatController.cpp \
+        app/src/AppInfo.cpp \
+        app/src/lang/En.cpp \
+        app/src/lang/Lang.cpp \
+        app/src/lang/Zh.cpp \
 
 RESOURCES += qml.qrc
 
@@ -25,11 +29,27 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
+CONFIG(debug,debug|release) {
+    DESTDIR = $$absolute_path($${_PRO_FILE_PWD_}/../bin/debug)
+} else {
+    DESTDIR = $$absolute_path($${_PRO_FILE_PWD_}/../bin/release)
+}
+
+mac: {
+    QMAKE_INFO_PLIST = Info.plist
+}
+
 HEADERS += \
     Login.h \
     Register.h \
     database.h \
-    session.h
+    session.h \
+    app/src/lang/En.h \
+    app/src/lang/Lang.h \
+    app/src/lang/Zh.h \
+    app/src/stdafx.h \
+    app/src/controller/ChatController.h \
+    app/src/AppInfo.h \
 
 win32: LIBS += -L'C:/Program Files/MySQL/MySQL Connector C 6.1/lib/' -llibmysql
 

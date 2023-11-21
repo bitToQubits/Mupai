@@ -3,6 +3,7 @@
 #include <QtDebug>
 #include "database.h"
 #include <session.h>
+#define session Session::getInstance().getSession()
 
 Login::Login(QObject *parent)
     : QObject{parent}
@@ -32,16 +33,29 @@ void Login::loguearse()
         if(createConnection()){
             QSqlQuery query;
             query.prepare("SELECT * FROM users WHERE user_email = ? AND "
-                          "password = ?");
+                          "password = ? LIMIT 1");
             query.addBindValue(m_email);
             query.addBindValue(m_password);
             query.exec();
             if(query.size() == 0){
                 m_status_form = false;
             }else{
+                while(query.next()){
+                    qint64 ID_user = query.value(0).toInt();
+                    QString first_name = query.value(1).toString();
+                    QString last_name = query.value(2).toString();
+                    QString email = query.value(3).toString();
+                    QString creation_date = query.value(4).toString();
+                    QString imgbase = query.value(5).toString();
+
+                    session.setValue("user/id", ID_user);
+                    session.setValue("user/name", first_name);
+                    session.setValue("user/last_name", last_name);
+                    session.setValue("user/email", email);
+                    session.setValue("user/creation_date", creation_date);
+                    session.setValue("user/imgbase", imgbase);
+                }
                 m_status_form = true;
-                settings.setValue("user","ff");
-                qDebug() << settings.value("user");
             }
         }else{
             m_status_server = false;

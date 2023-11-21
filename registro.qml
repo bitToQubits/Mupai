@@ -2,13 +2,51 @@ import QtQuick
 import QtQuick.Window
 import QtQuick.Layouts
 import QtQuick.Controls
-import QtQuick.Controls.Universal
+import Qt.labs.platform
 import app.registro
+import FluentUI
+import "qrc:app/qml/global/"
 
-Item {
+FluWindow {
   id: paginaRegistro
   width: 1224
   height: 620
+  closeDestory: false
+  minimumWidth: 520
+  minimumHeight: 460
+
+  FontLoader {
+    id: fuentePrincipal
+    source: "fonts/Avenir.otf"
+  }
+
+  FontLoader {
+    id: fuenteSecundaria
+    source: "fonts/Avenir_regular.otf"
+  }
+
+  closeFunc: function (event) {
+    close_app.open()
+    event.accepted = false
+  }
+
+  Connections {
+    target: appInfo
+    function onActiveWindow() {
+      window.show()
+      window.raise()
+      window.requestActivate()
+    }
+  }
+
+  FluAppBar {
+    id: appbar
+    z: 9
+    showDark: true
+    width: parent.width
+    darkText: lang.dark_mode
+  }
+
   signal registroExitoso(string txt)
   GridLayout {
     id: gridLayout

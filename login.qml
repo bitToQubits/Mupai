@@ -2,13 +2,50 @@ import QtQuick
 import QtQuick.Window
 import QtQuick.Layouts
 import QtQuick.Controls
-import QtQuick.Controls.Universal
+import Qt.labs.platform
 import app.Login
+import FluentUI
+import "qrc:app/qml/global/"
 
-Item {
+FluWindow {
   id: paginaLogin
   width: 1224
   height: 620
+  closeDestory: false
+  minimumWidth: 520
+  minimumHeight: 460
+
+  FontLoader {
+    id: fuentePrincipal
+    source: "fonts/Avenir.otf"
+  }
+
+  FontLoader {
+    id: fuenteSecundaria
+    source: "fonts/Avenir_regular.otf"
+  }
+
+  closeFunc: function (event) {
+    close_app.open()
+    event.accepted = false
+  }
+
+  Connections {
+    target: appInfo
+    function onActiveWindow() {
+      window.show()
+      window.raise()
+      window.requestActivate()
+    }
+  }
+
+  FluAppBar {
+    id: appbar
+    z: 9
+    showDark: true
+    width: parent.width
+    darkText: lang.dark_mode
+  }
 
   GridLayout {
     id: gridLayout
@@ -107,13 +144,13 @@ Item {
       Layout.fillHeight: true
       Layout.alignment: Qt.AlignVCenter
 
-      Rectangle {
+      FluRectangle {
         id: rectangle
         width: parent.width
         height: 350
         anchors.verticalCenter: parent.verticalCenter
 
-        Text {
+        FluText {
           id: inicieSesion
           text: qsTr("Inicie sesión")
           font.family: fuentePrincipal.font.family
@@ -123,7 +160,7 @@ Item {
           anchors.horizontalCenter: parent.horizontalCenter
         }
 
-        Button {
+        FluButton {
           id: googleButton
           anchors.top: inicieSesion.bottom
           highlighted: false
@@ -141,18 +178,13 @@ Item {
             anchors.horizontalCenter: googleButton.horizontalCenter
           }
 
-          background: Rectangle {
-            border.color: "#495057"
-            radius: 10
-          }
-
           HoverHandler {
             acceptedDevices: PointerDevice.Mouse
             cursorShape: Qt.PointingHandCursor
           }
         }
 
-        Text {
+        FluText {
           id: utilizarEmail
           text: qsTr("o utiliza tu email y contraseña")
           font.pixelSize: 18
@@ -161,9 +193,10 @@ Item {
           anchors.top: googleButton.bottom
           anchors.topMargin: 20
           anchors.horizontalCenter: googleButton.horizontalCenter
+          color: (FluTheme.dark) ? '#FFFFFF' : '#1a2228'
         }
 
-        TextField {
+        FluTextBox {
           id: email
           width: parent.width / 2
           height: 40
@@ -177,13 +210,9 @@ Item {
           bottomPadding: 10
           topPadding: 10
           leftPadding: 10
-          background: Rectangle {
-            color: "#EEEDEF"
-            radius: 10
-          }
         }
 
-        TextField {
+        FluPasswordBox {
           id: clave
           width: parent.width / 2
           height: 40
@@ -197,10 +226,6 @@ Item {
           bottomPadding: 10
           topPadding: 10
           leftPadding: 10
-          background: Rectangle {
-            color: "#EEEDEF"
-            radius: 10
-          }
         }
 
         Button {
@@ -211,6 +236,10 @@ Item {
             Login.loguearse()
             mensajeRespuestaServer.visible = !(Login.status_server)
             mensajeRespuesta.visible = !(Login.status_form)
+
+            if (Login.status_form) {
+              loader.source = "app/qml/App.qml"
+            }
           }
 
           topPadding: 10
@@ -241,7 +270,7 @@ Item {
           bottomPadding: 10
         }
 
-        Text {
+        FluText {
           id: mensajeRespuesta
           text: qsTr("Favor revisar sus credenciales")
           color: "#B41E23"
@@ -254,7 +283,7 @@ Item {
           visible: false
         }
 
-        Text {
+        FluText {
           id: mensajeRespuestaServer
           text: qsTr("Error para conectar con el servidor")
           color: "#FDEF0A"
@@ -267,9 +296,9 @@ Item {
           visible: false
         }
 
-        Text {
+        FluText {
           id: registroExitosoMsg
-          text: qsTr(root.notificacion)
+          text: qsTr(app.notificacion)
           font.family: fuenteSecundaria.font.family
           font.pixelSize: 15
           color: "green"
@@ -277,11 +306,11 @@ Item {
           anchors.top: mensajeRespuestaServer.bottom
           anchors.horizontalCenter: mensajeRespuestaServer.horizontalCenter
           opacity: 1
-          visible: (root.notificacion) ? true : false
+          visible: (app.notificacion) ? true : false
 
           SequentialAnimation {
             id: animationNotificacion
-            running: (root.notificacion)
+            running: (app.notificacion)
 
             NumberAnimation {
               target: registroExitosoMsg
@@ -305,7 +334,7 @@ Item {
 
             ScriptAction {
               script: {
-                root.notificacion = ""
+                app.notificacion = ""
                 registroExitosoMsg.visible = false
               }
             }

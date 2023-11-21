@@ -2,58 +2,40 @@ import QtQuick
 import QtQuick.Window
 import QtQuick.Layouts
 import QtQuick.Controls
-import QtQuick.Controls.Universal
+import QtQuick.Controls.Basic
+import FluentUI
 
 Window {
-  id: root
-  width: 1224
-  height: 620
-  visible: true
-  title: qsTr("Mupai")
-
+  id: app
+  title: qsTr("Mupia")
   property string notificacion
 
-  FontLoader {
-    id: fuentePrincipal
-    source: "fonts/Avenir.otf"
-  }
-
-  FontLoader {
-    id: fuenteSecundaria
-    source: "fonts/Avenir_regular.otf"
-  }
-
-  Rectangle {
-    id: mainArea
-    width: parent.width
-    height: parent.height
-
-    Loader {
-      id: loader
-      anchors.fill: parent
-      source: "login.qml"
-      onSourceChanged: {
-        animation.running = true
-      }
-
-      NumberAnimation {
-        id: animation
-        target: loader.item
-        property: "x"
-        from: (loader.source == 'login.qml') ? root.width : -root.width
-        to: 0
-        duration: 700
-        easing.type: Easing.Linear
-      }
+  Component.onCompleted: {
+    FluApp.init(app)
+    FluTheme.frameless = ("windows" === Qt.platform.os)
+    FluTheme.darkMode = FluDarkMode.System
+    FluApp.routes = {
+      "/": "qrc:app/qml/window/MainWindow.qml",
+      "/about": "qrc:app/qml/window/AboutWindow.qml",
+      "/login": "qrc:login.qml",
+      "/register": "qrc:registro.qml",
+      "/chat": "qrc:app/qml/window/ChatWindow.qml",
+      "/media": "qrc:app/qml/window/MediaWindow.qml",
+      "/singleTaskWindow": "qrc:app/qml/window/SingleTaskWindow.qml",
+      "/standardWindow": "qrc:app/qml/window/StandardWindow.qml",
+      "/singleInstanceWindow": "qrc:app/qml/window/SingleInstanceWindow.qml"
     }
+    FluApp.initialRoute = "/login"
+    FluApp.run()
   }
 
-  Connections {
+
+  /*Connections {
     target: loader.item
     //ignoreUnknownSignals: true
     ignoreUnknownSignals: true
     function onRegistroExitoso(txt) {
       root.notificacion = txt
     }
-  }
+  }*/
 }
