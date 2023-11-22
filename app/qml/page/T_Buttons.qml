@@ -16,7 +16,7 @@ FluScrollablePage {
 
   FluText {
     Layout.topMargin: 20
-    text: "支持Tab键切换焦点，空格键执行点击事件"
+    text: "Admite la tecla de tabulación para cambiar el foco y la barra espaciadora para ejecutar el evento de clic"
   }
 
   FluArea {
@@ -29,7 +29,7 @@ FluScrollablePage {
       disabled: text_button_switch.selected
       text: "Text Button"
       onClicked: {
-        showInfo("点击Text Button")
+        showInfo("Hacer clic Text Button")
       }
       anchors {
         verticalCenter: parent.verticalCenter
@@ -71,7 +71,7 @@ onClicked: {
       disabled: button_switch.selected
       text: "Standard Button"
       onClicked: {
-        showInfo("点击StandardButton")
+        showInfo("Hacer clic StandardButton")
       }
       anchors {
         verticalCenter: parent.verticalCenter
@@ -113,7 +113,7 @@ onClicked: {
       disabled: filled_button_switch.selected
       text: "Filled Button"
       onClicked: {
-        showWarning("点击FilledButton")
+        showWarning("Hacer clic FilledButton")
       }
       anchors {
         verticalCenter: parent.verticalCenter
@@ -201,7 +201,7 @@ selected = !selected
         left: parent.left
       }
       onClicked: {
-        showSuccess("点击IconButton")
+        showSuccess("Hacer clic IconButton")
       }
     }
 

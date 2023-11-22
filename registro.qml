@@ -219,10 +219,10 @@ Item {
 
         Text {
           id: mensajeRespuesta
-          text: qsTr("La claves no coinciden")
-          color: "#B41E23"
+          text: qsTr("Las claves no coinciden")
+          color: "#DC3545"
           font.pixelSize: 15
-          font.weight: 200
+          font.weight: 900
           font.family: fuenteSecundaria.font.family
           anchors.top: registerButton.bottom
           anchors.topMargin: 10

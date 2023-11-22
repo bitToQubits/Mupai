@@ -24,7 +24,7 @@ FluScrollablePage{
                 left:parent.left
             }
             FluText{
-                text:"此颜色组件是Github上的开源项目"
+                text:"Este componente de color es un proyecto de código abierto en Github."
             }
             FluTextButton{
                 leftPadding: 0
@@ -55,7 +55,7 @@ FluScrollablePage{
 
         RowLayout{
             FluText{
-                text:"点击选择颜色->"
+                text:"Haga clic para seleccionar color->"
                 Layout.alignment: Qt.AlignVCenter
             }
             FluColorPicker{

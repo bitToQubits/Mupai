@@ -9,12 +9,13 @@ DEFINES += QT_DEPRECATED_WARNINGS QT_NO_WARNING_OUTPUT
 SOURCES += \
         Login.cpp \
         Register.cpp \
+        User.cpp \
         main.cpp \
         app/src/controller/ChatController.cpp \
         app/src/AppInfo.cpp \
         app/src/lang/En.cpp \
         app/src/lang/Lang.cpp \
-        app/src/lang/Zh.cpp \
+        app/src/lang/Zh.cpp
 
 RESOURCES += qml.qrc
 
@@ -42,6 +43,7 @@ mac: {
 HEADERS += \
     Login.h \
     Register.h \
+    User.h \
     database.h \
     session.h \
     app/src/lang/En.h \
@@ -49,7 +51,7 @@ HEADERS += \
     app/src/lang/Zh.h \
     app/src/stdafx.h \
     app/src/controller/ChatController.h \
-    app/src/AppInfo.h \
+    app/src/AppInfo.h
 
 win32: LIBS += -L'C:/Program Files/MySQL/MySQL Connector C 6.1/lib/' -llibmysql
 

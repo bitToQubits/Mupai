@@ -37,7 +37,7 @@ FluExpander{
         }
         onClicked:{
             FluApp.clipText(content.text)
-            showSuccess("复制成功")
+            showSuccess("Texto copiado correctamente")
         }
     }
 

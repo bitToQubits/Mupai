@@ -104,7 +104,7 @@ FluObject {
       recentlyUpdated: true
       desc: "An inline message to display app-wide statuschange information."
       onTap: {
-        navigationView.push("qrc:/qml/page/T_InfoBar.qml")
+        navigationView.push("qrc:app/qml/page/T_InfoBar.qml")
       }
     }
     FluPaneItem {
@@ -184,7 +184,7 @@ FluObject {
       order: 3
       desc: "Presents information from different sources in atabbed view."
       onTap: {
-        navigationView.push("qrc:/qml/page/T_Pivot.qml")
+        navigationView.push("qrc:app/qml/page/T_Pivot.qml")
       }
     }
     FluPaneItem {

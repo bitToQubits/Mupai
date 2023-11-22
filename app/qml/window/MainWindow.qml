@@ -13,11 +13,11 @@ Item {
   SystemTrayIcon {
     id: system_tray
     visible: true
-    icon.source: "qrc:app/res/image/favicon.ico"
-    tooltip: "FluentUI"
+    icon.source: "qrc:/images/Icon.png"
+    tooltip: "Mupia"
     menu: Menu {
       MenuItem {
-        text: "退出"
+        text: "Cerrar"
         onTriggered: {
           window.destoryWindow()
           FluApp.closeApp()
@@ -33,25 +33,6 @@ Item {
                  }
   }
 
-  FluContentDialog {
-    id: close_app
-    title: "退出"
-    message: "确定要退出程序吗？"
-    negativeText: "最小化"
-    buttonFlags: FluContentDialog.NeutralButton | FluContentDialog.NegativeButton
-                 | FluContentDialog.PositiveButton
-    onNegativeClicked: {
-      system_tray.showMessage("友情提示", "FluentUI已隐藏至托盘,点击托盘可再次激活窗口")
-      window.hide()
-    }
-    positiveText: "退出"
-    neutralText: "取消"
-    onPositiveClicked: {
-      window.destoryWindow()
-      FluApp.closeApp()
-    }
-  }
-
   FluNavigationView {
     id: nav_view
     anchors.fill: parent
@@ -59,8 +40,8 @@ Item {
     footerItems: ItemsFooter
     z: 11
     displayMode: MainEvent.displayMode
-    logo: "qrc:app/res/image/favicon.ico"
-    title: "FluentUI"
+    logo: "qrc:/images/Icon.png"
+    title: "Mupia"
     autoSuggestBox: FluAutoSuggestBox {
       width: 280
       anchors.centerIn: parent

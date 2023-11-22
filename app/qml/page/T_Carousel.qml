@@ -25,14 +25,14 @@ FluScrollablePage{
                 left:parent.left
             }
             FluText{
-                text:"轮播图，支持无限轮播，无限滑动，用ListView实现的组件"
+                text:"Gráfico de carrusel, admite carrusel infinito, deslizamiento infinito, componente implementado con ListView"
             }
             FluCarousel{
                 id:carousel
                 Layout.topMargin: 20
                 Layout.leftMargin: 5
                 Component.onCompleted: {
-                    carousel.setData([{url:"qrc:/res/image/banner_1.jpg"},{url:"qrc:/res/image/banner_2.jpg"},{url:"qrc:/res/image/banner_3.jpg"}])
+                    carousel.setData([{url:"qrc:app/res/image/banner_1.jpg"},{url:"qrc:app/res/image/banner_2.jpg"},{url:"qrc:app/res/image/banner_3.jpg"}])
                 }
             }
         }
@@ -44,7 +44,7 @@ FluScrollablePage{
     width: 400
     height: 300
     Component.onCompleted: {
-        setData([{url:"qrc:/res/image/banner_1.jpg"},{url:"qrc:/res/image/banner_2.jpg"},{url:"qrc:/res/image/banner_3.jpg"}])
+        setData([{url:"qrc:app/res/image/banner_1.jpg"},{url:"qrc:app/res/image/banner_2.jpg"},{url:"qrc:app/res/image/banner_3.jpg"}])
     }
 }'
     }

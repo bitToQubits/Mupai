@@ -5,6 +5,7 @@ import QtQuick.Controls
 import QtQuick.Controls.Basic
 import app.Login
 import FluentUI
+import app.user
 
 Item {
 
@@ -120,7 +121,6 @@ Item {
           font.family: fuentePrincipal.font.family
           font.pixelSize: 35
           anchors.topMargin: 20
-          //anchors.top: registroExitosoMsg.bottom
           anchors.horizontalCenter: parent.horizontalCenter
         }
 
@@ -206,6 +206,7 @@ Item {
               showError("Favor revisar sus credenciales", 3000)
             } else {
               showSuccess("Has iniciado sesión exitosamente", 3000)
+              User.obtenerDatos()
               stack.push('app/qml/window/MainWindow.qml')
             }
           }

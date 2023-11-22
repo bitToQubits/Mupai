@@ -14,7 +14,7 @@ FluContentPage {
 
     FluTextBox{
         id:text_box
-        placeholderText: "请输入关键字"
+        placeholderText: "Por favor, introduzca una palabra clave"
         anchors{
             topMargin: 20
             top:parent.top
@@ -22,7 +22,7 @@ FluContentPage {
     }
 
     FluFilledButton{
-        text:"搜索"
+        text:"Buscar"
         anchors{
             left: text_box.right
             verticalCenter: text_box.verticalCenter
@@ -56,7 +56,7 @@ FluContentPage {
                 onClicked: {
                     var text  ="FluentIcons."+modelData.name;
                     FluApp.clipText(text)
-                    showSuccess("您复制了 "+text)
+                    showSuccess("Has copiado "+text)
                 }
             }
             FluText {

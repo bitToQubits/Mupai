@@ -7,6 +7,7 @@
 #include <QIcon>
 #include "Login.h"
 #include "Register.h"
+#include "User.h"
 #include <session.h>
 #include "app\src\lang\Lang.h"
 #include "app\src\AppInfo.h"
@@ -55,6 +56,10 @@ int main(int argc, char *argv[])
 
     Register *registro = new Register(&app);
     qmlRegisterSingletonInstance("app.registro", 1,0, "Register", registro);
+
+    User *user = new User(&app);
+    qmlRegisterSingletonInstance("app.user", 1,0, "User", user);
+
     QObject::connect(appInfo,&AppInfo::langChanged,&app,[context,appInfo]{
         context->setContextProperty("lang",appInfo->lang());
     });

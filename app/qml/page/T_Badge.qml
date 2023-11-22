@@ -27,7 +27,7 @@ FluScrollablePage{
                 left: parent.left
             }
             FluText{
-                text:"一般出现在通知图标或头像的右上角，用于显示需要处理的消息条数"
+                text:"Por lo general, aparece en la esquina superior derecha del icono de notificación o avatar para mostrar la cantidad de mensajes que deben procesarse"
             }
 
             Row{

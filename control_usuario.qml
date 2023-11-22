@@ -4,6 +4,8 @@ import QtQuick.Layouts
 import QtQuick.Controls
 import QtQuick.Controls.Basic
 import FluentUI
+import app.user
+import "qrc:app/qml/global/"
 
 FluWindow {
   id: window
@@ -24,11 +26,6 @@ FluWindow {
     source: "fonts/Avenir_regular.otf"
   }
 
-  closeFunc: function (event) {
-    close_app.open()
-    event.accepted = false
-  }
-
   Connections {
     target: appInfo
     function onActiveWindow() {
@@ -38,17 +35,17 @@ FluWindow {
     }
   }
 
-  FluAppBar {
+
+  /*FluAppBar {
     id: appbar
     z: 9
     showDark: true
     width: parent.width
-    darkText: qsTr("Modo oscuro")
-  }
-
+    darkText: qsTr("Luces apagadas")
+  }*/
   StackView {
     id: stack
-    initialItem: "login.qml"
+    initialItem: (User.ID === 0) ? "login.qml" : "app/qml/window/MainWindow.qml"
     anchors.fill: parent
   }
 }

@@ -41,7 +41,7 @@ void Login::loguearse()
                 m_status_form = false;
             }else{
                 while(query.next()){
-                    qint64 ID_user = query.value(0).toInt();
+                    qint32 ID_user = query.value(0).toInt();
                     QString first_name = query.value(1).toString();
                     QString last_name = query.value(2).toString();
                     QString email = query.value(3).toString();
@@ -54,6 +54,8 @@ void Login::loguearse()
                     session.setValue("user/email", email);
                     session.setValue("user/creation_date", creation_date);
                     session.setValue("user/imgbase", imgbase);
+
+
                 }
                 m_status_form = true;
             }

@@ -32,16 +32,16 @@ FluScrollablePage{
         Layout.topMargin: -1
         code:'FluContentDialog{
     id:dialog
-    title:"友情提示"
-    message:"确定要退出程序么？"
-    negativeText:"取消"
+    title:"Recordatorio amistoso"
+    message:"¿Estás seguro de que quieres salir del programa?"
+    negativeText:"Cancelar"
     buttonFlags: FluContentDialog.NegativeButton | FluContentDialog.PositiveButton
     onNegativeClicked:{
-        showSuccess("点击取消按钮")
+        showSuccess("Haga clic en el botón cancelar")
     }
-    positiveText:"确定"
+    positiveText:"Seguro"
     onPositiveClicked:{
-        showSuccess("点击确定按钮")
+        showSuccess("Haga clic en el botón Aceptar")
     }
     }
     dialog.open()'
@@ -49,16 +49,16 @@ FluScrollablePage{
 
     FluContentDialog{
         id:double_btn_dialog
-        title:"友情提示"
-        message:"确定要退出程序么？"
+        title:"Recordatorio amistoso"
+        message:"¿Estás seguro de que quieres salir del programa?"
         buttonFlags: FluContentDialog.NegativeButton | FluContentDialog.PositiveButton
-        negativeText:"取消"
+        negativeText:"Cancelar"
         onNegativeClicked:{
-            showSuccess("点击取消按钮")
+            showSuccess("Haga clic en el botón cancelar")
         }
-        positiveText:"确定"
+        positiveText:"Seguro"
         onPositiveClicked:{
-            showSuccess("点击确定按钮")
+            showSuccess("Haga clic en el botón Aceptar")
         }
     }
 
@@ -81,21 +81,21 @@ FluScrollablePage{
         Layout.topMargin: -1
         code:'FluContentDialog{
     id:dialog
-    title:"友情提示"
-    message:"确定要退出程序么？"
-    negativeText:"取消"
+    title:"Recordatorio amistoso"
+    message:"¿Estás seguro de que quieres salir del programa?"
+    negativeText:"Cancelar"
     buttonFlags: FluContentDialog.NeutralButton | FluContentDialog.NegativeButton | FluContentDialog.PositiveButton
-    negativeText:"取消"
+    negativeText:"Cancelar"
     onNegativeClicked:{
-        showSuccess("点击取消按钮")
+        showSuccess("Haga clic en el botón cancelar")
     }
-    positiveText:"确定"
+    positiveText:"Seguro"
     onPositiveClicked:{
-        showSuccess("点击确定按钮")
+        showSuccess("Haga clic en el botón Aceptar")
     }
-    neutralText:"最小化"
+    neutralText:"Minimizar"
     onNeutralClicked:{
-        showSuccess("点击最小化按钮")
+        showSuccess("Haga clic en el botón minimizar")
         }
     }
     dialog.open()'
@@ -103,20 +103,20 @@ FluScrollablePage{
 
     FluContentDialog{
         id:triple_btn_dialog
-        title:"友情提示"
-        message:"确定要退出程序么？"
+        title:"Recordatorio amistoso"
+        message:"¿Estás seguro de que quieres salir del programa?"
         buttonFlags: FluContentDialog.NeutralButton | FluContentDialog.NegativeButton | FluContentDialog.PositiveButton
-        negativeText:"取消"
+        negativeText:"Cancelar"
         onNegativeClicked:{
-            showSuccess("点击取消按钮")
+            showSuccess("Haga clic en el botón cancelar")
         }
-        positiveText:"确定"
+        positiveText:"Seguro"
         onPositiveClicked:{
-            showSuccess("点击确定按钮")
+            showSuccess("Haga clic en el botón Aceptar")
         }
-        neutralText:"最小化"
+        neutralText:"Minimizar"
         onNeutralClicked:{
-            showSuccess("点击最小化按钮")
+            showSuccess("Haga clic en el botón minimizar")
         }
     }
 }

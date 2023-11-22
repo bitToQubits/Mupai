@@ -27,7 +27,7 @@ FluScrollablePage{
             }
 
             FluExpander{
-                headerText:"打开一个单选框"
+                headerText:"Abrir un botón de opción"
                 Layout.topMargin: 20
                 Item{
                     anchors.fill: parent

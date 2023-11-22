@@ -180,5 +180,13 @@
         <file>app/res/svg/home_dark.svg</file>
         <file>images/google_white.svg</file>
         <file>control_usuario.qml</file>
+        <file>app/res/image/chaplin.jpg</file>
+        <file>app/res/image/corinna.jpeg</file>
+        <file>app/res/image/davinci.jpeg</file>
+        <file>app/res/image/vonNeumann.jpeg</file>
+        <file>app/res/image/davinci.png</file>
+        <file>app/res/image/vonNeumann.png</file>
+        <file>app/res/image/chaplin.png</file>
+        <file>app/res/image/corinna.png</file>
     </qresource>
 </RCC>

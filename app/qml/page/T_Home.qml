@@ -4,6 +4,7 @@ import QtQuick.Window
 import QtQuick.Controls
 import "qrc:app/qml/global/"
 import FluentUI
+import app.user
 
 FluScrollablePage {
 
@@ -14,16 +15,34 @@ FluScrollablePage {
   ListModel {
     id: model_header
     ListElement {
-      icon: "qrc:app/res/image/ic_home_github.png"
-      title: "FluentUI GitHub"
-      desc: "The latest FluentUI controls and styles for your applications."
-      url: "https://github.com/zhuzichu520/FluentUI"
+      icon: "qrc:app/res/image/vonNeumann.png"
+      title: "von Neumann"
+      desc: "Para conversaciones con profundidad intelectual y realización de tareas complejas."
+      id_model: "neumann"
+    }
+    ListElement {
+      icon: "qrc:app/res/image/davinci.png"
+      title: "Davinci"
+      desc: "Para creación de imagenes y generación de ideas creativas."
+      id_model: "davinci"
+    }
+    ListElement {
+      icon: "qrc:app/res/image/chaplin.png"
+      title: "Chaplin"
+      desc: "Para conversaciones casuales y divertidas."
+      id_model: "chapplin"
+    }
+    ListElement {
+      icon: "qrc:app/res/image/corinna.png"
+      title: "Corinna"
+      desc: "Un modelo que aprende a medida que hablas con el."
+      id_model: "corinna"
     }
   }
 
   Item {
     Layout.fillWidth: true
-    height: 320
+    height: 360
     Image {
       fillMode: Image.PreserveAspectCrop
       anchors.fill: parent
@@ -44,10 +63,32 @@ FluScrollablePage {
       }
     }
     FluText {
-      text: "FluentUI Gallery"
+      id: encabezado
+      text: {
+        const horas = new Date().getHours()
+
+        if (horas < 12 && horas >= 6) {
+          return 'Buenos días ' + User.firstName
+        } else if (horas >= 12 && horas <= 18) {
+          return 'Buenas tardes ' + User.firstName
+        } else {
+          return 'Buenas noches ' + User.firstName
+        }
+      }
       fontStyle: FluText.TitleLarge
       anchors {
         top: parent.top
+        left: parent.left
+        topMargin: 20
+        leftMargin: 20
+      }
+    }
+
+    FluText {
+      text: '¿Con quién quieres conversar?'
+      font.pixelSize: 18
+      anchors {
+        top: encabezado.bottom
         left: parent.left
         topMargin: 20
         leftMargin: 20
@@ -247,7 +288,7 @@ FluScrollablePage {
   }
 
   FluText {
-    text: "Recently added samples"
+    text: "Platillas creadas recientemente"
     fontStyle: FluText.Title
     Layout.topMargin: 20
     Layout.leftMargin: 20
@@ -264,7 +305,7 @@ FluScrollablePage {
   }
 
   FluText {
-    text: "Recently updated samples"
+    text: "Plantillas creadas por la comunidad"
     fontStyle: FluText.Title
     Layout.topMargin: 20
     Layout.leftMargin: 20
