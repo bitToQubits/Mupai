@@ -56,7 +56,6 @@
         <file>app/qml/window/SingleInstanceWindow.qml</file>
         <file>app/qml/window/SingleTaskWindow.qml</file>
         <file>app/qml/window/StandardWindow.qml</file>
-        <file>app/qml/App.qml</file>
         <file>app/res/image/control/Acrylic.png</file>
         <file>app/res/image/control/AnimatedIcon.png</file>
         <file>app/res/image/control/AnimatedVisualPlayer.png</file>
@@ -179,5 +178,7 @@
         <file>app/res/svg/avatar_9.svg</file>
         <file>app/res/svg/home.svg</file>
         <file>app/res/svg/home_dark.svg</file>
+        <file>images/google_white.svg</file>
+        <file>control_usuario.qml</file>
     </qresource>
 </RCC>

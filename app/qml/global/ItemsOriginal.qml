@@ -7,12 +7,13 @@ FluObject {
 
   property var navigationView
 
+
   FluPaneItem {
     title: lang.home
     //        icon:FluentIcons.Home
     cusIcon: Image {
       anchors.centerIn: parent
-      source: FluTheme.dark ? "qrc:app/res/svg/home_dark.svg" : "qrc:/res/svg/home.svg"
+      source: FluTheme.dark ? "qrc:app/res/svg/home_dark.svg" : "qrc:app/res/svg/home.svg"
       sourceSize: Qt.size(30, 30)
       width: 18
       height: 18
@@ -21,7 +22,6 @@ FluObject {
       navigationView.push("qrc:app/qml/page/T_Home.qml")
     }
   }
-
   FluPaneItemExpander {
     title: lang.basic_input
     icon: FluentIcons.CheckboxComposite

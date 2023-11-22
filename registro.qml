@@ -5,15 +5,9 @@ import QtQuick.Controls
 import Qt.labs.platform
 import app.registro
 import FluentUI
-import "qrc:app/qml/global/"
 
-FluWindow {
+Item {
   id: paginaRegistro
-  width: 1224
-  height: 620
-  closeDestory: false
-  minimumWidth: 520
-  minimumHeight: 460
 
   FontLoader {
     id: fuentePrincipal
@@ -25,29 +19,6 @@ FluWindow {
     source: "fonts/Avenir_regular.otf"
   }
 
-  closeFunc: function (event) {
-    close_app.open()
-    event.accepted = false
-  }
-
-  Connections {
-    target: appInfo
-    function onActiveWindow() {
-      window.show()
-      window.raise()
-      window.requestActivate()
-    }
-  }
-
-  FluAppBar {
-    id: appbar
-    z: 9
-    showDark: true
-    width: parent.width
-    darkText: lang.dark_mode
-  }
-
-  signal registroExitoso(string txt)
   GridLayout {
     id: gridLayout
     width: parent.width
@@ -64,8 +35,9 @@ FluWindow {
         width: parent.width
         height: 350
         anchors.verticalCenter: parent.verticalCenter
+        color: 'transparent'
 
-        Text {
+        FluText {
           id: registreSuCuenta
           text: qsTr("Crea tu cuenta")
           font.family: fuentePrincipal.font.family
@@ -74,7 +46,7 @@ FluWindow {
           anchors.horizontalCenter: parent.horizontalCenter
         }
 
-        Button {
+        FluButton {
           id: googleButton
           anchors.top: registreSuCuenta.bottom
           highlighted: false
@@ -86,15 +58,10 @@ FluWindow {
           anchors.horizontalCenter: registreSuCuenta.horizontalCenter
           Image {
             height: parent.height / 2
-            source: "images/google.svg"
+            source: FluTheme.dark ? "images/google_white.svg" : "images/google.svg"
             fillMode: Image.PreserveAspectFit
             anchors.verticalCenter: googleButton.verticalCenter
             anchors.horizontalCenter: googleButton.horizontalCenter
-          }
-
-          background: Rectangle {
-            border.color: "#495057"
-            radius: 10
           }
 
           HoverHandler {
@@ -103,7 +70,7 @@ FluWindow {
           }
         }
 
-        Text {
+        FluText {
           id: utilizarEmail
           text: qsTr("o manualmente introduce tus datos")
           font.pixelSize: 18
@@ -124,7 +91,7 @@ FluWindow {
           anchors.horizontalCenter: utilizarEmail.horizontalCenter
           spacing: 10
 
-          TextField {
+          FluTextBox {
             id: nombre
             Layout.fillWidth: true
             Layout.maximumWidth: parent.width / 2
@@ -135,13 +102,9 @@ FluWindow {
             bottomPadding: 10
             topPadding: 10
             leftPadding: 10
-            background: Rectangle {
-              color: "#EEEDEF"
-              radius: 10
-            }
           }
 
-          TextField {
+          FluTextBox {
             id: apellido
             Layout.fillWidth: true
             Layout.maximumWidth: parent.width / 2
@@ -152,14 +115,10 @@ FluWindow {
             bottomPadding: 10
             topPadding: 10
             leftPadding: 10
-            background: Rectangle {
-              color: "#EEEDEF"
-              radius: 10
-            }
           }
         }
 
-        TextField {
+        FluTextBox {
           id: email
           width: parent.width / 2
           height: 40
@@ -173,13 +132,9 @@ FluWindow {
           bottomPadding: 10
           topPadding: 10
           leftPadding: 10
-          background: Rectangle {
-            color: "#EEEDEF"
-            radius: 10
-          }
         }
 
-        TextField {
+        FluPasswordBox {
           id: clave
           width: parent.width / 2
           height: 40
@@ -193,13 +148,9 @@ FluWindow {
           bottomPadding: 10
           topPadding: 10
           leftPadding: 10
-          background: Rectangle {
-            color: "#EEEDEF"
-            radius: 10
-          }
         }
 
-        TextField {
+        FluPasswordBox {
           id: clave_confirmar
           width: parent.width / 2
           height: 40
@@ -213,33 +164,27 @@ FluWindow {
           bottomPadding: 10
           topPadding: 10
           leftPadding: 10
-          background: Rectangle {
-            color: "#EEEDEF"
-            radius: 10
-          }
         }
 
-        Button {
+        FluButton {
           id: registerButton
           width: parent.width / 4
           height: 40
           onClicked: {
             Register.registrarse()
-            mensajeRespuestaServer.visible = !(Register.status_server)
 
             if (Register.status_form === 1) {
               mensajeRespuesta.visible = false
-              paginaRegistro.registroExitoso(
-                    "¡Te has registrado exitosamente! Solo hace falta iniciar sesión.")
-              loader.source = "login.qml"
+              showSuccess("¡Te has registrado correctamente!", 3000)
               Register.clear()
+              stack.pop()
             } else {
               if (Register.status_server) {
-                mensajeRespuesta.visible = true
                 if (Register.status_form === 0) {
-                  mensajeRespuesta.text = qsTr(
-                        "Favor rellenar todos los campos")
+                  showError("Favor rellenar todos los campos", 3000)
                 }
+              } else {
+                showError("Error para conectar al servidor", 3000)
               }
             }
           }
@@ -274,7 +219,7 @@ FluWindow {
 
         Text {
           id: mensajeRespuesta
-          text: qsTr("Favor rellenar todos los campos")
+          text: qsTr("La claves no coinciden")
           color: "#B41E23"
           font.pixelSize: 15
           font.weight: 200
@@ -289,9 +234,7 @@ FluWindow {
             function onConfirmPasswordChanged(cP) {
               if (Register.password !== cP) {
                 mensajeRespuesta.visible = true
-                mensajeRespuesta.text = qsTr("La claves no coinciden")
               } else {
-                mensajeRespuesta.text = qsTr("Favor rellenar todos los campos")
                 mensajeRespuesta.visible = false
               }
             }
@@ -299,32 +242,15 @@ FluWindow {
             function onPasswordChanged(p) {
               if (p !== Register.confirmPassword) {
                 mensajeRespuesta.visible = true
-                mensajeRespuesta.text = qsTr("La claves no coinciden")
               } else {
-                mensajeRespuesta.text = qsTr("Favor rellenar todos los campos")
                 mensajeRespuesta.visible = false
               }
             }
 
             function onEmailExists() {
-              mensajeRespuesta.visible = true
-              mensajeRespuesta.text = qsTr(
-                    "Ya existe una cuenta con este correo. Inicie sesión.")
+              showError("Ya existe una cuenta con este correo.", 3000)
             }
           }
-        }
-
-        Text {
-          id: mensajeRespuestaServer
-          text: qsTr("Error para conectar con el servidor")
-          color: "#FDEF0A"
-          font.pixelSize: 15
-          font.weight: 200
-          font.family: fuenteSecundaria.font.family
-          anchors.top: mensajeRespuesta.bottom
-          anchors.topMargin: 10
-          anchors.horizontalCenter: mensajeRespuesta.horizontalCenter
-          visible: false
         }
       }
     }
@@ -408,7 +334,7 @@ FluWindow {
             bottomPadding: 10
             onClicked: {
               Register.clear()
-              loader.source = "login.qml"
+              stack.pop()
             }
           }
         }

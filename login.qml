@@ -2,50 +2,13 @@ import QtQuick
 import QtQuick.Window
 import QtQuick.Layouts
 import QtQuick.Controls
-import Qt.labs.platform
+import QtQuick.Controls.Basic
 import app.Login
 import FluentUI
-import "qrc:app/qml/global/"
 
-FluWindow {
+Item {
+
   id: paginaLogin
-  width: 1224
-  height: 620
-  closeDestory: false
-  minimumWidth: 520
-  minimumHeight: 460
-
-  FontLoader {
-    id: fuentePrincipal
-    source: "fonts/Avenir.otf"
-  }
-
-  FontLoader {
-    id: fuenteSecundaria
-    source: "fonts/Avenir_regular.otf"
-  }
-
-  closeFunc: function (event) {
-    close_app.open()
-    event.accepted = false
-  }
-
-  Connections {
-    target: appInfo
-    function onActiveWindow() {
-      window.show()
-      window.raise()
-      window.requestActivate()
-    }
-  }
-
-  FluAppBar {
-    id: appbar
-    z: 9
-    showDark: true
-    width: parent.width
-    darkText: lang.dark_mode
-  }
 
   GridLayout {
     id: gridLayout
@@ -131,7 +94,7 @@ FluWindow {
             bottomPadding: 10
             onClicked: {
               Login.clear()
-              loader.source = "registro.qml"
+              stack.push("registro.qml")
             }
           }
         }
@@ -144,11 +107,12 @@ FluWindow {
       Layout.fillHeight: true
       Layout.alignment: Qt.AlignVCenter
 
-      FluRectangle {
+      Rectangle {
         id: rectangle
         width: parent.width
         height: 350
         anchors.verticalCenter: parent.verticalCenter
+        color: 'transparent'
 
         FluText {
           id: inicieSesion
@@ -172,7 +136,7 @@ FluWindow {
           anchors.horizontalCenter: inicieSesion.horizontalCenter
           Image {
             height: parent.height / 2
-            source: "images/google.svg"
+            source: FluTheme.dark ? "images/google_white.svg" : "images/google.svg"
             fillMode: Image.PreserveAspectFit
             anchors.verticalCenter: googleButton.verticalCenter
             anchors.horizontalCenter: googleButton.horizontalCenter
@@ -234,11 +198,15 @@ FluWindow {
           height: 40
           onClicked: {
             Login.loguearse()
-            mensajeRespuestaServer.visible = !(Login.status_server)
-            mensajeRespuesta.visible = !(Login.status_form)
+            if (!Login.status_server) {
+              showError("Error para conectarse al servidor", 3000)
+            }
 
-            if (Login.status_form) {
-              loader.source = "app/qml/App.qml"
+            if (!Login.status_form) {
+              showError("Favor revisar sus credenciales", 3000)
+            } else {
+              showSuccess("Has iniciado sesión exitosamente", 3000)
+              stack.push('app/qml/window/MainWindow.qml')
             }
           }
 
@@ -268,77 +236,6 @@ FluWindow {
           anchors.topMargin: 30
           anchors.horizontalCenter: clave.horizontalCenter
           bottomPadding: 10
-        }
-
-        FluText {
-          id: mensajeRespuesta
-          text: qsTr("Favor revisar sus credenciales")
-          color: "#B41E23"
-          font.pixelSize: 15
-          font.weight: 200
-          font.family: fuenteSecundaria.font.family
-          anchors.top: loginButton.bottom
-          anchors.topMargin: 20
-          anchors.horizontalCenter: loginButton.horizontalCenter
-          visible: false
-        }
-
-        FluText {
-          id: mensajeRespuestaServer
-          text: qsTr("Error para conectar con el servidor")
-          color: "#FDEF0A"
-          font.pixelSize: 15
-          font.weight: 200
-          font.family: fuenteSecundaria.font.family
-          anchors.top: mensajeRespuesta.bottom
-          anchors.topMargin: 20
-          anchors.horizontalCenter: mensajeRespuesta.horizontalCenter
-          visible: false
-        }
-
-        FluText {
-          id: registroExitosoMsg
-          text: qsTr(app.notificacion)
-          font.family: fuenteSecundaria.font.family
-          font.pixelSize: 15
-          color: "green"
-          anchors.topMargin: 20
-          anchors.top: mensajeRespuestaServer.bottom
-          anchors.horizontalCenter: mensajeRespuestaServer.horizontalCenter
-          opacity: 1
-          visible: (app.notificacion) ? true : false
-
-          SequentialAnimation {
-            id: animationNotificacion
-            running: (app.notificacion)
-
-            NumberAnimation {
-              target: registroExitosoMsg
-              property: "opacity"
-              from: 0
-              to: 1
-              duration: 250
-            }
-
-            PauseAnimation {
-              duration: 5000
-            }
-
-            NumberAnimation {
-              target: registroExitosoMsg
-              property: "opacity"
-              from: 1
-              to: 0
-              duration: 250
-            }
-
-            ScriptAction {
-              script: {
-                app.notificacion = ""
-                registroExitosoMsg.visible = false
-              }
-            }
-          }
         }
       }
     }

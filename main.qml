@@ -19,23 +19,14 @@ Window {
       "/about": "qrc:app/qml/window/AboutWindow.qml",
       "/login": "qrc:login.qml",
       "/register": "qrc:registro.qml",
+      "/control_usuario": "qrc:control_usuario.qml",
       "/chat": "qrc:app/qml/window/ChatWindow.qml",
       "/media": "qrc:app/qml/window/MediaWindow.qml",
       "/singleTaskWindow": "qrc:app/qml/window/SingleTaskWindow.qml",
       "/standardWindow": "qrc:app/qml/window/StandardWindow.qml",
       "/singleInstanceWindow": "qrc:app/qml/window/SingleInstanceWindow.qml"
     }
-    FluApp.initialRoute = "/login"
+    FluApp.initialRoute = "/control_usuario"
     FluApp.run()
   }
-
-
-  /*Connections {
-    target: loader.item
-    //ignoreUnknownSignals: true
-    ignoreUnknownSignals: true
-    function onRegistroExitoso(txt) {
-      root.notificacion = txt
-    }
-  }*/
 }
