@@ -4,6 +4,7 @@
 #include <QObject>
 #include <session.h>
 #include <QString>
+
 #define session Session::getInstance().getSession()
 
 class User : public QObject
@@ -37,6 +38,8 @@ public:
 
 public slots:
     void obtenerDatos();
+    void limpiarSesion();
+    /*QJsonObject crearArgumentos();*/
 
 signals:
     void IDChanged();

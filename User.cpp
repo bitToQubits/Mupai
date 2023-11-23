@@ -1,4 +1,7 @@
 #include "User.h"
+#include <QJsonDocument>
+#include <QJsonValue>
+#include <QJsonObject>
 
 User::User(QObject *parent) :
     QObject{parent}
@@ -79,3 +82,17 @@ void User::obtenerDatos()
     m_email = session.value("user/email","").toString();
     m_photo = session.value("user/imgbase","").toString();
 }
+
+void User::limpiarSesion()
+{
+    session.clear();
+    obtenerDatos();
+}
+
+/*QJsonObject User::crearArgumentos(){
+    QJsonObject *obj = new QJsonObject();
+    obj->insert("launchMode", 2);
+
+    return *obj;
+}
+*/

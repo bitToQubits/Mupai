@@ -1,6 +1,7 @@
 ﻿#include "AppInfo.h"
 #include "lang/En.h"
 #include "lang/Zh.h"
+#include "qcoreapplication.h"
 
 AppInfo::AppInfo(QObject *parent)
     : QObject{parent}
@@ -21,4 +22,9 @@ void AppInfo::changeLang(const QString& locale){
         lang(new En());
     }
 
+}
+
+void AppInfo::reiniciarApp(){
+    QProcess::startDetached(QCoreApplication::applicationFilePath());
+    exit(12);
 }

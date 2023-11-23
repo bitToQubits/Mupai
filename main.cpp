@@ -37,6 +37,7 @@ int main(int argc, char *argv[])
 
     app.setWindowIcon(QIcon(":/images/Icon.png"));
     QQmlApplicationEngine engine;
+
     QQmlContext * context = engine.rootContext();
 
     AppInfo* appInfo = new AppInfo();
