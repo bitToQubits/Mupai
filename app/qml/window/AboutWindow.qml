@@ -6,8 +6,8 @@ import FluentUI
 FluWindow {
 
   id: window
-  title: "关于"
-  width: 600
+  title: "Acerca de"
+  width: 650
   height: 600
   minimumWidth: 600
   minimumHeight: 600
@@ -17,7 +17,7 @@ FluWindow {
 
   FluAppBar {
     id: appbar
-    title: "关于"
+    title: "Acerca de Mupi"
     width: parent.width
   }
 
@@ -48,28 +48,297 @@ FluWindow {
       Layout.topMargin: 20
       Layout.leftMargin: 15
       FluText {
-        text: "作者："
-      }
-      FluText {
-        text: "朱子楚"
-        Layout.alignment: Qt.AlignBottom
+        text: "Obtén respuestas instantaneas, encuentra inspiración creativa, aprende algo nuevo."
       }
     }
 
     RowLayout {
+      id: respuestastxt
       spacing: 14
       Layout.leftMargin: 15
+      Layout.topMargin: 15
       FluText {
-        text: "GitHub："
+        text: "Encuentra las respuestas que necesitas"
+        font.bold: true
       }
-      FluTextButton {
-        id: text_hublink
-        topPadding: 0
-        bottomPadding: 0
-        text: "https://github.com/zhuzichu520/FluentUI"
-        Layout.alignment: Qt.AlignBottom
-        onClicked: {
-          Qt.openUrlExternally(text_hublink.text)
+    }
+
+    RowLayout {
+      spacing: 5
+      Layout.leftMargin: 7
+      Layout.rightMargin: 7
+      Layout.topMargin: 15
+
+      ColumnLayout {
+        FluArea {
+          radius: 8
+          width: 300
+          height: 30
+          paddings: 8
+          FluText {
+            text: qsTr("Planea un viaje vacacional a Barcelona")
+            Layout.preferredWidth: 300
+            wrapMode: Text.WrapAnywhere
+          }
+        }
+      }
+
+      ColumnLayout {
+        FluArea {
+          radius: 8
+          width: 280
+          height: 30
+          paddings: 8
+          FluText {
+            text: qsTr("Cuentame una broma inteligente")
+            Layout.preferredWidth: 280
+            wrapMode: Text.WrapAnywhere
+          }
+        }
+      }
+    }
+
+    RowLayout {
+      spacing: 5
+      Layout.leftMargin: 7
+      Layout.rightMargin: 7
+      Layout.topMargin: 15
+
+      ColumnLayout {
+        FluArea {
+          radius: 8
+          width: 300
+          height: 30
+          paddings: 8
+          FluText {
+            text: qsTr("Ayudame con mi tarea")
+            Layout.preferredWidth: 300
+            wrapMode: Text.WrapAnywhere
+          }
+        }
+      }
+
+      ColumnLayout {
+        FluArea {
+          radius: 8
+          width: 280
+          height: 30
+          paddings: 8
+          FluText {
+            text: qsTr("Genera ideas para mi nuevo negocio")
+            Layout.preferredWidth: 280
+            wrapMode: Text.WrapAnywhere
+          }
+        }
+      }
+    }
+
+    RowLayout {
+      spacing: 5
+      Layout.leftMargin: 7
+      Layout.rightMargin: 7
+      Layout.topMargin: 15
+
+      ColumnLayout {
+        FluArea {
+          radius: 8
+          width: 300
+          height: 30
+          paddings: 8
+          FluText {
+            text: qsTr("Programa una calculadora")
+            Layout.preferredWidth: 80
+            wrapMode: Text.WrapAnywhere
+          }
+        }
+      }
+
+      ColumnLayout {
+        FluArea {
+          radius: 8
+          width: 280
+          height: 30
+          paddings: 8
+          FluText {
+            text: qsTr("Imagina una puesta de sol")
+            Layout.preferredWidth: 80
+            wrapMode: Text.WrapAnywhere
+          }
+        }
+      }
+    }
+
+    RowLayout {
+      spacing: 5
+      Layout.leftMargin: 7
+      Layout.rightMargin: 7
+      Layout.topMargin: 15
+
+      ColumnLayout {
+        FluArea {
+          radius: 8
+          width: 300
+          height: 30
+          paddings: 8
+          FluText {
+            text: qsTr("Genera un plan de estudio para Química I")
+            Layout.preferredWidth: 300
+            wrapMode: Text.WrapAnywhere
+          }
+        }
+      }
+
+      ColumnLayout {
+        FluArea {
+          radius: 8
+          width: 280
+          height: 30
+          paddings: 8
+          FluText {
+            text: qsTr("¿Puedes realizar un cuento corto?")
+            Layout.preferredWidth: 280
+            wrapMode: Text.WrapAnywhere
+          }
+        }
+      }
+    }
+
+    RowLayout {
+      spacing: 5
+      Layout.leftMargin: 7
+      Layout.rightMargin: 7
+      Layout.topMargin: 15
+
+      ColumnLayout {
+        FluArea {
+          radius: 8
+          width: 300
+          height: 30
+          paddings: 8
+          FluText {
+            text: qsTr("Explica este código")
+            Layout.preferredWidth: 300
+            wrapMode: Text.WrapAnywhere
+          }
+        }
+      }
+
+      ColumnLayout {
+        FluArea {
+          radius: 8
+          width: 280
+          height: 30
+          paddings: 8
+          FluText {
+            text: qsTr("Hazme preguntas sobre historia")
+            Layout.preferredWidth: 280
+            wrapMode: Text.WrapAnywhere
+          }
+        }
+      }
+    }
+
+    RowLayout {
+      spacing: 5
+      Layout.leftMargin: 7
+      Layout.rightMargin: 7
+      Layout.topMargin: 15
+
+      ColumnLayout {
+        FluArea {
+          radius: 8
+          width: 300
+          height: 30
+          paddings: 8
+          FluText {
+            text: qsTr("Escribe un codigo de Python")
+            Layout.preferredWidth: 300
+            wrapMode: Text.WrapAnywhere
+          }
+        }
+      }
+
+      ColumnLayout {
+        FluArea {
+          radius: 8
+          width: 280
+          height: 30
+          paddings: 8
+          FluText {
+            text: qsTr("Imagina una montaña nevada")
+            Layout.preferredWidth: 280
+            wrapMode: Text.WrapAnywhere
+          }
+        }
+      }
+    }
+
+    RowLayout {
+      spacing: 5
+      Layout.leftMargin: 7
+      Layout.rightMargin: 7
+      Layout.topMargin: 15
+
+      ColumnLayout {
+        FluArea {
+          radius: 8
+          width: 300
+          height: 30
+          paddings: 8
+          FluText {
+            text: qsTr("Planea un tour escolar")
+            Layout.preferredWidth: 300
+            wrapMode: Text.WrapAnywhere
+          }
+        }
+      }
+
+      ColumnLayout {
+        FluArea {
+          radius: 8
+          width: 280
+          height: 30
+          paddings: 8
+          FluText {
+            text: qsTr("Traduce el siguiente texto al griego")
+            Layout.preferredWidth: 280
+            wrapMode: Text.WrapAnywhere
+          }
+        }
+      }
+    }
+
+    RowLayout {
+      spacing: 5
+      Layout.leftMargin: 7
+      Layout.rightMargin: 7
+      Layout.topMargin: 15
+
+      ColumnLayout {
+        FluArea {
+          radius: 8
+          width: 300
+          height: 30
+          paddings: 8
+          FluText {
+            text: qsTr("Sugiere lugares para tomar fotos")
+            Layout.preferredWidth: 300
+            wrapMode: Text.WrapAnywhere
+          }
+        }
+      }
+
+      ColumnLayout {
+        FluArea {
+          radius: 8
+          width: 280
+          height: 30
+          paddings: 8
+          FluText {
+            text: qsTr("Dame ideas para generar dinero")
+            Layout.preferredWidth: 280
+            wrapMode: Text.WrapAnywhere
+          }
         }
       }
     }
@@ -77,73 +346,11 @@ FluWindow {
     RowLayout {
       spacing: 14
       Layout.leftMargin: 15
-      FluText {
-        text: "B站："
-      }
-      FluTextButton {
-        topPadding: 0
-        bottomPadding: 0
-        text: "https://www.bilibili.com/video/BV1mg4y1M71w/"
-        Layout.alignment: Qt.AlignBottom
-        onClicked: {
-          Qt.openUrlExternally(text)
-        }
-      }
-    }
-
-    RowLayout {
-      spacing: 14
-      Layout.leftMargin: 15
-      FluText {
-        id: text_info
-        text: "如果该项目对你有作用，就请点击上方链接给一个免费的star，或者一键三连，谢谢！"
-        ColorAnimation {
-          id: animation
-          target: text_info
-          property: "color"
-          from: "red"
-          to: "blue"
-          duration: 1000
-          running: true
-          loops: Animation.Infinite
-          easing.type: Easing.InOutQuad
-        }
-      }
-    }
-
-    RowLayout {
-      spacing: 14
-      Layout.leftMargin: 15
-      FluText {
-        text: "捐赠："
-      }
-    }
-
-    Item {
-      Layout.preferredWidth: parent.width
-      Layout.preferredHeight: 252
-      Row {
-        anchors.horizontalCenter: parent.horizontalCenter
-        spacing: 60
-        Image {
-          width: 164.55
-          height: 224.25
-          source: "qrc:app/res/image/qrcode_wx.jpg"
-        }
-        Image {
-          width: 162
-          height: 252
-          source: "qrc:app/res/image/qrcode_zfb.jpg"
-        }
-      }
-    }
-
-    RowLayout {
-      spacing: 14
-      Layout.leftMargin: 15
+      Layout.topMargin: 15
       FluText {
         id: text_desc
-        text: "个人开发，维护不易，你们的捐赠就是我继续更新的动力！\n有什么问题提Issues，只要时间充足我就会解决的！！"
+        text: "Copyrights @ 2023 Todos los derechos reservados | Mupai"
+        font.bold: true
       }
     }
   }

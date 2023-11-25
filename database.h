@@ -4,6 +4,7 @@
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlQuery>
 #include <QSqlQuery>
+#include <QSqlError>
 
 static bool createConnection()
 {

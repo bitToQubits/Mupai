@@ -188,5 +188,6 @@
         <file>app/res/image/vonNeumann.png</file>
         <file>app/res/image/chaplin.png</file>
         <file>app/res/image/corinna.png</file>
+        <file>app/qml/page/T_Chat.qml</file>
     </qresource>
 </RCC>

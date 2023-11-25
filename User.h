@@ -15,7 +15,7 @@ class User : public QObject
     Q_PROPERTY(QString lastName READ lastName WRITE setlastName NOTIFY lastNameChanged)
     Q_PROPERTY(QString email READ email WRITE setEmail NOTIFY emailChanged)
     Q_PROPERTY(QString photo READ photo WRITE photo NOTIFY IDChanged)
-    Q_PROPERTY(QString password WRITE setPassword NOTIFY passwordChanged)
+    Q_PROPERTY(QString password READ password WRITE setPassword NOTIFY passwordChanged)
 
 
 public:
@@ -36,10 +36,12 @@ public:
 
     void setPassword(const QString &newPassword);
 
+    QString password() const;
+
 public slots:
     void obtenerDatos();
     void limpiarSesion();
-    /*QJsonObject crearArgumentos();*/
+    int guardarConfiguracion();
 
 signals:
     void IDChanged();
@@ -57,7 +59,7 @@ private:
     QString m_lastName = session.value("user/last_name","").toString();
     QString m_email = session.value("user/email","").toString();
     QString m_photo = session.value("user/imgbase","").toString();
-    QString m_password;
+    QString m_password = session.value("user/password","").toString();
 };
 
 #endif // USER_H

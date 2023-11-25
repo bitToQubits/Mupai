@@ -45,19 +45,22 @@ void Login::loguearse()
                     QString first_name = query.value(1).toString();
                     QString last_name = query.value(2).toString();
                     QString email = query.value(3).toString();
-                    QString creation_date = query.value(4).toString();
-                    QString imgbase = query.value(5).toString();
+                    QString password = query.value(4).toString();
+                    QString creation_date = query.value(5).toString();
+                    QString imgbase = query.value(6).toString();
 
                     session.setValue("user/id", ID_user);
                     session.setValue("user/name", first_name);
                     session.setValue("user/last_name", last_name);
                     session.setValue("user/email", email);
+                    session.setValue("user/password", password);
                     session.setValue("user/creation_date", creation_date);
                     session.setValue("user/imgbase", imgbase);
 
-
                 }
+
                 m_status_form = true;
+                m_status_server = true;
             }
         }else{
             m_status_server = false;

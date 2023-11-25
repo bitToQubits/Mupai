@@ -202,9 +202,11 @@ Item {
               showError("Error para conectarse al servidor", 3000)
             }
 
-            if (!Login.status_form) {
+            if (!Login.status_form && Login.status_server) {
               showError("Favor revisar sus credenciales", 3000)
-            } else {
+            }
+
+            if (Login.status_form) {
               showSuccess("Has iniciado sesión exitosamente", 3000)
               User.obtenerDatos()
               stack.push('app/qml/window/MainWindow.qml')

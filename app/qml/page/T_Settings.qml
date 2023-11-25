@@ -80,7 +80,6 @@ FluScrollablePage {
         height: 20
         font.pixelSize: 12
         placeholderText: qsTr("Nombre")
-        //onTextChanged: Login.email = text
         Layout.fillWidth: true
         Layout.maximumWidth: parent.width / 3
         text: User.firstName
@@ -91,7 +90,6 @@ FluScrollablePage {
         height: 20
         font.pixelSize: 12
         placeholderText: qsTr("Apellido")
-        //onTextChanged: Login.email = text
         Layout.fillWidth: true
         Layout.maximumWidth: parent.width / 3
         text: User.lastName
@@ -146,22 +144,20 @@ FluScrollablePage {
       anchors.topMargin: 10
       spacing: 10
 
-      FluTextBox {
+      FluPasswordBox {
         id: clave
         height: 20
         font.pixelSize: 12
         placeholderText: qsTr("Clave")
-        //onTextChanged: Login.email = text
         Layout.fillWidth: true
         Layout.maximumWidth: parent.width / 2
       }
 
-      FluTextBox {
+      FluPasswordBox {
         id: clave_nueva
         height: 20
         font.pixelSize: 12
         placeholderText: qsTr("Clave nueva")
-        //onTextChanged: Login.email = text
         Layout.fillWidth: true
         Layout.maximumWidth: parent.width / 2
       }
@@ -179,12 +175,45 @@ FluScrollablePage {
         text: "Cancelar"
         Layout.fillWidth: true
         Layout.maximumWidth: parent.width / 3
+        onClicked: {
+          nombre.text = User.firstName
+          apellido.text = User.lastName
+          correo.text = User.email
+          clave_nueva.text = ''
+          clave.text = ''
+        }
       }
 
       FluFilledButton {
         text: "Guardar cambios"
         Layout.fillWidth: true
         Layout.maximumWidth: parent.width / 1
+        onClicked: {
+          if (clave_nueva.text !== '') {
+            if (clave.text !== User.password) {
+              showError('La clave actual no es correcta')
+              return
+            } else {
+              User.password = clave_nueva.text
+            }
+          }
+
+          User.firstName = nombre.text
+          User.lastName = apellido.text
+          User.email = correo.text
+
+          let status = User.guardarConfiguracion()
+
+          if (status === 1) {
+            showSuccess('¡Exito! Has actualizado tus datos.', 3000)
+          } else if (status === 0) {
+            showError('Este correo ya lo tiene otra cuenta.', 3000)
+          } else if (status === -2) {
+            showError('No puedes dejar email, nombre o apellido vacio', 3000)
+          } else {
+            showError('Error del lado del servidor.', 3000)
+          }
+        }
       }
     }
   }
@@ -192,7 +221,7 @@ FluScrollablePage {
   FluArea {
     Layout.fillWidth: true
     Layout.topMargin: 20
-    height: 136
+    height: 200
     paddings: 10
 
     ColumnLayout {
@@ -202,11 +231,42 @@ FluScrollablePage {
         left: parent.left
       }
       FluText {
-        text: qsTr("Colores del programa")
+        text: qsTr("Apariencia del programa")
         fontStyle: FluText.BodyStrong
         Layout.bottomMargin: 4
       }
+      RowLayout {
+        id: colores_select
+        Layout.topMargin: 10
+        Repeater {
+          model: [FluColors.Yellow, FluColors.Orange, FluColors.Red, FluColors.Magenta, FluColors.Purple, FluColors.Blue, FluColors.Teal, FluColors.Green]
+          delegate: FluRectangle {
+            width: 42
+            height: 42
+            radius: [4, 4, 4, 4]
+            color: mouse_item.containsMouse ? Qt.lighter(modelData.normal,
+                                                         1.1) : modelData.normal
+            FluIcon {
+              anchors.centerIn: parent
+              iconSource: FluentIcons.AcceptMedium
+              iconSize: 15
+              visible: modelData === FluTheme.primaryColor
+              color: FluTheme.dark ? Qt.rgba(0, 0, 0, 1) : Qt.rgba(1, 1, 1, 1)
+            }
+            MouseArea {
+              id: mouse_item
+              anchors.fill: parent
+              hoverEnabled: true
+              onClicked: {
+                FluTheme.primaryColor = modelData
+              }
+            }
+          }
+        }
+      }
       Repeater {
+        anchors.top: colores_select.bottom
+        anchors.topMargin: 25
         model: [{
             "title": "Sistema",
             "mode": FluDarkMode.System

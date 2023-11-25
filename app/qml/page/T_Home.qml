@@ -16,7 +16,7 @@ FluScrollablePage {
     id: model_header
     ListElement {
       icon: "qrc:app/res/image/vonNeumann.png"
-      title: "von Neumann"
+      title: "Neumann"
       desc: "Para conversaciones con profundidad intelectual y realización de tareas complejas."
       id_model: "neumann"
     }
@@ -34,7 +34,7 @@ FluScrollablePage {
     }
     ListElement {
       icon: "qrc:app/res/image/corinna.png"
-      title: "Corinna"
+      title: "Mu-pi"
       desc: "Un modelo que aprende a medida que hablas con el."
       id_model: "corinna"
     }
@@ -75,7 +75,7 @@ FluScrollablePage {
           return 'Buenas noches ' + User.firstName
         }
       }
-      fontStyle: FluText.TitleLarge
+      fontStyle: FluText.Title
       anchors {
         top: parent.top
         left: parent.left
@@ -288,7 +288,7 @@ FluScrollablePage {
   }
 
   FluText {
-    text: "Platillas creadas recientemente"
+    text: "Plantillas creadas recientemente"
     fontStyle: FluText.Title
     Layout.topMargin: 20
     Layout.leftMargin: 20

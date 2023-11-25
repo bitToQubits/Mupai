@@ -1,7 +1,5 @@
 #include "User.h"
-#include <QJsonDocument>
-#include <QJsonValue>
-#include <QJsonObject>
+#include "database.h"
 
 User::User(QObject *parent) :
     QObject{parent}
@@ -89,10 +87,53 @@ void User::limpiarSesion()
     obtenerDatos();
 }
 
-/*QJsonObject User::crearArgumentos(){
-    QJsonObject *obj = new QJsonObject();
-    obj->insert("launchMode", 2);
+int User::guardarConfiguracion()
+{
+    if(m_firstName.size() == 0 || m_lastName.size() == 0 || m_email.size() == 0){
+        obtenerDatos();
+        return -2; //Error: no se pueden dejar vacios alguno de estos campos
+    }
 
-    return *obj;
+    if(!createConnection()){
+        return -1; //Error: no se pudo crear la conexion
+    }
+
+    QSqlQuery query;
+    query.prepare("SELECT ID FROM users WHERE user_email = ? and ID != ?");
+    query.addBindValue(m_email);
+    query.addBindValue(m_ID);
+
+    if(!query.exec()){
+        return -1; //Error: no se pudo consultar el query
+    }
+
+    if(query.last()){
+        obtenerDatos();
+        return 0; //Error: email ya existe en la db
+    }
+
+    query.clear();
+
+    query.prepare("UPDATE users SET first_name = ?, last_name = ?, user_email = ?, password = ? WHERE "
+                  "ID = ?");
+    query.addBindValue(m_firstName);
+    query.addBindValue(m_lastName);
+    query.addBindValue(m_email);
+    query.addBindValue(m_password);
+    query.addBindValue(m_ID);
+    if(query.exec()){
+        session.setValue("user/name", m_firstName);
+        session.setValue("user/last_name", m_lastName);
+        session.setValue("user/email", m_email);
+        session.setValue("user/password", m_password);
+        return 1; //success
+    }else{
+        return -1; //Error: no se pudo realizar la consulta
+    }
+
 }
-*/
+
+QString User::password() const
+{
+    return m_password;
+}
