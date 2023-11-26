@@ -5,6 +5,7 @@ import QtQuick.Controls
 import "qrc:app/qml/global/"
 import FluentUI
 import app.user
+import app.chat
 
 FluScrollablePage {
 
@@ -15,28 +16,28 @@ FluScrollablePage {
   ListModel {
     id: model_header
     ListElement {
-      icon: "qrc:app/res/image/vonNeumann.png"
+      icon: "qrc:images/Neumann.svg"
       title: "Neumann"
       desc: "Para conversaciones con profundidad intelectual y realización de tareas complejas."
       id_model: "neumann"
     }
     ListElement {
-      icon: "qrc:app/res/image/davinci.png"
+      icon: "qrc:images/Davinci.svg"
       title: "Davinci"
       desc: "Para creación de imagenes y generación de ideas creativas."
       id_model: "davinci"
     }
     ListElement {
-      icon: "qrc:app/res/image/chaplin.png"
+      icon: "qrc:images/Chaplin.svg"
       title: "Chaplin"
       desc: "Para conversaciones casuales y divertidas."
-      id_model: "chapplin"
+      id_model: "chaplin"
     }
     ListElement {
-      icon: "qrc:app/res/image/corinna.png"
+      icon: "qrc:images/Mupiii.svg"
       title: "Mu-pi"
       desc: "Un modelo que aprende a medida que hablas con el."
-      id_model: "corinna"
+      id_model: "mupi"
     }
   }
 
@@ -187,7 +188,9 @@ FluScrollablePage {
                        scrollbar_header.increase()
                      }
             onClicked: {
-              Qt.openUrlExternally(model.url)
+              ItemsOriginal.navigationView.setCurrentIndex(2, 'footer_list')
+              ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Chat.qml")
+              Chat.AI = model.id_model
             }
           }
         }

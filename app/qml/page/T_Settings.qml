@@ -265,8 +265,8 @@ FluScrollablePage {
         }
       }
       Repeater {
-        anchors.top: colores_select.bottom
-        anchors.topMargin: 25
+        Layout.fillWidth: true
+        Layout.topMargin: 25
         model: [{
             "title": "Sistema",
             "mode": FluDarkMode.System

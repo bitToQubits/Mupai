@@ -5,6 +5,7 @@ import QtQuick.Controls
 import FluentUI
 import Controller
 import "../component"
+import app.chat
 
 Item {
   id: pagina
@@ -108,7 +109,22 @@ Item {
             asynchronous: true
             anchors.fill: parent
             sourceSize: Qt.size(100, 100)
-            source: isMy ? "qrc:app/res/svg/avatar_7.svg" : "qrc:images/Mupiii2.svg"
+            source: {
+              if (isMy) {
+                return "qrc:app/res/svg/avatar_7.svg"
+              } else {
+                switch (Chat.AI) {
+                case "davinci":
+                  return "qrc:images/Davinci.svg"
+                case "chaplin":
+                  return "qrc:images/Chaplin.svg"
+                case "neumann":
+                  return "qrc:images/Neumann.svg"
+                default:
+                  return "qrc:images/Mupiii.svg"
+                }
+              }
+            }
           }
         }
 
@@ -173,7 +189,18 @@ Item {
 
         Image {
           height: iconoMupi.width / 2
-          source: "qrc:images/Mupiii.svg"
+          source: {
+            switch (Chat.AI) {
+            case "davinci":
+              return "qrc:images/Davinci.svg"
+            case "chaplin":
+              return "qrc:images/Chaplin.svg"
+            case "neumann":
+              return "qrc:images/Neumann.svg"
+            default:
+              return "qrc:images/Mupiii.svg"
+            }
+          }
           fillMode: Image.PreserveAspectFit
           y: 15
           x: 13
@@ -182,7 +209,19 @@ Item {
       }
       FluText {
         id: subencabezado
-        text: "Chatea con Mupi"
+        text: {
+          switch (Chat.AI) {
+          case "davinci":
+            return "Imagina y comparte ideas con Davinci"
+          case "chaplin":
+            return "Diviertete con Chaplin"
+          case "neumann":
+            return "Haz las tareas con Neumann"
+          default:
+            return "Chatea con Mupi"
+          }
+        }
+
         fontStyle: FluText.SubTitle
         font.bold: false
         anchors.horizontalCenter: parent.horizontalCenter
@@ -191,7 +230,13 @@ Item {
       }
       FluText {
         id: encabezado
-        text: "¿En qué te puedo ayudar?"
+        text: {
+          if (Chat.AI == 'chaplin') {
+            return '¿Que hay de nuevo?'
+          } else {
+            return '¿En qué te puedo ayudar?'
+          }
+        }
         fontStyle: FluText.Title
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: subencabezado.bottom

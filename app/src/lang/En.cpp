@@ -14,7 +14,7 @@ En::En(QObject *parent)
     media("Media");
     dark_mode("Dark Mode");
     sys_dark_mode("Sync with system");
-    search("Search");
+    search("Buscar");
     about("About");
     settings("Settings");
     locale("Locale");

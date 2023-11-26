@@ -10,42 +10,35 @@ FluObject {
   property var navigationView
 
   FluPaneItemSeparator {}
+
   FluPaneItem {
-    title: 'Acerca de'
-    icon: FluentIcons.Help
-    tapFunc: function () {
-      FluApp.navigate("/about")
+    title: 'Inicio'
+    cusIcon: Image {
+      anchors.centerIn: parent
+      source: FluTheme.dark ? "qrc:app/res/svg/home_dark.svg" : "qrc:app/res/svg/home.svg"
+      sourceSize: Qt.size(30, 30)
+      width: 18
+      height: 18
     }
-  }
-  FluPaneItem {
-    title: 'Configuración'
-    icon: FluentIcons.Settings
     onTap: {
-      navigationView.push("qrc:app/qml/page/T_Settings.qml")
+      navigationView.push("qrc:app/qml/page/T_Home.qml")
     }
   }
 
   FluPaneItem {
     title: 'Nuevo chat'
-    icon: FluentIcons.Settings
+    icon: FluentIcons.SubscriptionAdd
+
     onTap: {
       navigationView.push("qrc:app/qml/page/T_Chat.qml")
     }
   }
 
   FluPaneItem {
-    title: 'Comunidad'
+    title: 'Configuración'
     icon: FluentIcons.Settings
     onTap: {
-      navigationView.push("qrc:app/qml/page/T_Community.qml")
-    }
-  }
-
-  FluPaneItem {
-    title: 'Plantillas'
-    icon: FluentIcons.Settings
-    onTap: {
-      navigationView.push("qrc:app/qml/page/T_Template.qml")
+      navigationView.push("qrc:app/qml/page/T_Settings.qml")
     }
   }
 

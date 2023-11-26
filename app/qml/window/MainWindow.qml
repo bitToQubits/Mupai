@@ -47,7 +47,7 @@ Item {
       anchors.centerIn: parent
       iconSource: FluentIcons.Search
       items: ItemsOriginal.getSearchData()
-      placeholderText: lang.search
+      placeholderText: "Buscar"
       onItemClicked: data => {
                        ItemsOriginal.startPageByItem(data)
                      }

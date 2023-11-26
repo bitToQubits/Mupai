@@ -7,6 +7,7 @@ DEFINES += QT_DEPRECATED_WARNINGS QT_NO_WARNING_OUTPUT
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+        Chat.cpp \
         Login.cpp \
         Register.cpp \
         User.cpp \
@@ -41,6 +42,7 @@ mac: {
 }
 
 HEADERS += \
+    Chat.h \
     Login.h \
     Register.h \
     User.h \

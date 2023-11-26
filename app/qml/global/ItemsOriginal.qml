@@ -8,8 +8,7 @@ FluObject {
   property var navigationView
 
   FluPaneItem {
-    title: lang.home
-    //        icon:FluentIcons.Home
+    title: 'Inicio'
     cusIcon: Image {
       anchors.centerIn: parent
       source: FluTheme.dark ? "qrc:app/res/svg/home_dark.svg" : "qrc:app/res/svg/home.svg"
@@ -21,6 +20,7 @@ FluObject {
       navigationView.push("qrc:app/qml/page/T_Home.qml")
     }
   }
+
   FluPaneItemExpander {
     title: lang.basic_input
     icon: FluentIcons.CheckboxComposite
@@ -273,7 +273,6 @@ FluObject {
       }
     }
   }
-
   function getRecentlyAddedData(keyword) {
     var arr = []
     for (var i = 0; i < children.length; i++) {
