@@ -6,6 +6,7 @@ import FluentUI
 import Controller
 import "../component"
 import app.chat
+import "chat.js" as Logic
 
 Item {
   id: pagina
@@ -36,10 +37,22 @@ Item {
         selectByKeyboard: true
         selectedTextColor: Qt.rgba(51, 153, 255, 1)
         color: {
-          if (FluTheme.dark)
-            return '#FFFFFF'
-          else
-            return '#212529'
+          if (isMy) {
+            if (FluTheme.dark) {
+              return '#FFFFFF'
+            } else {
+              return '#030303'
+            }
+          } else {
+            switch (Chat.AI) {
+            case "chaplin":
+              return "#030303"
+            case "neumann":
+              return "#030303"
+            default:
+              return "#FFFFFF"
+            }
+          }
         }
         selectionColor: {
           if (FluTheme.dark) {
@@ -75,7 +88,7 @@ Item {
       model: model_message
       anchors.fill: parent
       anchors.bottom: layout_bottom.top
-      anchors.bottomMargin: 40
+      anchors.bottomMargin: 60
       clip: true
       ScrollBar.vertical: FluScrollBar {}
       preferredHighlightBegin: 0
@@ -137,7 +150,16 @@ Item {
               else
                 return '#fbfbfd'
             } else {
-              return '#7D11F8'
+              switch (Chat.AI) {
+              case "davinci":
+                return "#e85072"
+              case "chaplin":
+                return "#a3dce5"
+              case "neumann":
+                return "#f7a96c"
+              default:
+                return "#7D11F8"
+              }
             }
           }
           width: item_msg_loader.width + 10
@@ -154,6 +176,7 @@ Item {
           Loader {
             id: item_msg_loader
             property var message: model.text
+            property bool isMy: model.isMy
             anchors.centerIn: parent
             sourceComponent: com_text
           }
@@ -267,20 +290,11 @@ Item {
         height: Math.min(textbox.implicitHeight, 64)
         FluMultilineTextBox {
           id: textbox
+          property string key: "-1"
           placeholderText: "Empieza a escribir .."
           focus: true
           font.pixelSize: 14
-          Keys.onPressed: event => {
-                            if (event.key == '16777220') {
-                              var text = textbox.text.trim()
-                              if (text == '') {
-                                return
-                              }
-                              appendMessage(true, text)
-                              controller.sendMessage(text)
-                              textbox.clear()
-                            }
-                          }
+          Keys.onPressed: event => Logic.verificarInput(event.key)
         }
       }
 

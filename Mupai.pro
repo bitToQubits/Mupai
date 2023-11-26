@@ -10,6 +10,7 @@ SOURCES += \
         Chat.cpp \
         Login.cpp \
         Register.cpp \
+        Template.cpp \
         User.cpp \
         main.cpp \
         app/src/controller/ChatController.cpp \
@@ -45,6 +46,7 @@ HEADERS += \
     Chat.h \
     Login.h \
     Register.h \
+    Template.h \
     User.h \
     database.h \
     session.h \

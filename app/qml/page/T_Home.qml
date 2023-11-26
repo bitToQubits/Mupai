@@ -290,11 +290,45 @@ FluScrollablePage {
     }
   }
 
-  FluText {
-    text: "Plantillas creadas recientemente"
-    fontStyle: FluText.Title
-    Layout.topMargin: 20
-    Layout.leftMargin: 20
+  RowLayout {
+
+    Layout.fillWidth: true
+    Layout.maximumWidth: parent.width
+    FluText {
+      text: "Plantillas creadas recientemente"
+      fontStyle: FluText.Title
+      Layout.topMargin: 20
+      Layout.leftMargin: 20
+    }
+    FluButton {
+      text: "Ver todas"
+      Layout.topMargin: 20
+      onClicked: {
+        ItemsOriginal.navigationView.setCurrentIndex(0, 'footer_list')
+        ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Community.qml")
+      }
+    }
+
+    FluButton {
+      Layout.topMargin: 20
+      Layout.rightMargin: 20
+      Text {
+        id: text_icon
+        font.family: "Segoe Fluent Icons"
+        font.pixelSize: 15
+        width: 15
+        height: 15
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+        anchors.centerIn: parent
+        color: FluTheme.dark ? Qt.rgba(1, 1, 1, 1) : Qt.rgba(0, 0, 0, 1)
+        text: (String.fromCharCode(FluentIcons.AddBold).toString(16))
+      }
+      onClicked: {
+        ItemsOriginal.navigationView.setCurrentIndex(0, 'footer_list')
+        ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Template.qml")
+      }
+    }
   }
 
   GridView {
@@ -307,11 +341,25 @@ FluScrollablePage {
     delegate: com_item
   }
 
-  FluText {
-    text: "Plantillas creadas por la comunidad"
-    fontStyle: FluText.Title
-    Layout.topMargin: 20
-    Layout.leftMargin: 20
+  RowLayout {
+
+    Layout.fillWidth: true
+    Layout.maximumWidth: parent.width
+    FluText {
+      text: "Plantillas creadas por la comunidad"
+      fontStyle: FluText.Title
+      Layout.topMargin: 20
+      Layout.leftMargin: 20
+    }
+    FluButton {
+      text: "Ver todas"
+      Layout.topMargin: 20
+      Layout.rightMargin: 20
+      onClicked: {
+        ItemsOriginal.navigationView.setCurrentIndex(0, 'footer_list')
+        ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Community.qml")
+      }
+    }
   }
 
   GridView {

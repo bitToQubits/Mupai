@@ -22,15 +22,9 @@ FluScrollablePage {
     Image {
       id: image
       fillMode: Image.PreserveAspectFit
-      height: parent.width / 2
+      height: parent.width / 1.5
       anchors.centerIn: parent
       clip: true
-
-
-      /*anchors.left: parent.left
-      anchors.bottom: parent.bottom
-      anchors.top: parent.top
-      anchors.right: parent.right*/
       smooth: true
     }
   }
@@ -109,6 +103,9 @@ FluScrollablePage {
       id: guardar
       text: "Guardar"
       Layout.fillWidth: true
+      onClicked: {
+        console.log("hola")
+      }
     }
 
     Button {
