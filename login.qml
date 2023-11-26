@@ -6,6 +6,7 @@ import QtQuick.Controls.Basic
 import app.Login
 import FluentUI
 import app.user
+import Qt5Compat.GraphicalEffects
 
 Item {
 
@@ -22,10 +23,19 @@ Item {
       Layout.fillHeight: true
       Layout.alignment: Qt.AlignVCenter
 
-      Rectangle {
+      FluRectangle {
+        id: informacion
         width: parent.width
         height: parent.height
         color: "#493299"
+        layer.enabled: true
+        layer.effect: DropShadow {
+          transparentBorder: true
+          horizontalOffset: FluTheme.dark ? 6 : 10
+          verticalOffset: FluTheme.dark ? 6 : 10
+          color: FluTheme.dark ? '#3b3b3b' : '#e6e3ee'
+        }
+        radius: [0, 90, 90, 0]
 
         Rectangle {
           width: parent.width
@@ -95,6 +105,8 @@ Item {
             bottomPadding: 10
             onClicked: {
               Login.clear()
+              email.clear()
+              clave.clear()
               stack.push("registro.qml")
             }
           }

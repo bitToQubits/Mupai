@@ -189,5 +189,12 @@
         <file>app/res/image/chaplin.png</file>
         <file>app/res/image/corinna.png</file>
         <file>app/qml/page/T_Chat.qml</file>
+        <file>images/Mupiii.svg</file>
+        <file>images/Mupiii2.svg</file>
+        <file>images/Davinci.svg</file>
+        <file>images/Neumann.svg</file>
+        <file>images/Chaplin.svg</file>
+        <file>images/person-circle.svg</file>
+        <file>app/qml/page/T_Community.qml</file>
     </qresource>
 </RCC>

@@ -34,6 +34,14 @@ FluObject {
   }
 
   FluPaneItem {
+    title: 'Comunidad'
+    icon: FluentIcons.Settings
+    onTap: {
+      navigationView.push("qrc:app/qml/page/T_Community.qml")
+    }
+  }
+
+  FluPaneItem {
     title: 'Cerrar sesión'
     icon: FluentIcons.BlockContact
     tapFunc: function () {

@@ -3,57 +3,317 @@ import QtQuick.Layouts
 import QtQuick.Window
 import QtQuick.Controls
 import FluentUI
+import Controller
 import "../component"
 
 Item {
-  FluScrollablePage {
-    id: pagina
-    title: "Chatea con Mupi"
-    leftPadding: 10
-    rightPadding: 10
-    bottomPadding: 20
-    spacing: 0
-  }
+  id: pagina
+  clip: true
+  Rectangle {
+    anchors.fill: parent
+    color: 'transparent'
+    border.width: 1
+    border.color: FluTheme.dark ? Window.active ? Qt.rgba(
+                                                    55 / 255, 55 / 255,
+                                                    55 / 255,
+                                                    1) : Qt.rgba(45 / 255, 45 / 255, 45
+                                                                 / 255, 1) : Qt.rgba(
+                                                    226 / 255, 229 / 255,
+                                                    234 / 255, 1)
+    anchors.rightMargin: -border.width
+    anchors.bottomMargin: -border.width
 
-  FluArea {
-    id: layout_bottom
-    height: 50
-    anchors {
-      bottom: parent.bottom
-      bottomMargin: 10
-      left: parent.left
-      right: parent.right
-      leftMargin: 10
-      rightMargin: 10
+    Component {
+      id: com_text
+      TextEdit {
+        id: item_text
+        text: message
+        wrapMode: Text.WrapAnywhere
+        readOnly: true
+        selectByMouse: true
+        font.pixelSize: 15
+        selectByKeyboard: true
+        selectedTextColor: Qt.rgba(51, 153, 255, 1)
+        color: {
+          if (FluTheme.dark)
+            return '#FFFFFF'
+          else
+            return '#212529'
+        }
+        selectionColor: {
+          if (FluTheme.dark) {
+            return FluTheme.primaryColor.lighter
+          } else {
+            return FluTheme.primaryColor.dark
+          }
+        }
+        width: Math.min(list_message.width - 200, 600, implicitWidth)
+        TapHandler {
+          acceptedButtons: Qt.RightButton
+          onTapped: {
+            menu_item.showMenu(item_text.selectedText)
+          }
+        }
+      }
     }
-    ScrollView {
-      id: scrollview
+
+    ChatController {
+      id: controller
+
+      onResponseDataChanged: {
+        appendMessage(false, responseData)
+      }
+    }
+
+    ListModel {
+      id: model_message
+    }
+
+    ListView {
+      id: list_message
+      model: model_message
+      anchors.fill: parent
+      anchors.bottom: layout_bottom.top
+      anchors.bottomMargin: 40
+      clip: true
+      ScrollBar.vertical: FluScrollBar {}
+      preferredHighlightBegin: 0
+      preferredHighlightEnd: 0
+      highlightMoveDuration: 0
+      header: Item {
+        width: list_message.width
+        height: 20
+      }
+      footer: Item {
+        width: list_message.width
+        height: 20
+      }
+      delegate: Item {
+        width: ListView.view.width
+        height: childrenRect.height
+
+        FluRectangle {
+          id: item_avatar
+          width: 30
+          height: 30
+          radius: [15, 15, 15, 15]
+          anchors {
+            right: isMy ? parent.right : undefined
+            rightMargin: isMy ? 20 : undefined
+            left: isMy ? undefined : parent.left
+            leftMargin: isMy ? undefined : 20
+            top: parent.top
+          }
+          Image {
+            asynchronous: true
+            anchors.fill: parent
+            sourceSize: Qt.size(100, 100)
+            source: isMy ? "qrc:app/res/svg/avatar_7.svg" : "qrc:images/Mupiii2.svg"
+          }
+        }
+
+        Rectangle {
+          id: item_layout_content
+          color: {
+            if (isMy) {
+              if (FluTheme.dark)
+                return '#262c36'
+              else
+                return '#fbfbfd'
+            } else {
+              return '#7D11F8'
+            }
+          }
+          width: item_msg_loader.width + 10
+          height: item_msg_loader.height + 10
+          radius: 3
+          anchors {
+            top: item_avatar.top
+            right: isMy ? item_avatar.left : undefined
+            rightMargin: isMy ? 10 : undefined
+            left: isMy ? undefined : item_avatar.right
+            leftMargin: isMy ? undefined : 10
+          }
+
+          Loader {
+            id: item_msg_loader
+            property var message: model.text
+            anchors.centerIn: parent
+            sourceComponent: com_text
+          }
+        }
+
+        Item {
+          id: item_layout_bottom
+          width: parent.width
+          anchors.top: item_layout_content.bottom
+          height: 20
+        }
+      }
+    }
+
+    Rectangle {
+      id: bienvenida
+      anchors.fill: parent
+      color: 'transparent'
+      visible: {
+        if (model_message.count > 0) {
+          return false
+        } else {
+          return true
+        }
+      }
+      FluArea {
+        id: iconoMupi
+        width: 60
+        height: 60
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: 65
+
+        Image {
+          height: iconoMupi.width / 2
+          source: "qrc:images/Mupiii.svg"
+          fillMode: Image.PreserveAspectFit
+          y: 15
+          x: 13
+          smooth: true
+        }
+      }
+      FluText {
+        id: subencabezado
+        text: "Chatea con Mupi"
+        fontStyle: FluText.SubTitle
+        font.bold: false
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: iconoMupi.bottom
+        anchors.topMargin: 20
+      }
+      FluText {
+        id: encabezado
+        text: "¿En qué te puedo ayudar?"
+        fontStyle: FluText.Title
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: subencabezado.bottom
+        anchors.topMargin: 20
+      }
+    }
+    FluArea {
+      id: layout_bottom
+      height: 50
       anchors {
         bottom: parent.bottom
-        left: parent.left
-        right: button_send.left
         bottomMargin: 10
+        left: parent.left
+        right: parent.right
         leftMargin: 10
         rightMargin: 10
       }
-      height: Math.min(textbox.implicitHeight, 64)
-      FluMultilineTextBox {
-        id: textbox
-        focus: true
-        placeholderText: "请输入消息"
+      ScrollView {
+        id: scrollview
+        anchors {
+          bottom: parent.bottom
+          left: parent.left
+          right: button_send.left
+          bottomMargin: 10
+          leftMargin: 10
+          rightMargin: 10
+        }
+        height: Math.min(textbox.implicitHeight, 64)
+        FluMultilineTextBox {
+          id: textbox
+          placeholderText: "Empieza a escribir .."
+          focus: true
+          font.pixelSize: 14
+          Keys.onPressed: event => {
+                            if (event.key == '16777220') {
+                              var text = textbox.text.trim()
+                              if (text == '') {
+                                return
+                              }
+                              appendMessage(true, text)
+                              controller.sendMessage(text)
+                              textbox.clear()
+                            }
+                          }
+        }
       }
-    }
 
-    FluFilledButton {
-      id: button_send
-      text: "Problema"
-      anchors {
-        bottom: parent.bottom
-        right: parent.right
-        bottomMargin: 10
-        rightMargin: 10
+      FluIconButton {
+        id: button_send
+        iconSource: FluentIcons.SendFill
+        disabled: controller.isLoading
+        iconSize: 15
+        anchors {
+          bottom: parent.bottom
+          right: parent.right
+          bottomMargin: 8
+          rightMargin: 10
+        }
+        onClicked: {
+          var text = textbox.text.trim()
+          if (text == '') {
+            return
+          }
+          appendMessage(true, text)
+          controller.sendMessage(text)
+          textbox.clear()
+        }
+
+        Timer {
+          id: timer_loading
+          property int count: 0
+          property string loadingText: ""
+          interval: 500
+          running: controller.isLoading
+          repeat: true
+          onTriggered: {
+            switch (count % 3) {
+            case 0:
+              loadingText = "."
+              break
+            case 1:
+              loadingText = ".."
+              break
+            case 2:
+              loadingText = "..."
+              break
+            default:
+              loadingText = ""
+              break
+            }
+            count++
+          }
+        }
       }
-      width: 60
     }
+  }
+  FluMenu {
+    id: menu_item
+    focus: false
+    property string cutText: "Cortar"
+    property string copyText: "Copiar"
+    property string pasteText: "Pegar"
+    property string selectAllText: "Seleccionar"
+    property string selectedText
+    FluMenuItem {
+      text: "Copiar"
+      onClicked: {
+        controller.clipText(menu_item.selectedText)
+        showSuccess("Copiado correctamente")
+      }
+    }
+    function showMenu(text) {
+      menu_item.selectedText = text
+      menu_item.popup()
+    }
+  }
+
+  function appendMessage(isMy, text) {
+    model_message.append({
+                           "isMy": isMy,
+                           "text": text
+                         })
+    list_message.positionViewAtEnd()
   }
 }
