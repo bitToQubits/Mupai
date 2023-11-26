@@ -7,7 +7,6 @@ FluObject {
 
   property var navigationView
 
-
   FluPaneItem {
     title: lang.home
     //        icon:FluentIcons.Home
@@ -275,7 +274,7 @@ FluObject {
     }
   }
 
-  function getRecentlyAddedData() {
+  function getRecentlyAddedData(keyword) {
     var arr = []
     for (var i = 0; i < children.length; i++) {
       var item = children[i]
@@ -286,7 +285,13 @@ FluObject {
         for (var j = 0; j < item.children.length; j++) {
           var itemChild = item.children[j]
           if (itemChild instanceof FluPaneItem && itemChild.recentlyAdded) {
-            arr.push(itemChild)
+            if (!keyword || keyword.trim().length === 0) {
+              arr.push(itemChild)
+            } else {
+              if (keyword && itemChild.title.toLowerCase().includes(keyword)) {
+                arr.push(itemChild)
+              }
+            }
           }
         }
       }

@@ -7,8 +7,6 @@ import "qrc:app/qml/global/"
 
 FluContentPage {
 
-  title: "Plantillas de conversación creadas por la comunidad"
-
   leftPadding: 10
   rightPadding: 10
   bottomPadding: 20
@@ -105,17 +103,56 @@ FluContentPage {
     }
   }
 
-  FluTextBox {
-    id: text_box
-    placeholderText: "Por favor, introduzca una palabra clave"
+  FluText {
+    id: titulo_comunidad
+    text: "Plantillas de conversación creadas por la comunidad"
+    font.pixelSize: 30
+    font.bold: true
+    wrapMode: Text.WrapAnywhere
+    elide: Text.ElideRight
     anchors {
-      topMargin: 20
+      right: parent.right
+      rightMargin: 10
+      left: parent.left
+      leftMargin: 10
       top: parent.top
     }
   }
 
+  FluTextBox {
+    id: text_box
+    placeholderText: "Por favor, introduzca una palabra clave"
+    anchors {
+      left: parent.left
+      leftMargin: 10
+      topMargin: 20
+      top: titulo_comunidad.bottom
+    }
+  }
+
+  FluFilledButton {
+    text: "Buscar"
+    anchors {
+      left: text_box.right
+      verticalCenter: text_box.verticalCenter
+      leftMargin: 14
+    }
+    onClicked: {
+      grid_view.model = ItemsOriginal.getRecentlyAddedData(text_box.text)
+    }
+  }
+
   GridView {
-    Layout.fillWidth: true
+    id:grid_view
+    anchors {
+      topMargin: 10
+      top: text_box.bottom
+      left: parent.left
+      right: parent.right
+      bottom: parent.bottom
+    }
+    ScrollBar.vertical: FluScrollBar {}
+    clip: true
     implicitHeight: contentHeight
     cellHeight: 120
     cellWidth: 320

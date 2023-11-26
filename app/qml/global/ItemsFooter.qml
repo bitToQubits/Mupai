@@ -42,6 +42,14 @@ FluObject {
   }
 
   FluPaneItem {
+    title: 'Plantillas'
+    icon: FluentIcons.Settings
+    onTap: {
+      navigationView.push("qrc:app/qml/page/T_Template.qml")
+    }
+  }
+
+  FluPaneItem {
     title: 'Cerrar sesión'
     icon: FluentIcons.BlockContact
     tapFunc: function () {

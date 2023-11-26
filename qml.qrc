@@ -196,5 +196,6 @@
         <file>images/Chaplin.svg</file>
         <file>images/person-circle.svg</file>
         <file>app/qml/page/T_Community.qml</file>
+        <file>app/qml/page/T_Template.qml</file>
     </qresource>
 </RCC>
