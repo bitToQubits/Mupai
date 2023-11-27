@@ -13,6 +13,7 @@
 #include "app\src\AppInfo.h"
 #include "app\src\controller/ChatController.h"
 #include "Chat.h"
+#include "Template.h"
 #define session Session::getInstance().getSession()
 
 #if defined(STATICLIB)
@@ -64,6 +65,9 @@ int main(int argc, char *argv[])
 
     Chat *chat = new Chat(&app);
     qmlRegisterSingletonInstance("app.chat", 1,0, "Chat", chat);
+
+    Plantilla *plantilla = new Plantilla(&app);
+    qmlRegisterSingletonInstance("app.plantilla", 1,0, "Plantilla", plantilla);
 
     QObject::connect(appInfo,&AppInfo::langChanged,&app,[context,appInfo]{
         context->setContextProperty("lang",appInfo->lang());

@@ -4,9 +4,14 @@ import QtQuick.Layouts
 import QtQuick.Window
 import FluentUI
 import "qrc:app/qml/global/"
+import app.plantilla
+import "community.js" as Logic
+import app.user
 
 FluContentPage {
+  id: reporte_plantillas
 
+  title: "Plantillas de conversación"
   leftPadding: 10
   rightPadding: 10
   bottomPadding: 20
@@ -15,7 +20,7 @@ FluContentPage {
     id: com_item
     Item {
       width: 320
-      height: 120
+      height: 100
       FluArea {
         radius: 8
         width: 300
@@ -29,7 +34,7 @@ FluContentPage {
               if (item_mouse.containsMouse) {
                 return Qt.rgba(1, 1, 1, 0.03)
               }
-              return Qt.rgba(0, 0, 0, 0)
+              return Qt.rgba(1, 1, 1, 0)
             } else {
               if (item_mouse.containsMouse) {
                 return Qt.rgba(0, 0, 0, 0.03)
@@ -42,7 +47,14 @@ FluContentPage {
           id: item_icon
           height: 40
           width: 40
-          source: modelData.image
+          smooth: true
+          source: {
+            if (modelData.img == '0' || modelData.img == '') {
+              return "qrc:app/res/image/control/RichTextBlock.png"
+            } else {
+              return "data:image/png;base64," + modelData.img
+            }
+          }
           anchors {
             left: parent.left
             leftMargin: 20
@@ -52,7 +64,7 @@ FluContentPage {
 
         FluText {
           id: item_title
-          text: modelData.title
+          text: modelData.nombre
           fontStyle: FluText.BodyStrong
           anchors {
             left: item_icon.right
@@ -89,33 +101,26 @@ FluContentPage {
             rightMargin: 14
             topMargin: 14
           }
+          MouseArea {
+            id: item_mouse
+            anchors.fill: parent
+            hoverEnabled: true
+            onClicked: {
+              console.log("hola")
+            }
+          }
         }
 
-        MouseArea {
+
+        /*MouseArea {
           id: item_mouse
           anchors.fill: parent
           hoverEnabled: true
           onClicked: {
             ItemsOriginal.startPageByItem(modelData)
           }
-        }
+        }*/
       }
-    }
-  }
-
-  FluText {
-    id: titulo_comunidad
-    text: "Plantillas de conversación creadas por la comunidad"
-    font.pixelSize: 30
-    font.bold: true
-    wrapMode: Text.WrapAnywhere
-    elide: Text.ElideRight
-    anchors {
-      right: parent.right
-      rightMargin: 10
-      left: parent.left
-      leftMargin: 10
-      top: parent.top
     }
   }
 
@@ -124,9 +129,8 @@ FluContentPage {
     placeholderText: "Por favor, introduzca una palabra clave"
     anchors {
       left: parent.left
-      leftMargin: 10
-      topMargin: 20
-      top: titulo_comunidad.bottom
+      top: parent.top
+      topMargin: 15
     }
   }
 
@@ -138,14 +142,14 @@ FluContentPage {
       leftMargin: 14
     }
     onClicked: {
-      grid_view.model = ItemsOriginal.getRecentlyAddedData(text_box.text)
+      grid_view.model = Logic.buscar(text_box.text)
     }
   }
 
   GridView {
-    id:grid_view
+    id: grid_view
     anchors {
-      topMargin: 10
+      topMargin: 15
       top: text_box.bottom
       left: parent.left
       right: parent.right
@@ -156,7 +160,10 @@ FluContentPage {
     implicitHeight: contentHeight
     cellHeight: 120
     cellWidth: 320
-    model: ItemsOriginal.getRecentlyAddedData()
+    model: {
+      Logic.modelo = Plantilla.getTemplates(Plantilla.reporte_publico, -1)
+      return Logic.modelo
+    }
     interactive: false
     delegate: com_item
   }

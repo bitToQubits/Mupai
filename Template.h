@@ -3,8 +3,9 @@
 
 #include <QObject>
 #include <QFile>
+#include <QList>
 
-class Template : public QObject
+class Plantilla : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(int ID READ ID NOTIFY IDChanged)
@@ -16,9 +17,11 @@ class Template : public QObject
     Q_PROPERTY(QString img READ img WRITE setImg NOTIFY imgChanged)
     Q_PROPERTY(int status_form READ status_form NOTIFY status_formChanged)
     Q_PROPERTY(bool status_server READ status_server NOTIFY status_serverChanged)
+    Q_PROPERTY(bool reporte_publico READ reporte_publico WRITE setReporte_publico
+                   NOTIFY reporte_publicoChanged)
 
 public:
-    explicit Template(QObject *parent = nullptr);
+    explicit Plantilla(QObject *parent = nullptr);
 
     int ID() const;
     int user_id() const;
@@ -44,8 +47,15 @@ public:
 
     bool status_server() const;
 
+    bool reporte_publico() const;
+
+    void setReporte_publico(bool newReporte_publico);
+
 public slots:
-    QByteArray convertFileToBase64(const QString &filePath);
+    QByteArray convertFileToBase64(QString filePath);
+    //Get the templates from mysql database and put them in a list ready for qml
+    QList<QObject*> getTemplates(bool publico, int limite);
+
 signals:
     void IDChanged();
     void userChanged();
@@ -64,6 +74,8 @@ signals:
 
     void status_serverChanged();
 
+    void reporte_publicoChanged();
+
 private:
     int m_ID = 0;
     int m_user_id = 0;
@@ -74,6 +86,7 @@ private:
     QString m_img;
     int m_status_form = 0;
     bool m_status_server = true;
+    bool m_reporte_publico = true;
 };
 
 #endif // TEMPLATE_H

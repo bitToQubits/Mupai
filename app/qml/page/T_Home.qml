@@ -6,6 +6,7 @@ import "qrc:app/qml/global/"
 import FluentUI
 import app.user
 import app.chat
+import app.plantilla
 
 FluScrollablePage {
 
@@ -229,7 +230,13 @@ FluScrollablePage {
           id: item_icon
           height: 40
           width: 40
-          source: modelData.image
+          source: {
+            if (modelData.img == '0' || modelData.img == '') {
+              return "qrc:app/res/image/control/RichTextBlock.png"
+            } else {
+              return "data:image/png;base64," + modelData.img
+            }
+          }
           anchors {
             left: parent.left
             leftMargin: 20
@@ -239,7 +246,7 @@ FluScrollablePage {
 
         FluText {
           id: item_title
-          text: modelData.title
+          text: modelData.nombre
           fontStyle: FluText.BodyStrong
           anchors {
             left: item_icon.right
@@ -294,51 +301,74 @@ FluScrollablePage {
 
     Layout.fillWidth: true
     Layout.maximumWidth: parent.width
+
     FluText {
+      id: plantillas_recientes
       text: "Plantillas creadas recientemente"
       fontStyle: FluText.Title
       Layout.topMargin: 20
       Layout.leftMargin: 20
-    }
-    FluButton {
-      text: "Ver todas"
-      Layout.topMargin: 20
-      onClicked: {
-        ItemsOriginal.navigationView.setCurrentIndex(0, 'footer_list')
-        ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Community.qml")
-      }
+      wrapMode: Text.WrapAnywhere
+      elide: Text.ElideRight
+      Layout.preferredWidth: parent.width / 2
     }
 
-    FluButton {
-      Layout.topMargin: 20
+    Item {
+      Layout.fillWidth: true
+      Layout.maximumWidth: parent.width / 3
       Layout.rightMargin: 20
-      Text {
-        id: text_icon
-        font.family: "Segoe Fluent Icons"
-        font.pixelSize: 15
-        width: 15
-        height: 15
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignVCenter
-        anchors.centerIn: parent
-        color: FluTheme.dark ? Qt.rgba(1, 1, 1, 1) : Qt.rgba(0, 0, 0, 1)
-        text: (String.fromCharCode(FluentIcons.AddBold).toString(16))
+      FluButton {
+        text: "Ver todas"
+        anchors.right: agregar.left
+        anchors.rightMargin: 20
+        onClicked: {
+          ItemsOriginal.navigationView.setCurrentIndex(0, 'footer_list')
+          Plantilla.reporte_publico = false
+          ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Community.qml")
+        }
       }
-      onClicked: {
-        ItemsOriginal.navigationView.setCurrentIndex(0, 'footer_list')
-        ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Template.qml")
+
+      FluButton {
+        id: agregar
+        anchors.right: parent.right
+        Text {
+          id: text_icon
+          font.family: "Segoe Fluent Icons"
+          font.pixelSize: 15
+          width: 15
+          height: 15
+          horizontalAlignment: Text.AlignHCenter
+          verticalAlignment: Text.AlignVCenter
+          anchors.centerIn: parent
+          color: FluTheme.dark ? Qt.rgba(1, 1, 1, 1) : Qt.rgba(0, 0, 0, 1)
+          text: (String.fromCharCode(FluentIcons.AddBold).toString(16))
+        }
+        onClicked: {
+          ItemsOriginal.navigationView.setCurrentIndex(0, 'footer_list')
+          ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Template.qml")
+        }
       }
     }
   }
 
   GridView {
+    id: creadas_recientemente
     Layout.fillWidth: true
     implicitHeight: contentHeight
     cellHeight: 120
     cellWidth: 320
-    model: ItemsOriginal.getRecentlyAddedData()
+    model: Plantilla.getTemplates(false, 5)
     interactive: false
     delegate: com_item
+  }
+
+  FluText {
+    text: "Todavia no has creado ninguna plantilla"
+    fontStyle: FluText.SubTitle
+    font.bold: false
+    visible: (creadas_recientemente.model.length === 0) ? true : false
+    Layout.leftMargin: 20
+    Layout.topMargin: 20
   }
 
   RowLayout {
@@ -350,25 +380,45 @@ FluScrollablePage {
       fontStyle: FluText.Title
       Layout.topMargin: 20
       Layout.leftMargin: 20
+      wrapMode: Text.WrapAnywhere
+      elide: Text.ElideRight
+      Layout.preferredWidth: parent.width / 1.8
     }
-    FluButton {
-      text: "Ver todas"
-      Layout.topMargin: 20
+
+    Item {
+      Layout.fillWidth: true
+      Layout.maximumWidth: parent.width / 3
       Layout.rightMargin: 20
-      onClicked: {
-        ItemsOriginal.navigationView.setCurrentIndex(0, 'footer_list')
-        ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Community.qml")
+      FluButton {
+        text: "Ver todas"
+        anchors.right: parent.right
+        anchors.rightMargin: 20
+        onClicked: {
+          ItemsOriginal.navigationView.setCurrentIndex(0, 'footer_list')
+          Plantilla.reporte_publico = true
+          ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Community.qml")
+        }
       }
     }
   }
 
   GridView {
+    id: creadas_por_la_comunidad
     Layout.fillWidth: true
     implicitHeight: contentHeight
     cellHeight: 120
     cellWidth: 320
     interactive: false
-    model: ItemsOriginal.getRecentlyUpdatedData()
+    model: Plantilla.getTemplates(true, 5)
     delegate: com_item
+  }
+
+  FluText {
+    text: "Todavia no hay plantillas creadas por la comunidad"
+    fontStyle: FluText.SubTitle
+    font.bold: false
+    visible: (creadas_por_la_comunidad.model.length === 0) ? true : false
+    Layout.leftMargin: 20
+    Layout.topMargin: 20
   }
 }

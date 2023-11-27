@@ -6,6 +6,7 @@ import QtQuick.Window
 import FluentUI
 import QtQuick.Dialogs
 import "../component"
+import app.plantilla
 
 FluScrollablePage {
 
@@ -46,7 +47,10 @@ FluScrollablePage {
       id: fileDialog
       currentFolder: StandardPaths.standardLocations(
                        StandardPaths.PicturesLocation)[0]
-      onAccepted: image.source = selectedFile
+      onAccepted: {
+        image.source = selectedFile
+        Plantilla.img = selectedFile
+      }
       nameFilters: ["Imagenes (*.png *.svg *jpeg)"]
     }
 
@@ -54,12 +58,17 @@ FluScrollablePage {
       id: nombre
       height: 20
       font.pixelSize: 12
+      onTextChanged: Plantilla.nombre = text
       placeholderText: qsTr("Nombre de la plantilla")
       Layout.fillWidth: true
     }
 
     FluCheckBox {
+      id: publica
       text: "Hacer pública para todos"
+      onClicked: {
+        Plantilla.publica = publica.selected
+      }
     }
   }
 
@@ -73,6 +82,7 @@ FluScrollablePage {
     FluMultilineTextBox {
       id: textboxDesc
       placeholderText: "Descripción de la plantilla .."
+      onTextChanged: Plantilla.desc = text
       font.pixelSize: 12
     }
   }
@@ -87,6 +97,7 @@ FluScrollablePage {
     FluMultilineTextBox {
       id: textboxIns
       placeholderText: "Instrucciones y ejemplos para el modelo de IA .."
+      onTextChanged: Plantilla.instr = text
       font.pixelSize: 12
     }
   }
@@ -104,7 +115,19 @@ FluScrollablePage {
       text: "Guardar"
       Layout.fillWidth: true
       onClicked: {
-        console.log("hola")
+        Plantilla.guardar()
+
+        if (Plantilla.status_form === 1) {
+          showSuccess("¡Tu plantilla se ha guardado con éxito!", 3000)
+        } else {
+          if (Plantilla.status_server) {
+            if (Plantilla.status_form === 0) {
+              showError("Favor rellenar los campos obligatorios", 3000)
+            }
+          } else {
+            showError("Error para conectar al servidor", 3000)
+          }
+        }
       }
     }
 
