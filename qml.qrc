@@ -197,7 +197,6 @@
         <file>images/person-circle.svg</file>
         <file>app/qml/page/T_Community.qml</file>
         <file>app/qml/page/T_Template.qml</file>
-        <file>app/qml/page/chat.js</file>
         <file>app/qml/page/community.js</file>
     </qresource>
 </RCC>

@@ -23,13 +23,15 @@ public:
 
     Q_INVOKABLE void sendMessage(const QString& text);
     Q_INVOKABLE void clipText(const QString& text);
+public slots:
+    void onPostRequestFinished(QNetworkReply *reply);
 private:
     QJsonObject createMessage(const QString& role,const QString& content);
 
 private:
     QNetworkAccessManager* networkManager;
     QJsonArray messages;
-    QString baseKey = "c2stbXgxWm5MQkZ5TzhNYzNmRWl6eDZUM0JsYmtGSnNBWjNiakJjSXB6WGN3QW9KSk11";
+    QString baseKey = "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";
 };
 
 #endif // CHATCONTROLLER_H

@@ -1,3 +1,4 @@
+
 function verificarInput(key) {
   if (key == '16777220' && textbox.key != '16777248') {
     var text = textbox.text.trim()
@@ -5,7 +6,7 @@ function verificarInput(key) {
       return
     }
     appendMessage(true, text)
-    controller.sendMessage(text)
+    Chat.sendMessage(text)
     textbox.clear()
   }
   if (key != '16777220') {

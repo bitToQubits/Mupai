@@ -294,7 +294,6 @@ Item {
           focus: true
           font.pixelSize: 14
           Keys.onPressed: event => {
-                            console.log(1)
                             if (event.key == '16777220'
                                 && textbox.key != '16777248') {
                               var text = textbox.text.trim()

@@ -191,7 +191,7 @@ FluScrollablePage {
             onClicked: {
               ItemsOriginal.navigationView.setCurrentIndex(2, 'footer_list')
               ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Chat.qml")
-              Chat.AI = model.id_model
+              Chat.setear(model.id_model)
             }
           }
         }
@@ -299,9 +299,6 @@ FluScrollablePage {
 
   RowLayout {
 
-    Layout.fillWidth: true
-    Layout.maximumWidth: parent.width
-
     FluText {
       id: plantillas_recientes
       text: "Plantillas creadas recientemente"
@@ -311,6 +308,7 @@ FluScrollablePage {
       wrapMode: Text.WrapAnywhere
       elide: Text.ElideRight
       Layout.preferredWidth: parent.width / 2
+      Layout.fillWidth: true
     }
 
     Item {
@@ -373,8 +371,6 @@ FluScrollablePage {
 
   RowLayout {
 
-    Layout.fillWidth: true
-    Layout.maximumWidth: parent.width
     FluText {
       text: "Plantillas creadas por la comunidad"
       fontStyle: FluText.Title
@@ -383,6 +379,7 @@ FluScrollablePage {
       wrapMode: Text.WrapAnywhere
       elide: Text.ElideRight
       Layout.preferredWidth: parent.width / 1.8
+      Layout.fillWidth: true
     }
 
     Item {
