@@ -69,12 +69,34 @@ Item {
       }
     }
 
+    Component {
+      id: com_image
+      Image {
+        id: item_image
+        source: "data:image/png;base64," + message
+        asynchronous: true
+        fillMode: Image.PreserveAspectFit
+        width: Math.min(list_message.width - 200, 600, implicitWidth)
+        height: Math.min(list_message.width - 200, 600, implicitHeight)
+        TapHandler {
+          acceptedButtons: Qt.RightButton
+          onTapped: {
+            menu_item.showMenu(item_image.source)
+          }
+        }
+      }
+    }
+
     //Make a connection when response data changed
     Connections {
       target: Chat
       function onNuevoMensaje() {
         appendMessage(false, Chat.responseData)
-        console.log('Nuev respuesta')
+      }
+
+      function onNuevaImagen() {
+        //Convertir el QVariant Object a Javascript Object
+        appendImage(false, Chat.responseImages)
       }
     }
 
@@ -174,10 +196,10 @@ Item {
 
           Loader {
             id: item_msg_loader
-            property var message: model.text
+            property var message: model.content
             property bool isMy: model.isMy
             anchors.centerIn: parent
-            sourceComponent: com_text
+            sourceComponent: (!model.is_image) ? com_text : com_image
           }
         }
 
@@ -232,6 +254,7 @@ Item {
       FluText {
         id: subencabezado
         text: {
+          console.log("T_Chat: ", Chat.AI)
           switch (Chat.AI) {
           case "davinci":
             return "Imagina y comparte ideas con Davinci"
@@ -294,19 +317,33 @@ Item {
           focus: true
           font.pixelSize: 14
           Keys.onPressed: event => {
-                            console.log(1)
                             if (event.key == '16777220'
                                 && textbox.key != '16777248') {
+
                               var text = textbox.text.trim()
                               if (text == '') {
                                 return
                               }
-                              appendMessage(true, text)
-                              Chat.sendMessage(text, "user")
-                              textbox.clear()
+
+                              if (Chat.AI == 'davinci') {
+                                if (text.includes("/generar")) {
+                                  appendMessage(true, text)
+                                  text = text.replace("/generar", "")
+                                  Chat.sendPrompt(text)
+                                  textbox.clear()
+                                } else {
+                                  appendMessage(true, text)
+                                  Chat.sendMessage(text, "user")
+                                  textbox.clear()
+                                }
+                              } else {
+                                appendMessage(true, text)
+                                Chat.sendMessage(text, "user")
+                                textbox.clear()
+                              }
                             }
                             if (event.key != '16777220') {
-                              textbox.key = key
+                              textbox.key = event.key
                             }
                           }
         }
@@ -324,10 +361,21 @@ Item {
           rightMargin: 10
         }
         onClicked: {
-          var text = textbox.text.trim()
+          var text = textbox.text.trim().toLowerCase()
           if (text == '') {
             return
           }
+
+          if (Chat.AI == 'davinci') {
+            if (text.includes("/generar")) {
+              appendMessage(true, text)
+              text = text.replace("/generar", "")
+              Chat.sendPrompt(text)
+              textbox.clear()
+              return
+            }
+          }
+
           appendMessage(true, text)
           Chat.sendMessage(text, "user")
           textbox.clear()
@@ -382,11 +430,49 @@ Item {
     }
   }
 
+  Component.onCompleted: {
+    console.log(Chat.ID)
+    if (Chat.ID !== 0) {
+      Chat.obtenerMensajes(Chat.ID)
+      for (var i = 0; i < Chat.messages.length; i++) {
+        console.log(Chat.messages[i].role)
+        if (Chat.messages[i].role === "user") {
+          model_message.append({
+                                 "isMy": true,
+                                 "is_image": false,
+                                 "content": Chat.messages[i].content
+                               })
+        } else if (Chat.messages[i].role === "assistant") {
+          model_message.append({
+                                 "isMy": false,
+                                 "is_image": false,
+                                 "content": Chat.messages[i].content
+                               })
+        }
+      }
+      list_message.positionViewAtEnd()
+    }
+  }
+
   function appendMessage(isMy, text) {
     model_message.append({
                            "isMy": isMy,
-                           "text": text
+                           "is_image": false,
+                           "content": text
                          })
+    list_message.positionViewAtEnd()
+  }
+
+  function appendImage(isMy, image64) {
+
+    //Recorrer a traves de un bucle for las imagenes para agregarlas individualmente
+    for (var i = 0; i < image64.length; i++) {
+      model_message.append({
+                             "isMy": isMy,
+                             "is_image": true,
+                             "content": image64[i].b64_json
+                           })
+    }
     list_message.positionViewAtEnd()
   }
 }

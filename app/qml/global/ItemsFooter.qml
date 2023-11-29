@@ -3,6 +3,7 @@
 import QtQuick
 import FluentUI
 import app.user
+import app.chat
 
 FluObject {
   id: footer_items
@@ -30,6 +31,7 @@ FluObject {
     icon: FluentIcons.SubscriptionAdd
 
     onTap: {
+      Chat.setear("mupi", true)
       navigationView.push("qrc:app/qml/page/T_Chat.qml")
     }
   }

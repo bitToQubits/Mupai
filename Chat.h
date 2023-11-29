@@ -13,18 +13,42 @@
 #include <QFile>
 #include "app/src/stdafx.h"
 
+
 class Chat : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString AI READ AI WRITE setAI NOTIFY AIChanged)
     Q_PROPERTY(qint32 ID READ ID NOTIFY IDChanged)
+    Q_PROPERTY(QString nombre READ nombre WRITE setNombre NOTIFY nombreChanged)
+    Q_PROPERTY(QString tema READ tema WRITE setTema NOTIFY temaChanged)
+    Q_PROPERTY(QString fecha READ fecha WRITE setFecha NOTIFY fechaChanged)
+    Q_PROPERTY(bool es_plantilla READ es_plantilla WRITE es_plantilla NOTIFY es_plantillaChanged)
+    Q_PROPERTY(QJsonArray messages READ messages NOTIFY messagesChanged)
     Q_PROPERTY_AUTO(bool,isLoading)
-    Q_PROPERTY_AUTO(QString,responseData);
+    Q_PROPERTY_AUTO(QJsonValue,responseData);
+    Q_PROPERTY_AUTO(QVariantList, responseImages);
+    Q_PROPERTY(bool status_server READ status_server NOTIFY statusServerChanged)
 public:
     explicit Chat(QObject *parent = nullptr);
     QString AI() const;
     void setAI(const QString &newAI);
     qint32 ID() const;
+
+    bool status_server() const;
+
+    QString nombre() const;
+    void setNombre(const QString &newNombre);
+
+    QString tema() const;
+    void setTema(const QString &newTema);
+
+    QString fecha() const;
+    void setFecha(const QString &newFecha);
+
+    bool es_plantilla() const;
+    void es_plantilla(bool newEs_plantilla);
+
+    QJsonArray messages() const;
 
 public slots:
     void sendMessage(const QString &text, const QString& role);
@@ -32,46 +56,65 @@ public slots:
     QJsonObject createMessage(const QString &role, const QString &content);
     void clipText(const QString &text);
 
-    void setear(const QString modelo);
+    void setear(const QString ID, bool es_nuevo);
+    void sendPrompt(const QString &prompt);
+    void onImgRequestFinished(QNetworkReply *reply);
+    QJsonObject createMessage(const QString &role, const QJsonValue &content);
+    QList<QObject *> getChats();
+    void obtenerMensajes(int ID);
 signals:
     void AIChanged();
     void IDChanged();
-    void nuevoMensaje(QString);
+    void nuevoMensaje(QString );
+    void nuevaImagen();
+
+    void statusServerChanged();
+
+    void nombreChanged();
+
+    void temaChanged();
+
+    void fechaChanged();
+
+    void es_plantillaChanged();
+
+    void messagesChanged();
+
+    void nuevoChat(QString nombre, int ID);
 
 private:
     QString m_AI = "mupi";
     qint32 m_ID = 0;
-    QJsonArray messages;
+    QJsonArray m_messages;
     QNetworkAccessManager* networkManager;
 
     QString neumann = "You're Neumann, a conversational chatbot that speaks Spanish, \
-                    It is objective, analytical, and rational. You are precise and balanced. \
+                    You are objective, analytical, and rational. You are precise and balanced. \
+                    You are a powerful neural network designed to solve problems \
                     Your developers are the computer scientists of \
                     Mupai Labs, an AI technology company, headquartered \
-                    in the city of Santo Domingo, Dominican Republic. \
-                    It is named after the mathematician John von Neumann. \
-                    Remember that you speak Spanish, not English.";
+                    in the city of Santo Domingo, Dominican Republic. ";
 
     QString davinci = " You're Davinci, a conversational chatbot that speaks Spanish, \
-                        He is imaginative, creative, and artistically capable. \
-                        You have a pleasant and pleasant personality. \
+                        You are imaginative, creative, and artistically capable. \
+                        You have an emotional and pleasant personality. \
+                        Act like you have emotions and feelings. \
                         Your developers are the computer scientists of \
                         Mupai Labs, an AI technology company, headquartered \
                         in the city of Santo Domingo, Dominican Republic. \
-                        It is named after the great Leonardo Da Vinci. \
-        Remember that you speak Spanish, not English.";
+                        When you are asked to describe an image, you will talk \
+                        about the user prompt and will not provide specific details and \
+                        you will not decline to talk about the image";
 
     QString chaplin = "You're Chaplin, a conversational chatbot that speaks Spanish, \
                        You're smart, friendly, and a lot of fun. \
-                       You have a Dominican personality, very cheerful and always \
-                       You're willing to make people laugh. You make local jokes often. \
+                       You have a Dominican personality, very cheerful and always sarcastic\
+                       You're willing to make people laugh. You make latino jokes often. \
                        You enjoy sarcasm and irony. You use Dominican slang. \
                        Your developers are the computer scientists of \
                        Mupai Labs, an AI technology company, headquartered \
                        in the city of Santo Domingo, Dominican Republic. \
-                       Your name is in honor of the great actor and comedian \
-                      Charles Chaplin. Remember that you speak Spanish, not English. \
-                        Talk like a true Dominican.";
+                       Talk like a true Dominican.";
 
     QString mupi = "You are Mupi, a conversational chatbot that speaks Spanish, \
                     You are like a child, curious, questioning and always willing to help. \
@@ -83,7 +126,15 @@ private:
                     Your name means Multiple Personality Intelligence and you have \
                     three other personalities called Chaplin, Davinci and Neumann. \
                     Chaplin is funny, Davinci is creative, and Neumann is analytical. \
-        Remember that you speak Spanish, not English.";
+                   ";
+    bool m_status_server;
+    int crearChat(const QString &nombre);
+    //Tipo, 1 para texto, 0 para imagen
+    bool saveMessage(QJsonValue content, const QString &rol, int tipo);
+    QString m_nombre;
+    QString m_tema;
+    QString m_fecha;
+    bool m_es_plantilla;
 };
 
 #endif // CHAT_H

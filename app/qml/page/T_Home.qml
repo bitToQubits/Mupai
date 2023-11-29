@@ -190,8 +190,8 @@ FluScrollablePage {
                      }
             onClicked: {
               ItemsOriginal.navigationView.setCurrentIndex(2, 'footer_list')
+              Chat.setear(model.id_model, true)
               ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Chat.qml")
-              Chat.setear(model.id_model)
             }
           }
         }

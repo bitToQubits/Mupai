@@ -291,7 +291,7 @@ FluScrollablePage {
   FluArea {
     Layout.fillWidth: true
     Layout.topMargin: 20
-    height: 168
+    height: 140
     paddings: 10
 
     ColumnLayout {
@@ -310,9 +310,6 @@ FluScrollablePage {
         model: [{
             "title": "Abierto",
             "mode": FluNavigationView.Open
-          }, {
-            "title": "Compacto",
-            "mode": FluNavigationView.Compact
           }, {
             "title": "Mínimo",
             "mode": FluNavigationView.Minimal
