@@ -146,15 +146,23 @@ Item {
               if (isMy) {
                 return "qrc:app/res/svg/avatar_7.svg"
               } else {
-                switch (Chat.AI) {
-                case "davinci":
-                  return "qrc:images/Davinci.svg"
-                case "chaplin":
-                  return "qrc:images/Chaplin.svg"
-                case "neumann":
-                  return "qrc:images/Neumann.svg"
-                default:
-                  return "qrc:images/Mupiii.svg"
+                if (Chat.es_plantilla) {
+                  if (Chat.img_plantilla != '0') {
+                    return "data:image/png;base64," + Chat.img_plantilla
+                  } else {
+                    return "qrc:images/Mupiii.svg"
+                  }
+                } else {
+                  switch (Chat.AI) {
+                  case "davinci":
+                    return "qrc:images/Davinci.svg"
+                  case "chaplin":
+                    return "qrc:images/Chaplin.svg"
+                  case "neumann":
+                    return "qrc:images/Neumann.svg"
+                  default:
+                    return "qrc:images/Mupiii.svg"
+                  }
                 }
               }
             }
@@ -170,15 +178,19 @@ Item {
               else
                 return '#fbfbfd'
             } else {
-              switch (Chat.AI) {
-              case "davinci":
-                return "#e85072"
-              case "chaplin":
-                return "#a3dce5"
-              case "neumann":
-                return "#f7a96c"
-              default:
-                return "#7D11F8"
+              if (Chat.es_plantilla) {
+                return FluTheme.primaryColor.dark
+              } else {
+                switch (Chat.AI) {
+                case "davinci":
+                  return "#e85072"
+                case "chaplin":
+                  return "#a3dce5"
+                case "neumann":
+                  return "#f7a96c"
+                default:
+                  return "#7D11F8"
+                }
               }
             }
           }
@@ -224,44 +236,57 @@ Item {
       }
       FluArea {
         id: iconoMupi
-        width: 80
-        height: 80
+        width: 120
+        height: 120
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         anchors.topMargin: 65
 
         Image {
+          clip: true
           height: iconoMupi.width / 1.5
           source: {
-            switch (Chat.AI) {
-            case "davinci":
-              return "qrc:images/Davinci.svg"
-            case "chaplin":
-              return "qrc:images/Chaplin.svg"
-            case "neumann":
-              return "qrc:images/Neumann.svg"
-            default:
-              return "qrc:images/Mupiii.svg"
+            if (Chat.es_plantilla) {
+              if (Chat.img_plantilla != '0') {
+                console.log(Chat.img_plantilla)
+                return "data:image/png;base64," + Chat.img_plantilla
+              } else {
+                return "qrc:images/Mupiii.svg"
+              }
+            } else {
+              switch (Chat.AI) {
+              case "davinci":
+                return "qrc:images/Davinci.svg"
+              case "chaplin":
+                return "qrc:images/Chaplin.svg"
+              case "neumann":
+                return "qrc:images/Neumann.svg"
+              default:
+                return "qrc:images/Mupiii.svg"
+              }
             }
           }
           fillMode: Image.PreserveAspectFit
-          y: 16
-          x: 12
+          anchors.centerIn: parent
           smooth: true
         }
       }
       FluText {
         id: subencabezado
         text: {
-          switch (Chat.AI) {
-          case "davinci":
-            return "Imagina y comparte ideas con Davinci"
-          case "chaplin":
-            return "Diviertete con Chaplin"
-          case "neumann":
-            return "Haz las tareas con Neumann"
-          default:
-            return "Chatea con Mupi"
+          if (Chat.es_plantilla) {
+            return "Chatea con " + Chat.nombre_plantilla
+          } else {
+            switch (Chat.AI) {
+            case "davinci":
+              return "Imagina y comparte ideas con Davinci"
+            case "chaplin":
+              return "Diviertete con Chaplin"
+            case "neumann":
+              return "Haz las tareas con Neumann"
+            default:
+              return "Chatea con Mupi"
+            }
           }
         }
 
@@ -274,13 +299,15 @@ Item {
       FluText {
         id: encabezado
         text: {
-          if (Chat.AI == 'chaplin') {
+          if (Chat.es_plantilla) {
+            return Chat.desc_plantilla
+          } else if (Chat.AI == 'chaplin') {
             return '¿Qué hay de nuevo?'
           } else {
             return '¿En qué te puedo ayudar?'
           }
         }
-        fontStyle: FluText.Title
+        fontStyle: (Chat.es_plantilla) ? FluText.Caption : FluText.Title
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: subencabezado.bottom
         anchors.topMargin: 20
@@ -296,11 +323,13 @@ Item {
         spacing: 20
 
         Rectangle {
+          visible: (Chat.es_plantilla) ? false : true
           id: sug
           width: parent.width / 2
           height: 60
           color: 'transparent'
           border.color: {
+            console.log("Es plantilla", Chat.es_plantilla)
             switch (Chat.AI) {
             case "davinci":
               return "#e85072"
@@ -332,7 +361,7 @@ Item {
                 return "Obtén respuestas inmediatas"
               }
             }
-            color: "#FFFFFF"
+            color: FluTheme.dark ? "#FFFFFF" : "#000000"
             font.bold: true
             font.pixelSize: 15
             anchors.top: parent.top
@@ -354,7 +383,7 @@ Item {
                 return "¿En qué consiste la fotosíntesis celular?"
               }
             }
-            color: "#FFFFFF"
+            color: FluTheme.dark ? "#FFFFFF" : "#000000"
             font.pixelSize: 12
             anchors.top: sug_titulo.top
             anchors.topMargin: 20
@@ -364,6 +393,7 @@ Item {
         }
 
         Rectangle {
+          visible: (Chat.es_plantilla) ? false : true
           id: sug_2
           width: parent.width / 2
           height: 60
@@ -400,7 +430,7 @@ Item {
                 return "Aprende algo nuevo"
               }
             }
-            color: "#FFFFFF"
+            color: FluTheme.dark ? "#FFFFFF" : "#000000"
             font.bold: true
             font.pixelSize: 15
             anchors.top: parent.top
@@ -422,7 +452,7 @@ Item {
                 return "¿Cómo se dice hola en chino?"
               }
             }
-            color: "#FFFFFF"
+            color: FluTheme.dark ? "#FFFFFF" : "#000000"
             font.pixelSize: 12
             anchors.top: sug_titulo_2.top
             anchors.topMargin: 20
@@ -463,15 +493,23 @@ Item {
           anchors.fill: parent
           sourceSize: Qt.size(100, 100)
           source: {
-            switch (Chat.AI) {
-            case "davinci":
-              return "qrc:images/Davinci.svg"
-            case "chaplin":
-              return "qrc:images/Chaplin.svg"
-            case "neumann":
-              return "qrc:images/Neumann.svg"
-            default:
-              return "qrc:images/Mupiii.svg"
+            if (Chat.es_plantilla) {
+              if (Chat.img_plantilla != 0) {
+                return "data:image/png;base64," + Chat.img_plantilla
+              } else {
+                return "qrc:images/Mupiii.svg"
+              }
+            } else {
+              switch (Chat.AI) {
+              case "davinci":
+                return "qrc:images/Davinci.svg"
+              case "chaplin":
+                return "qrc:images/Chaplin.svg"
+              case "neumann":
+                return "qrc:images/Neumann.svg"
+              default:
+                return "qrc:images/Mupiii.svg"
+              }
             }
           }
         }

@@ -101,6 +101,7 @@ void Plantilla::guardar()
 
         }else{
             if(createConnection()){
+                qDebug() << "Se conecto";
 
                 QSqlQuery query;
 
@@ -110,13 +111,20 @@ void Plantilla::guardar()
                         query.addBindValue(m_desc);
                         query.addBindValue(m_instr);
                         query.addBindValue(m_publica);
-                        if(m_img == "")
+                        qDebug() << m_img;
+                        if(m_img == ""){
                             query.addBindValue("0");
-                        else
-                            query.addBindValue(convertFileToBase64(m_img));
+                        }else{
+
+                            if(m_img.contains("file:///"))
+                                query.addBindValue(convertFileToBase64(m_img));
+                            else {
+                                query.addBindValue(m_img);
+                            }
+
+                        }
                         query.addBindValue(m_ID);
-                        query.exec();
-                        if(query.numRowsAffected() > 0){
+                        if(query.exec()){
                             m_status_form = 1;
                         }else{
                             m_status_server = false;

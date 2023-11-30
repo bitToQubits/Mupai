@@ -16,9 +16,10 @@ title:"' + nombre + '"
 onTap: {
 if(panelNavegacion.navigationView != null && panelNavegacion.navigationView != undefined){
 if(panelNavegacion.navigationView.mouseButton == 1){
-Chat.setear(' + id + ', false)
+Chat.setear(' + id + ', false, false)
 panelNavegacion.navigationView.push("qrc:app/qml/page/T_Chat.qml")
-}else{
+}else if (panelNavegacion.navigationView.mouseButton == 2) {
+console.log("Click hecho!!")
 if(panelNavegacion.menuDesplegable != null && panelNavegacion.menuDesplegable != undefined){
 panelNavegacion.menuDesplegable.showMenu(' + id + ')
 }

@@ -8,6 +8,7 @@ import QtQuick.Dialogs
 import "../component"
 import "qrc:app/qml/global/"
 import app.plantilla
+import app.chat
 
 FluScrollablePage {
 
@@ -31,7 +32,8 @@ FluScrollablePage {
       smooth: true
     }
     Component.onCompleted: {
-      if (Plantilla.img !== "" || Plantilla.img !== 0) {
+      if (Plantilla.img !== "" && Plantilla.img != '0'
+          && Plantilla.img !== null) {
         image.source = "data:image/png;base64," + Plantilla.img
       }
     }
@@ -40,10 +42,7 @@ FluScrollablePage {
   RowLayout {
     id: rowLayout
 
-    Layout.fillWidth: {
-      console.log(Plantilla.ID)
-      return true
-    }
+    Layout.fillWidth: true
     Layout.maximumWidth: parent.width
     Layout.topMargin: 20
     spacing: 10
@@ -61,7 +60,7 @@ FluScrollablePage {
         image.source = selectedFile
         Plantilla.img = selectedFile
       }
-      nameFilters: ["Imagenes (*.png *.svg *jpeg)"]
+      nameFilters: ["Imagenes (*.svg *jpeg *jpg)"]
     }
 
     FluTextBox {
@@ -132,7 +131,7 @@ FluScrollablePage {
         Plantilla.guardar()
 
         if (Plantilla.status_form === 1) {
-          showSuccess("¡Tu plantilla se ha guardado con éxito!", 3000)
+          showSuccess("¡Tu personalidad se ha guardado con éxito!", 3000)
           continuar.open()
         } else {
           if (Plantilla.status_server) {
@@ -156,7 +155,7 @@ FluScrollablePage {
       }
 
       contentItem: Text {
-        text: "Cancelar / Borrar"
+        text: "Cancelar"
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
         color: "#FFFFFF"
@@ -168,6 +167,10 @@ FluScrollablePage {
         cursorShape: Qt.PointingHandCursor
       }
       Layout.fillWidth: true
+      onClicked: {
+        ItemsOriginal.navigationView.setCurrentIndex(1, 'footer_list')
+        ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Home.qml")
+      }
     }
   }
 
@@ -186,7 +189,10 @@ FluScrollablePage {
       ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Template.qml")
     }
     onNeutralClicked: {
-      console.log("Pendiente")
+      console.log("Clickeo en neutral")
+      Chat.setear(Plantilla.ID, true, true)
+      ItemsOriginal.navigationView.setCurrentIndex(2, 'footer_list')
+      ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Chat.qml")
     }
     onNegativeClicked: {
       ItemsOriginal.navigationView.setCurrentIndex(1, 'footer_list')

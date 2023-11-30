@@ -7,6 +7,7 @@ import "qrc:app/qml/global/"
 import app.plantilla
 import "community.js" as Logic
 import app.user
+import app.chat
 
 FluContentPage {
   id: reporte_plantillas
@@ -60,6 +61,16 @@ FluContentPage {
             leftMargin: 20
             verticalCenter: parent.verticalCenter
           }
+          MouseArea {
+            id: item_mouse
+            anchors.fill: parent
+            hoverEnabled: true
+            onClicked: {
+              ItemsOriginal.navigationView.setCurrentIndex(2, 'footer_list')
+              Chat.setear(modelData.ID, true, true)
+              ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Chat.qml")
+            }
+          }
         }
 
         FluText {
@@ -102,25 +113,76 @@ FluContentPage {
             topMargin: 14
           }
           MouseArea {
-            id: item_mouse
             anchors.fill: parent
             hoverEnabled: true
             onClicked: {
-              console.log("hola")
+              menu_item.showMenu(modelData.ID, modelData.user_id)
             }
           }
         }
-
-
-        /*MouseArea {
-          id: item_mouse
-          anchors.fill: parent
-          hoverEnabled: true
-          onClicked: {
-            ItemsOriginal.startPageByItem(modelData)
-          }
-        }*/
       }
+    }
+  }
+
+  FluMenu {
+    id: menu_item
+    focus: false
+    property int selectedPlantilla
+    property int user_id
+
+    FluMenuItem {
+      visible: (menu_item.user_id == User.ID) ? true : false
+      text: "Eliminar"
+      onClicked: {
+        confirmacion_eliminacion.open()
+      }
+    }
+
+    FluMenuItem {
+      visible: (menu_item.user_id == User.ID) ? true : false
+      text: "Editar"
+      onClicked: {
+        Plantilla.setear(menu_item.selectedPlantilla, false)
+        ItemsOriginal.navigationView.setCurrentIndex(0, 'footer_list')
+        ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Template.qml")
+      }
+    }
+
+    FluMenuItem {
+      text: "Utilizar"
+      onClicked: {
+        Chat.setear(menu_item.selectedPlantilla, true, true)
+        ItemsOriginal.navigationView.setCurrentIndex(2, 'footer_list')
+        ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Chat.qml")
+      }
+    }
+    function showMenu(id, id_usuario) {
+      console.log(id_usuario, id, "id, id_usuario")
+      menu_item.selectedPlantilla = id
+      menu_item.user_id = id_usuario
+      menu_item.popup()
+    }
+  }
+
+  FluContentDialog {
+    id: confirmacion_eliminacion
+    title: "Eliminación"
+    message: "¿Estas seguro de querer eliminar esta personalidad?"
+    buttonFlags: FluContentDialog.NegativeButton | FluContentDialog.PositiveButton
+    negativeText: "No, cancelar"
+    positiveText: "Si"
+    onPositiveClicked: {
+      if (Plantilla.eliminar(menu_item.selectedPlantilla)) {
+        showSuccess("Personalidad eliminada correctamente")
+        creadas_recientemente.model = undefined
+        creadas_por_la_comunidad.model = undefined
+        creadas_recientemente.model = Plantilla.getTemplates(false, 5)
+        creadas_por_la_comunidad.model = Plantilla.getTemplates(true, 5)
+      } else {
+        showSuccess("Algo fue mal. Intentalo de nuevo.")
+      }
+
+      menu_item.close()
     }
   }
 

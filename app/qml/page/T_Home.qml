@@ -190,7 +190,7 @@ FluScrollablePage {
                      }
             onClicked: {
               ItemsOriginal.navigationView.setCurrentIndex(2, 'footer_list')
-              Chat.setear(model.id_model, true)
+              Chat.setear(model.id_model, true, false)
               ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Chat.qml")
             }
           }
@@ -247,7 +247,9 @@ FluScrollablePage {
             anchors.fill: parent
             hoverEnabled: true
             onClicked: {
-              console.log("SHakalastic 2")
+              ItemsOriginal.navigationView.setCurrentIndex(2, 'footer_list')
+              Chat.setear(modelData.ID, true, true)
+              ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Chat.qml")
             }
           }
         }
@@ -331,7 +333,9 @@ FluScrollablePage {
     FluMenuItem {
       text: "Utilizar"
       onClicked: {
-        console.log("Se intento utilizar")
+        Chat.setear(menu_item.selectedPlantilla, true, true)
+        ItemsOriginal.navigationView.setCurrentIndex(2, 'footer_list')
+        ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Chat.qml")
       }
     }
     function showMenu(id, id_usuario) {
@@ -352,10 +356,10 @@ FluScrollablePage {
     onPositiveClicked: {
       if (Plantilla.eliminar(menu_item.selectedPlantilla)) {
         showSuccess("Personalidad eliminada correctamente")
-        ld_creadas.sourceComponent = undefined
-        ld_comunidad.sourceComponent = undefined
-        ld_creadas.sourceComponent = creadas
-        ld_comunidad.sourceComponent = comunidad
+        creadas_recientemente.model = undefined
+        creadas_por_la_comunidad.model = undefined
+        creadas_recientemente.model = Plantilla.getTemplates(false, 5)
+        creadas_por_la_comunidad.model = Plantilla.getTemplates(true, 5)
       } else {
         showSuccess("Algo fue mal. Intentalo de nuevo.")
       }
@@ -417,33 +421,22 @@ FluScrollablePage {
     }
   }
 
-  Loader {
-    id: ld_creadas
-
-    sourceComponent: creadas
-    active: true
-  }
-
-  Component {
-    id: creadas
-
-    GridView {
-      id: creadas_recientemente
-      Layout.fillWidth: true
-      implicitHeight: contentHeight
-      cellHeight: 120
-      cellWidth: 320
-      model: Plantilla.getTemplates(false, 5)
-      interactive: false
-      delegate: com_item
-    }
+  GridView {
+    id: creadas_recientemente
+    Layout.fillWidth: true
+    implicitHeight: contentHeight
+    cellHeight: 120
+    cellWidth: 320
+    model: Plantilla.getTemplates(false, 5)
+    interactive: false
+    delegate: com_item
   }
 
   FluText {
     text: "Todavia no has creado ninguna personalidad"
     fontStyle: FluText.SubTitle
     font.bold: false
-    visible: (ld_creadas.item.model.length === 0) ? true : false
+    visible: (creadas_recientemente.model.length === 0) ? true : false
     Layout.leftMargin: 20
     Layout.topMargin: 20
   }
@@ -477,33 +470,22 @@ FluScrollablePage {
       }
     }
   }
-
-  Loader {
-    id: ld_comunidad
-
-    sourceComponent: comunidad
-    active: true
-  }
-
-  Component {
-    id: comunidad
-    GridView {
-      id: creadas_por_la_comunidad
-      Layout.fillWidth: true
-      implicitHeight: contentHeight
-      cellHeight: 120
-      cellWidth: 320
-      interactive: false
-      model: Plantilla.getTemplates(true, 5)
-      delegate: com_item
-    }
+  GridView {
+    id: creadas_por_la_comunidad
+    Layout.fillWidth: true
+    implicitHeight: contentHeight
+    cellHeight: 120
+    cellWidth: 320
+    interactive: false
+    model: Plantilla.getTemplates(true, 5)
+    delegate: com_item
   }
 
   FluText {
-    text: "Todavia no hay plantillas creadas por la comunidad"
+    text: "Todavia no hay personalidades creadas por la comunidad"
     fontStyle: FluText.SubTitle
     font.bold: false
-    visible: (ld_comunidad.item.model.length === 0) ? true : false
+    visible: (creadas_por_la_comunidad.model.length === 0) ? true : false
     Layout.leftMargin: 20
     Layout.topMargin: 20
   }

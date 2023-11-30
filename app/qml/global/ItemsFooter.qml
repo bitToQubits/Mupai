@@ -31,7 +31,7 @@ FluObject {
     icon: FluentIcons.SubscriptionAdd
 
     onTap: {
-      Chat.setear("mupi", true)
+      Chat.setear("mupi", true, false)
       navigationView.push("qrc:app/qml/page/T_Chat.qml")
     }
   }

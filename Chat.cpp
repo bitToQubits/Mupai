@@ -125,7 +125,7 @@ int Chat::crearChat(const QString& nombre){
         query.addBindValue(session.value("user/id").toInt());
         query.addBindValue(nombre);
         query.addBindValue(m_AI);
-        query.addBindValue(false);
+        query.addBindValue(m_es_plantilla);
 
         query.exec();
 
@@ -192,14 +192,19 @@ void Chat::sendMessage(const QString& text, const QString& role = "user"){
     isLoading(true);
     if(m_messages.isEmpty() && role == "user"){
         m_ID = crearChat(text);
-        if (m_AI == "neumann")
+        if (m_AI == "neumann"){
             sendMessage(neumann, "system");
-        else if(m_AI == "davinci")
+        }else if(m_AI == "davinci"){
             sendMessage(davinci, "system");
-        else if(m_AI == "chaplin")
+        }else if(m_AI == "chaplin"){
             sendMessage(chaplin, "system");
-        else
-            sendMessage(mupi, "system");
+        }else{
+            if(m_es_plantilla){
+                sendMessage(plantilla, "system");
+            }else{
+                sendMessage(mupi, "system");
+            }
+        }
     }
     saveMessage(text, role, 1);
     QUrl url("https://api.openai.com/v1/chat/completions");
@@ -250,10 +255,9 @@ void Chat::onPostRequestFinished(QNetworkReply *reply) {
         //Chequear si existe ya el primer mensaje de usuario de la conversacion
         if(m_messages.at(1).toObject().value("role").toString() == "user" && m_messages.size() == 3){
             emit nuevoChat(m_messages.at(1).toObject().value("user").toString(), m_ID);
-        }else{
-            responseData(text.trimmed());
-            emit nuevoMensaje(text.trimmed());
         }
+        responseData(text.trimmed());
+        emit nuevoMensaje(text.trimmed());
     }
     reply->deleteLater();
     isLoading(false);
@@ -291,7 +295,25 @@ void Chat::setear(const QString ID, bool es_nuevo, const bool es_plantilla)
         m_nombre = "";
         m_tema = "";
         m_fecha = "";
-        m_es_plantilla = false;
+        setEs_plantilla(false);
+        plantilla = "";
+        m_nombre_plantilla = "";
+        m_desc_plantilla = "";
+        m_img_plantilla = "";
+        if(es_plantilla){
+            //Haciendo consulta a la tabla plantillas para extraer las instrucciones.
+            QSqlQuery query;
+            query.prepare("SELECT * FROM templates WHERE ID = ?");
+            query.addBindValue(ID);
+            query.exec();
+            query.next();
+            m_es_plantilla = true;
+            m_AI = query.value(0).toString();
+            plantilla = query.value(4).toString();
+            m_nombre_plantilla = query.value(2).toString();
+            m_desc_plantilla = query.value(3).toString();
+            m_img_plantilla = query.value(6).toString();
+        }
     }else{
         QSqlQuery query;
         query.prepare("SELECT * FROM chats WHERE ID = ?");
@@ -304,6 +326,19 @@ void Chat::setear(const QString ID, bool es_nuevo, const bool es_plantilla)
         m_fecha = query.value(4).toString();
         m_AI = query.value(5).toString();
         m_es_plantilla = query.value(6).toBool();
+        if(m_es_plantilla){
+            //Haciendo consulta a la tabla templates para extraer las instrucciones.
+            QSqlQuery query;
+            query.prepare("SELECT * FROM templates WHERE ID = ?");
+            query.addBindValue(ID);
+            query.exec();
+            query.next();
+            m_AI = query.value(0).toString();
+            plantilla = query.value(4).toString();
+            m_nombre_plantilla = query.value(2).toString();
+            m_desc_plantilla = query.value(3).toString();
+            m_img_plantilla = query.value(6).toString();
+        }
     }
 }
 
@@ -385,7 +420,7 @@ bool Chat::es_plantilla() const
     return m_es_plantilla;
 }
 
-void Chat::es_plantilla(bool newEs_plantilla)
+void Chat::setEs_plantilla(bool newEs_plantilla)
 {
     if (m_es_plantilla == newEs_plantilla)
         return;
@@ -396,4 +431,43 @@ void Chat::es_plantilla(bool newEs_plantilla)
 QJsonArray Chat::messages() const
 {
     return m_messages;
+}
+
+QString Chat::nombre_plantilla() const
+{
+    return m_nombre_plantilla;
+}
+
+void Chat::setNombre_plantilla(const QString &newNombre_plantilla)
+{
+    if (m_nombre_plantilla == newNombre_plantilla)
+        return;
+    m_nombre_plantilla = newNombre_plantilla;
+    emit nombre_plantillaChanged();
+}
+
+QString Chat::img_plantilla() const
+{
+    return m_img_plantilla;
+}
+
+void Chat::setImg_plantilla(const QString &newImg_plantilla)
+{
+    if (m_img_plantilla == newImg_plantilla)
+        return;
+    m_img_plantilla = newImg_plantilla;
+    emit Img_plantillaChanged();
+}
+
+QString Chat::desc_plantilla() const
+{
+    return m_desc_plantilla;
+}
+
+void Chat::setDesc_plantilla(const QString &newDesc_plantilla)
+{
+    if (m_desc_plantilla == newDesc_plantilla)
+        return;
+    m_desc_plantilla = newDesc_plantilla;
+    emit desc_plantillaChanged();
 }

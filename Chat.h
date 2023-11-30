@@ -22,8 +22,13 @@ class Chat : public QObject
     Q_PROPERTY(QString nombre READ nombre WRITE setNombre NOTIFY nombreChanged)
     Q_PROPERTY(QString tema READ tema WRITE setTema NOTIFY temaChanged)
     Q_PROPERTY(QString fecha READ fecha WRITE setFecha NOTIFY fechaChanged)
-    Q_PROPERTY(bool es_plantilla READ es_plantilla WRITE es_plantilla NOTIFY es_plantillaChanged)
+    Q_PROPERTY(bool es_plantilla READ es_plantilla WRITE setEs_plantilla NOTIFY es_plantillaChanged)
     Q_PROPERTY(QJsonArray messages READ messages NOTIFY messagesChanged)
+
+    Q_PROPERTY(QString nombre_plantilla READ nombre_plantilla WRITE setNombre_plantilla NOTIFY nombre_plantillaChanged)
+    Q_PROPERTY(QString desc_plantilla READ desc_plantilla WRITE setDesc_plantilla NOTIFY desc_plantillaChanged)
+    Q_PROPERTY(QString img_plantilla READ img_plantilla WRITE setImg_plantilla NOTIFY Img_plantillaChanged)
+
     Q_PROPERTY_AUTO(bool,isLoading)
     Q_PROPERTY_AUTO(QJsonValue,responseData);
     Q_PROPERTY_AUTO(QVariantList, responseImages);
@@ -46,9 +51,18 @@ public:
     void setFecha(const QString &newFecha);
 
     bool es_plantilla() const;
-    void es_plantilla(bool newEs_plantilla);
+    void setEs_plantilla(bool newEs_plantilla);
 
     QJsonArray messages() const;
+
+    QString nombre_plantilla() const;
+    void setNombre_plantilla(const QString &newNombre_plantilla);
+
+    QString img_plantilla() const;
+    void setImg_plantilla(const QString &newImg_plantilla);
+
+    QString desc_plantilla() const;
+    void setDesc_plantilla(const QString &newDesc_plantilla);
 
 public slots:
     void sendMessage(const QString &text, const QString& role);
@@ -82,6 +96,12 @@ signals:
     void messagesChanged();
 
     void nuevoChat(QString nombre, int ID);
+
+    void nombre_plantillaChanged();
+
+    void Img_plantillaChanged();
+
+    void desc_plantillaChanged();
 
 private:
     QString m_AI = "mupi";
@@ -128,6 +148,7 @@ private:
                     three other personalities called Chaplin, Davinci and Neumann. \
                     Chaplin is funny, Davinci is creative, and Neumann is analytical. \
                    ";
+    QString plantilla;
     bool m_status_server;
     int crearChat(const QString &nombre);
     //Tipo, 1 para texto, 0 para imagen
@@ -135,7 +156,10 @@ private:
     QString m_nombre;
     QString m_tema;
     QString m_fecha;
-    bool m_es_plantilla;
+    bool m_es_plantilla = false;
+    QString m_nombre_plantilla;
+    QString m_img_plantilla;
+    QString m_desc_plantilla;
 };
 
 #endif // CHAT_H

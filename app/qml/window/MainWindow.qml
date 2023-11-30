@@ -41,8 +41,7 @@ Item {
     FluMenuItem {
       text: "Editar nombre"
       onClicked: {
-        console.log("foot", nav_view.getCurrentIndex('nav_list'), "head",
-                    nav_view.getCurrentIndex('footer_list'))
+        FluApp.navigate("/standardWindow")
       }
     }
 
@@ -89,8 +88,6 @@ Item {
     Connections {
       target: Chat
       function onNuevoChat(nombre, ID) {
-        //ItemsOriginal.create_item(nombre.trim(), ID)
-        console.log("Nuevo chat")
         ItemsOriginal.children.length = 0
         nav_view.populateChatList()
         nav_view.setCurrentIndex(ItemsOriginal.children.length - 1, 'nav_list')
@@ -132,7 +129,7 @@ Item {
 
       if (deleted_id == chat_id) {
         console.log("Se fue por alla")
-        Chat.setear("mupi", true)
+        Chat.setear("mupi", true, false)
         nav_view.push("qrc:app/qml/page/T_Home.qml")
         nav_view.setCurrentIndex(1, 'footer_list')
       } else {
