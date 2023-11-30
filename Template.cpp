@@ -104,6 +104,25 @@ void Plantilla::guardar()
 
                 QSqlQuery query;
 
+                    if(m_ID != 0){
+                        query.prepare("UPDATE templates SET nombre = ?, descripcion = ?, instrucciones = ?, publica = ?, img = ? WHERE ID = ?");
+                        query.addBindValue(m_nombre);
+                        query.addBindValue(m_desc);
+                        query.addBindValue(m_instr);
+                        query.addBindValue(m_publica);
+                        if(m_img == "")
+                            query.addBindValue("0");
+                        else
+                            query.addBindValue(convertFileToBase64(m_img));
+                        query.addBindValue(m_ID);
+                        query.exec();
+                        if(query.numRowsAffected() > 0){
+                            m_status_form = 1;
+                        }else{
+                            m_status_server = false;
+                        }
+                        return;
+                    }
 
                     query.prepare("INSERT INTO templates (user_id, nombre, descripcion, instrucciones, publica, img)"
                                   "VALUES (?,?,?,?,?,?)");
@@ -122,6 +141,12 @@ void Plantilla::guardar()
 
                     if(query.numRowsAffected() > 0){
                         m_status_form = 1;
+                        //Seleccionar el ID de la plantilla recien creada
+                        query.prepare("SELECT ID FROM templates ORDER BY ID DESC LIMIT 1");
+                        query.exec();
+                        while (query.next()) {
+                            m_ID = query.value("ID").toInt();
+                        }
                     }else{
                         m_status_server = false;
                     }
@@ -194,6 +219,57 @@ QList<QObject*> Plantilla::getTemplates(bool publico = true, int limite = -1)
         }
 
         return plantillas;
+}
+
+void Plantilla::setear(const int ID, bool es_nuevo)
+{
+    if(es_nuevo){
+        m_ID = 0;
+        m_user_id = 0;
+        m_nombre = "";
+        m_desc = "";
+        m_instr = "";
+        m_publica = 0;
+        m_img = "";
+        m_status_form = 0;
+        m_status_server = true;
+        m_reporte_publico = true;
+    }else{
+        if(!createConnection()){
+            m_status_server = false;
+            return;
+        }
+
+        QSqlQuery query;
+        query.prepare("SELECT * FROM templates WHERE ID = ?");
+        query.addBindValue(ID);
+        query.exec();
+        query.next();
+        m_ID = query.value(0).toInt();
+        m_nombre = query.value(2).toString();
+        m_desc = query.value(3).toString();
+        m_instr = query.value(4).toString();
+        m_publica = query.value(5).toBool();
+        m_img = query.value(6).toString();
+    }
+}
+
+bool Plantilla::eliminar(const int ID)
+{
+    if(!createConnection()){
+        m_status_server = false;
+        return false;
+    }
+
+    QSqlQuery query;
+    query.prepare("DELETE FROM templates WHERE ID = ?");
+    query.addBindValue(ID);
+    query.exec();
+    if(query.numRowsAffected() > 0){
+        return true;
+    }else{
+        return false;
+    }
 }
 
 

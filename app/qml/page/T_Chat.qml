@@ -95,7 +95,6 @@ Item {
       }
 
       function onNuevaImagen() {
-        //Convertir el QVariant Object a Javascript Object
         appendImage(false, Chat.responseImages)
       }
     }
@@ -108,7 +107,7 @@ Item {
       id: list_message
       model: model_message
       anchors.fill: parent
-      anchors.bottom: layout_bottom.top
+      anchors.bottom: isLoading.top
       anchors.bottomMargin: 60
       clip: true
       ScrollBar.vertical: FluScrollBar {}
@@ -225,14 +224,14 @@ Item {
       }
       FluArea {
         id: iconoMupi
-        width: 60
-        height: 60
+        width: 80
+        height: 80
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         anchors.topMargin: 65
 
         Image {
-          height: iconoMupi.width / 2
+          height: iconoMupi.width / 1.5
           source: {
             switch (Chat.AI) {
             case "davinci":
@@ -246,15 +245,14 @@ Item {
             }
           }
           fillMode: Image.PreserveAspectFit
-          y: 15
-          x: 13
+          y: 16
+          x: 12
           smooth: true
         }
       }
       FluText {
         id: subencabezado
         text: {
-          console.log("T_Chat: ", Chat.AI)
           switch (Chat.AI) {
           case "davinci":
             return "Imagina y comparte ideas con Davinci"
@@ -277,7 +275,7 @@ Item {
         id: encabezado
         text: {
           if (Chat.AI == 'chaplin') {
-            return '¿Que hay de nuevo?'
+            return '¿Qué hay de nuevo?'
           } else {
             return '¿En qué te puedo ayudar?'
           }
@@ -286,6 +284,266 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: subencabezado.bottom
         anchors.topMargin: 20
+      }
+      RowLayout {
+        id: rowLayout
+
+        width: parent.width
+        height: 60
+        anchors.top: encabezado.bottom
+        anchors.topMargin: 60
+        anchors.horizontalCenter: encabezado.horizontalCenter
+        spacing: 20
+
+        Rectangle {
+          id: sug
+          width: parent.width / 2
+          height: 60
+          color: 'transparent'
+          border.color: {
+            switch (Chat.AI) {
+            case "davinci":
+              return "#e85072"
+            case "chaplin":
+              return "#a3dce5"
+            case "neumann":
+              return "#f7a96c"
+            default:
+              return "#c68ff2"
+            }
+          }
+          border.width: 2
+          radius: 10
+          anchors.left: parent.left
+          anchors.leftMargin: 25
+          anchors.right: sug_2.left
+          anchors.rightMargin: 15
+          Text {
+            id: sug_titulo
+            text: {
+              switch (Chat.AI) {
+              case "davinci":
+                return "Genera ideas creativas"
+              case "chaplin":
+                return "Disfruta de una conversación casual"
+              case "neumann":
+                return "Realiza tareas cotidianas"
+              default:
+                return "Obtén respuestas inmediatas"
+              }
+            }
+            color: "#FFFFFF"
+            font.bold: true
+            font.pixelSize: 15
+            anchors.top: parent.top
+            anchors.topMargin: 10
+            anchors.left: parent.left
+            anchors.leftMargin: 10
+          }
+          Text {
+            id: sug_desc
+            text: {
+              switch (Chat.AI) {
+              case "davinci":
+                return "¿Que puedo regalar a mi mamá de cumpleaños?"
+              case "chaplin":
+                return "Cuentame un chiste para matar el rato"
+              case "neumann":
+                return "Piensa en estrategias para realizar marketing digital"
+              default:
+                return "¿En qué consiste la fotosíntesis celular?"
+              }
+            }
+            color: "#FFFFFF"
+            font.pixelSize: 12
+            anchors.top: sug_titulo.top
+            anchors.topMargin: 20
+            anchors.left: parent.left
+            anchors.leftMargin: 10
+          }
+        }
+
+        Rectangle {
+          id: sug_2
+          width: parent.width / 2
+          height: 60
+          color: 'transparent'
+          border.color: {
+            switch (Chat.AI) {
+            case "davinci":
+              return "#e85072"
+            case "chaplin":
+              return "#a3dce5"
+            case "neumann":
+              return "#f7a96c"
+            default:
+              return "#c68ff2"
+            }
+          }
+          border.width: 2
+          radius: 10
+          anchors.right: parent.right
+          anchors.rightMargin: 25
+          anchors.left: sug.right
+          anchors.leftMargin: 15
+          Text {
+            id: sug_titulo_2
+            text: {
+              switch (Chat.AI) {
+              case "davinci":
+                return "Crea imagenes con el comando /imagina"
+              case "chaplin":
+                return "Sorpréndete con sus ocurrencias"
+              case "neumann":
+                return "Resuelve problemas de naturaleza lógica"
+              default:
+                return "Aprende algo nuevo"
+              }
+            }
+            color: "#FFFFFF"
+            font.bold: true
+            font.pixelSize: 15
+            anchors.top: parent.top
+            anchors.topMargin: 10
+            anchors.left: parent.left
+            anchors.leftMargin: 10
+          }
+          Text {
+            id: sug_desc_2
+            text: {
+              switch (Chat.AI) {
+              case "davinci":
+                return "Imagina un gato con alas surcando a traves de los cielos"
+              case "chaplin":
+                return "Explicame la teoria de la relatividad como si tuviera 5 años"
+              case "neumann":
+                return "Escribe un algoritmo que calcule el factorial de un número"
+              default:
+                return "¿Cómo se dice hola en chino?"
+              }
+            }
+            color: "#FFFFFF"
+            font.pixelSize: 12
+            anchors.top: sug_titulo_2.top
+            anchors.topMargin: 20
+            anchors.left: parent.left
+            anchors.leftMargin: 10
+          }
+        }
+      }
+    }
+
+    Item {
+      id: isLoading
+      visible: Chat.isLoading
+      anchors {
+        //bottom sera el ultimo mensaje de la lista
+        bottom: layout_bottom.top
+        bottomMargin: 10
+        left: parent.left
+        right: parent.right
+      }
+      width: 40
+      height: 60
+
+      FluRectangle {
+        id: item_avatar_loading
+        width: 30
+        height: 30
+        radius: [15, 15, 15, 15]
+        anchors {
+          right: undefined
+          rightMargin: undefined
+          left: parent.left
+          leftMargin: 20
+          top: parent.top
+        }
+        Image {
+          asynchronous: true
+          anchors.fill: parent
+          sourceSize: Qt.size(100, 100)
+          source: {
+            switch (Chat.AI) {
+            case "davinci":
+              return "qrc:images/Davinci.svg"
+            case "chaplin":
+              return "qrc:images/Chaplin.svg"
+            case "neumann":
+              return "qrc:images/Neumann.svg"
+            default:
+              return "qrc:images/Mupiii.svg"
+            }
+          }
+        }
+      }
+
+      Rectangle {
+        id: item_layout_content_loading
+        color: {
+          switch (Chat.AI) {
+          case "davinci":
+            return "#e85072"
+          case "chaplin":
+            return "#a3dce5"
+          case "neumann":
+            return "#f7a96c"
+          default:
+            return "#7D11F8"
+          }
+        }
+        width: text_edit_loading.width + 10
+        height: text_edit_loading.height + 10
+        radius: 3
+        anchors {
+          top: item_avatar_loading.top
+          right: undefined
+          rightMargin: undefined
+          left: item_avatar_loading.right
+          leftMargin: 10
+        }
+
+        TextEdit {
+          id: text_edit_loading
+          text: timer_loading.loadingText
+          wrapMode: Text.WrapAnywhere
+          readOnly: true
+          selectByMouse: true
+          leftPadding: 5
+          font.pixelSize: 15
+          selectByKeyboard: true
+          selectedTextColor: Qt.rgba(51, 153, 255, 1)
+          color: {
+            switch (Chat.AI) {
+            case "chaplin":
+              return "#030303"
+            case "neumann":
+              return "#030303"
+            default:
+              return "#FFFFFF"
+            }
+          }
+          selectionColor: {
+            if (FluTheme.dark) {
+              return FluTheme.primaryColor.lighter
+            } else {
+              return FluTheme.primaryColor.dark
+            }
+          }
+          width: Math.min(list_message.width - 200, 600, implicitWidth)
+          TapHandler {
+            acceptedButtons: Qt.RightButton
+            onTapped: {
+              menu_item.showMenu(item_text.selectedText)
+            }
+          }
+        }
+      }
+
+      Item {
+        id: item_layout_bottom_loading
+        width: parent.width
+        anchors.top: item_layout_content_loading.bottom
+        height: 20
       }
     }
     FluArea {
@@ -326,9 +584,9 @@ Item {
                               }
 
                               if (Chat.AI == 'davinci') {
-                                if (text.includes("/generar")) {
+                                if (text.includes("/imagina")) {
                                   appendMessage(true, text)
-                                  text = text.replace("/generar", "")
+                                  text = text.replace("/imagina", "")
                                   Chat.sendPrompt(text)
                                   textbox.clear()
                                 } else {
@@ -352,7 +610,9 @@ Item {
       FluIconButton {
         id: button_send
         iconSource: FluentIcons.SendFill
-        disabled: Chat.isLoading
+        disabled: {
+          return Chat.isLoading
+        }
         iconSize: 15
         anchors {
           bottom: parent.bottom
@@ -367,9 +627,9 @@ Item {
           }
 
           if (Chat.AI == 'davinci') {
-            if (text.includes("/generar")) {
+            if (text.includes("/imagina")) {
               appendMessage(true, text)
-              text = text.replace("/generar", "")
+              text = text.replace("/imagina", "")
               Chat.sendPrompt(text)
               textbox.clear()
               return
@@ -431,11 +691,9 @@ Item {
   }
 
   Component.onCompleted: {
-    console.log(Chat.ID)
     if (Chat.ID !== 0) {
       Chat.obtenerMensajes(Chat.ID)
       for (var i = 0; i < Chat.messages.length; i++) {
-        console.log(Chat.messages[i].role)
         if (Chat.messages[i].role === "user") {
           model_message.append({
                                  "isMy": true,

@@ -55,6 +55,8 @@ public slots:
     QByteArray convertFileToBase64(QString filePath);
     //Get the templates from mysql database and put them in a list ready for qml
     QList<QObject*> getTemplates(bool publico, int limite);
+    void setear(const int ID, bool es_nuevo);
+    bool eliminar(const int ID);
 
 signals:
     void IDChanged();

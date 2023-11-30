@@ -132,7 +132,7 @@ Item {
 
       if (deleted_id == chat_id) {
         console.log("Se fue por alla")
-        Chat.setear("mupi", true)
+        Chat.setear("mupi", true, false)
         nav_view.push("qrc:app/qml/page/T_Home.qml")
         nav_view.setCurrentIndex(1, 'footer_list')
       } else {

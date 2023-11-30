@@ -82,8 +82,6 @@ void Chat::sendPrompt(const QString& prompt){
 
     // Send the POST request
     manager->post(request, QJsonDocument(json).toJson());
-
-    isLoading(false);
 }
 
 void Chat::onImgRequestFinished(QNetworkReply *reply) {
@@ -91,6 +89,7 @@ void Chat::onImgRequestFinished(QNetworkReply *reply) {
         qDebug() << reply->errorString();
         int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
         qDebug() << "HTTP status code:" << statusCode;
+        isLoading(false);
         return;
     }
 
@@ -105,9 +104,15 @@ void Chat::onImgRequestFinished(QNetworkReply *reply) {
         //messages.append(createMessage("assistant",jsonObj.value("data")));
         saveMessage(jsonObj.value("data"), "assistant", 0);
     }
-    responseImages(images);
-    emit nuevaImagen();
+    if(m_messages.at(1).toObject().value("role").toString() == "user" && m_messages.size() == 3){
+        emit nuevoChat(m_messages.at(1).toObject().value("user").toString(), m_ID);
+    }else{
+        responseImages(images);
+        emit nuevaImagen();
+    }
+
     reply->deleteLater();
+    isLoading(false);
 }
 
 int Chat::crearChat(const QString& nombre){
@@ -222,7 +227,6 @@ void Chat::sendMessage(const QString& text, const QString& role = "user"){
 
     // Send the POST request
     manager->post(request, QJsonDocument(json).toJson());
-    isLoading(false);
 }
 
 void Chat::onPostRequestFinished(QNetworkReply *reply) {
@@ -230,6 +234,7 @@ void Chat::onPostRequestFinished(QNetworkReply *reply) {
         qDebug() << reply->errorString();
         int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
         qDebug() << "HTTP status code:" << statusCode;
+        isLoading(false);
         return;
     }
 
@@ -246,11 +251,12 @@ void Chat::onPostRequestFinished(QNetworkReply *reply) {
         if(m_messages.at(1).toObject().value("role").toString() == "user" && m_messages.size() == 3){
             emit nuevoChat(m_messages.at(1).toObject().value("user").toString(), m_ID);
         }else{
-            qDebug() << "WASA WASA" << text;
             responseData(text.trimmed());
             emit nuevoMensaje(text.trimmed());
         }
     }
+    reply->deleteLater();
+    isLoading(false);
 }
 
 QJsonObject Chat::createMessage(const QString& role,const QString& content){
@@ -273,7 +279,7 @@ void Chat::clipText(const QString& text){
     clipboard->setText(text);
 }
 
-void Chat::setear(const QString ID, bool es_nuevo)
+void Chat::setear(const QString ID, bool es_nuevo, const bool es_plantilla)
 {
 
     if(es_nuevo){
@@ -293,12 +299,10 @@ void Chat::setear(const QString ID, bool es_nuevo)
         query.exec();
         query.next();
         m_ID = query.value(0).toInt();
-        qDebug() << "Chat_cpp: m_ID" << m_ID;
         m_nombre = query.value(2).toString();
         m_tema = query.value(3).toString();
         m_fecha = query.value(4).toString();
         m_AI = query.value(5).toString();
-        qDebug() << "Chat_cpp: m_AI" << m_AI;
         m_es_plantilla = query.value(6).toBool();
     }
 }
@@ -313,6 +317,22 @@ void Chat::obtenerMensajes(int ID){
     while(query.next()){
         m_messages.append(createMessage(query.value(4).toString(),query.value(2).toString()));
         qDebug() << "content: " << query.value(2).toString() << "rol: " << query.value(4).toString();
+    }
+}
+
+void Chat::removeChat(int ID)
+{
+    qDebug() << "Chat_cpp: eliminarChat";
+    if(createConnection()){
+        QSqlQuery query;
+        query.prepare("DELETE FROM chats WHERE ID = ?");
+        query.addBindValue(ID);
+        query.exec();
+        query.prepare("DELETE FROM chats_messages WHERE chat_id = ?");
+        query.addBindValue(ID);
+        query.exec();
+    }else{
+        m_status_server = false;
     }
 }
 

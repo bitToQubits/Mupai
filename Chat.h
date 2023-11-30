@@ -56,12 +56,13 @@ public slots:
     QJsonObject createMessage(const QString &role, const QString &content);
     void clipText(const QString &text);
 
-    void setear(const QString ID, bool es_nuevo);
+    void setear(const QString ID, bool es_nuevo, bool es_plantilla);
     void sendPrompt(const QString &prompt);
     void onImgRequestFinished(QNetworkReply *reply);
     QJsonObject createMessage(const QString &role, const QJsonValue &content);
     QList<QObject *> getChats();
     void obtenerMensajes(int ID);
+    void removeChat(int ID);
 signals:
     void AIChanged();
     void IDChanged();

@@ -6,11 +6,12 @@ import QtQuick.Window
 import FluentUI
 import QtQuick.Dialogs
 import "../component"
+import "qrc:app/qml/global/"
 import app.plantilla
 
 FluScrollablePage {
 
-  title: "Editor de plantillas"
+  title: "Editor de Personalidades"
   leftPadding: 10
   rightPadding: 10
   bottomPadding: 20
@@ -18,6 +19,7 @@ FluScrollablePage {
 
   FluArea {
     Layout.alignment: Qt.AlignHCenter
+    Layout.topMargin: 40
     width: 100
     height: 100
     Image {
@@ -28,12 +30,20 @@ FluScrollablePage {
       clip: true
       smooth: true
     }
+    Component.onCompleted: {
+      if (Plantilla.img !== "" || Plantilla.img !== 0) {
+        image.source = "data:image/png;base64," + Plantilla.img
+      }
+    }
   }
 
   RowLayout {
     id: rowLayout
 
-    Layout.fillWidth: true
+    Layout.fillWidth: {
+      console.log(Plantilla.ID)
+      return true
+    }
     Layout.maximumWidth: parent.width
     Layout.topMargin: 20
     spacing: 10
@@ -58,6 +68,7 @@ FluScrollablePage {
       id: nombre
       height: 20
       font.pixelSize: 12
+      text: (Plantilla.ID !== 0) ? Plantilla.nombre : ""
       onTextChanged: Plantilla.nombre = text
       placeholderText: qsTr("Nombre de la plantilla")
       Layout.fillWidth: true
@@ -66,6 +77,7 @@ FluScrollablePage {
     FluCheckBox {
       id: publica
       text: "Hacer pública para todos"
+      selected: (Plantilla.ID !== 0) ? Plantilla.publica : false
       onClicked: {
         Plantilla.publica = publica.selected
       }
@@ -82,6 +94,7 @@ FluScrollablePage {
     FluMultilineTextBox {
       id: textboxDesc
       placeholderText: "Descripción de la plantilla .."
+      text: (Plantilla.ID !== 0) ? Plantilla.desc : ""
       onTextChanged: Plantilla.desc = text
       font.pixelSize: 12
     }
@@ -97,6 +110,7 @@ FluScrollablePage {
     FluMultilineTextBox {
       id: textboxIns
       placeholderText: "Instrucciones y ejemplos para el modelo de IA .."
+      text: (Plantilla.ID !== 0) ? Plantilla.instr : ""
       onTextChanged: Plantilla.instr = text
       font.pixelSize: 12
     }
@@ -119,6 +133,7 @@ FluScrollablePage {
 
         if (Plantilla.status_form === 1) {
           showSuccess("¡Tu plantilla se ha guardado con éxito!", 3000)
+          continuar.open()
         } else {
           if (Plantilla.status_server) {
             if (Plantilla.status_form === 0) {
@@ -153,6 +168,29 @@ FluScrollablePage {
         cursorShape: Qt.PointingHandCursor
       }
       Layout.fillWidth: true
+    }
+  }
+
+  FluContentDialog {
+    id: continuar
+    title: "Continuar"
+    message: "¿Qué deseas hacer?"
+    buttonFlags: FluContentDialog.NegativeButton | FluContentDialog.PositiveButton
+                 | FluContentDialog.NeutralButton
+    positiveText: "Seguir creando"
+    neutralText: "Utilizar creación"
+    negativeText: "Ir a inicio"
+    onPositiveClicked: {
+      Plantilla.setear(0, true)
+      ItemsOriginal.navigationView.setCurrentIndex(0, 'footer_list')
+      ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Template.qml")
+    }
+    onNeutralClicked: {
+      console.log("Pendiente")
+    }
+    onNegativeClicked: {
+      ItemsOriginal.navigationView.setCurrentIndex(1, 'footer_list')
+      ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Home.qml")
     }
   }
 }
