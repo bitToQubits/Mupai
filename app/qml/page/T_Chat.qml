@@ -107,7 +107,7 @@ Item {
       id: list_message
       model: model_message
       anchors.fill: parent
-      anchors.bottom: isLoading.top
+      anchors.bottom: layout_bottom.top
       anchors.bottomMargin: 60
       clip: true
       ScrollBar.vertical: FluScrollBar {}
@@ -119,9 +119,127 @@ Item {
         height: 20
       }
       footer: Item {
-        width: list_message.width
-        height: 20
+        id: isLoading
+        visible: Chat.isLoading
+        anchors {
+          //bottom sera el ultimo mensaje de la lista
+          bottom: layout_bottom.top
+          bottomMargin: 10
+          left: parent.left
+          right: parent.right
+        }
+        width: 40
+        height: 60
+
+        FluRectangle {
+          id: item_avatar_loading
+          width: 30
+          height: 30
+          radius: [15, 15, 15, 15]
+          anchors {
+            right: undefined
+            rightMargin: undefined
+            left: parent.left
+            leftMargin: 20
+            top: parent.top
+          }
+          Image {
+            asynchronous: true
+            anchors.fill: parent
+            sourceSize: Qt.size(100, 100)
+            source: {
+              if (Chat.es_plantilla) {
+                if (Chat.img_plantilla != 0) {
+                  return "data:image/png;base64," + Chat.img_plantilla
+                } else {
+                  return "qrc:images/Mupiii.svg"
+                }
+              } else {
+                switch (Chat.AI) {
+                case "davinci":
+                  return "qrc:images/Davinci.svg"
+                case "chaplin":
+                  return "qrc:images/Chaplin.svg"
+                case "neumann":
+                  return "qrc:images/Neumann.svg"
+                default:
+                  return "qrc:images/Mupiii.svg"
+                }
+              }
+            }
+          }
+        }
+
+        Rectangle {
+          id: item_layout_content_loading
+          color: {
+            switch (Chat.AI) {
+            case "davinci":
+              return "#e85072"
+            case "chaplin":
+              return "#a3dce5"
+            case "neumann":
+              return "#f7a96c"
+            default:
+              return "#7D11F8"
+            }
+          }
+          width: text_edit_loading.width + 10
+          height: text_edit_loading.height + 10
+          radius: 3
+          anchors {
+            top: item_avatar_loading.top
+            right: undefined
+            rightMargin: undefined
+            left: item_avatar_loading.right
+            leftMargin: 10
+          }
+
+          TextEdit {
+            id: text_edit_loading
+            text: timer_loading.loadingText
+            wrapMode: Text.WrapAnywhere
+            readOnly: true
+            selectByMouse: true
+            leftPadding: 5
+            font.pixelSize: 15
+            selectByKeyboard: true
+            selectedTextColor: Qt.rgba(51, 153, 255, 1)
+            color: {
+              switch (Chat.AI) {
+              case "chaplin":
+                return "#030303"
+              case "neumann":
+                return "#030303"
+              default:
+                return "#FFFFFF"
+              }
+            }
+            selectionColor: {
+              if (FluTheme.dark) {
+                return FluTheme.primaryColor.lighter
+              } else {
+                return FluTheme.primaryColor.dark
+              }
+            }
+            width: Math.min(list_message.width - 200, 600, implicitWidth)
+            TapHandler {
+              acceptedButtons: Qt.RightButton
+              onTapped: {
+                menu_item.showMenu(item_text.selectedText)
+              }
+            }
+          }
+        }
+
+        Item {
+          id: item_layout_bottom_loading
+          width: parent.width
+          anchors.top: item_layout_content_loading.bottom
+          height: 20
+        }
       }
+
       delegate: Item {
         width: ListView.view.width
         height: childrenRect.height
@@ -248,7 +366,6 @@ Item {
           source: {
             if (Chat.es_plantilla) {
               if (Chat.img_plantilla != '0') {
-                console.log(Chat.img_plantilla)
                 return "data:image/png;base64," + Chat.img_plantilla
               } else {
                 return "qrc:images/Mupiii.svg"
@@ -463,127 +580,6 @@ Item {
       }
     }
 
-    Item {
-      id: isLoading
-      visible: Chat.isLoading
-      anchors {
-        //bottom sera el ultimo mensaje de la lista
-        bottom: layout_bottom.top
-        bottomMargin: 10
-        left: parent.left
-        right: parent.right
-      }
-      width: 40
-      height: 60
-
-      FluRectangle {
-        id: item_avatar_loading
-        width: 30
-        height: 30
-        radius: [15, 15, 15, 15]
-        anchors {
-          right: undefined
-          rightMargin: undefined
-          left: parent.left
-          leftMargin: 20
-          top: parent.top
-        }
-        Image {
-          asynchronous: true
-          anchors.fill: parent
-          sourceSize: Qt.size(100, 100)
-          source: {
-            if (Chat.es_plantilla) {
-              if (Chat.img_plantilla != 0) {
-                return "data:image/png;base64," + Chat.img_plantilla
-              } else {
-                return "qrc:images/Mupiii.svg"
-              }
-            } else {
-              switch (Chat.AI) {
-              case "davinci":
-                return "qrc:images/Davinci.svg"
-              case "chaplin":
-                return "qrc:images/Chaplin.svg"
-              case "neumann":
-                return "qrc:images/Neumann.svg"
-              default:
-                return "qrc:images/Mupiii.svg"
-              }
-            }
-          }
-        }
-      }
-
-      Rectangle {
-        id: item_layout_content_loading
-        color: {
-          switch (Chat.AI) {
-          case "davinci":
-            return "#e85072"
-          case "chaplin":
-            return "#a3dce5"
-          case "neumann":
-            return "#f7a96c"
-          default:
-            return "#7D11F8"
-          }
-        }
-        width: text_edit_loading.width + 10
-        height: text_edit_loading.height + 10
-        radius: 3
-        anchors {
-          top: item_avatar_loading.top
-          right: undefined
-          rightMargin: undefined
-          left: item_avatar_loading.right
-          leftMargin: 10
-        }
-
-        TextEdit {
-          id: text_edit_loading
-          text: timer_loading.loadingText
-          wrapMode: Text.WrapAnywhere
-          readOnly: true
-          selectByMouse: true
-          leftPadding: 5
-          font.pixelSize: 15
-          selectByKeyboard: true
-          selectedTextColor: Qt.rgba(51, 153, 255, 1)
-          color: {
-            switch (Chat.AI) {
-            case "chaplin":
-              return "#030303"
-            case "neumann":
-              return "#030303"
-            default:
-              return "#FFFFFF"
-            }
-          }
-          selectionColor: {
-            if (FluTheme.dark) {
-              return FluTheme.primaryColor.lighter
-            } else {
-              return FluTheme.primaryColor.dark
-            }
-          }
-          width: Math.min(list_message.width - 200, 600, implicitWidth)
-          TapHandler {
-            acceptedButtons: Qt.RightButton
-            onTapped: {
-              menu_item.showMenu(item_text.selectedText)
-            }
-          }
-        }
-      }
-
-      Item {
-        id: item_layout_bottom_loading
-        width: parent.width
-        anchors.top: item_layout_content_loading.bottom
-        height: 20
-      }
-    }
     FluArea {
       id: layout_bottom
       height: 50

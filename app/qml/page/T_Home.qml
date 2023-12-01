@@ -314,14 +314,6 @@ FluScrollablePage {
 
     FluMenuItem {
       visible: (menu_item.user_id == User.ID) ? true : false
-      text: "Eliminar"
-      onClicked: {
-        confirmacion_eliminacion.open()
-      }
-    }
-
-    FluMenuItem {
-      visible: (menu_item.user_id == User.ID) ? true : false
       text: "Editar"
       onClicked: {
         Plantilla.setear(menu_item.selectedPlantilla, false)
@@ -338,6 +330,15 @@ FluScrollablePage {
         ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Chat.qml")
       }
     }
+
+    FluMenuItem {
+      visible: (menu_item.user_id == User.ID) ? true : false
+      text: "Eliminar"
+      onClicked: {
+        confirmacion_eliminacion.open()
+      }
+    }
+
     function showMenu(id, id_usuario) {
       console.log(id_usuario, id, "id, id_usuario")
       menu_item.selectedPlantilla = id
@@ -359,7 +360,7 @@ FluScrollablePage {
         creadas_recientemente.model = undefined
         creadas_por_la_comunidad.model = undefined
         creadas_recientemente.model = Plantilla.getTemplates(false, 5)
-        creadas_por_la_comunidad.model = Plantilla.getTemplates(true, 5)
+        creadas_por_la_comunidad.model = Plantilla.getTemplates(true, 8)
       } else {
         showSuccess("Algo fue mal. Intentalo de nuevo.")
       }
@@ -477,7 +478,7 @@ FluScrollablePage {
     cellHeight: 120
     cellWidth: 320
     interactive: false
-    model: Plantilla.getTemplates(true, 5)
+    model: Plantilla.getTemplates(true, 8)
     delegate: com_item
   }
 

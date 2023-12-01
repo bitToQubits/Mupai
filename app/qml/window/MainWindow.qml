@@ -38,10 +38,13 @@ Item {
     id: menu_item
     focus: false
     property string selectedChat
+    property string __title
     FluMenuItem {
       text: "Editar nombre"
       onClicked: {
         FluApp.navigate("/standardWindow")
+        //Crear señal
+        Chat.editarChat(menu_item.selectedChat, menu_item.__title)
       }
     }
 
@@ -51,8 +54,9 @@ Item {
         confirmacion_eliminacion.open()
       }
     }
-    function showMenu(id) {
+    function showMenu(id, title) {
       menu_item.selectedChat = id
+      menu_item.__title = title
       menu_item.popup()
     }
   }
@@ -112,33 +116,43 @@ Item {
     positiveText: "Si"
     onPositiveClicked: {
       Chat.removeChat(menu_item.selectedChat)
-      let id_actual
-      let lista_actual
-      let chat_id = Chat.ID
-      let deleted_id = menu_item.selectedChat
-      if (nav_view.getCurrentIndex('footer_list') < 0) {
-        id_actual = nav_view.getCurrentIndex('nav_list')
-        lista_actual = 'nav_list'
-      } else {
-        id_actual = nav_view.getCurrentIndex('footer_list')
-        lista_actual = 'footer_list'
-      }
-
-      ItemsOriginal.children.length = 0
-      nav_view.populateChatList()
-
-      if (deleted_id == chat_id) {
-        console.log("Se fue por alla")
-        Chat.setear("mupi", true, false)
-        nav_view.push("qrc:app/qml/page/T_Home.qml")
-        nav_view.setCurrentIndex(1, 'footer_list')
-      } else {
-        console.log("Son unos comentarios")
-        nav_view.setCurrentIndex(id_actual, lista_actual)
-      }
-
+      window.repopular()
       menu_item.close()
       showSuccess("Chat eliminado correctamente")
+    }
+  }
+
+  Connections {
+    target: Chat
+    function onTituloCambiado() {
+      window.repopular("actualizar")
+    }
+  }
+
+  function repopular(accion = 'eliminar') {
+    let id_actual
+    let lista_actual
+    let chat_id = Chat.ID
+    let deleted_id = menu_item.selectedChat
+    if (nav_view.getCurrentIndex('footer_list') < 0) {
+      id_actual = nav_view.getCurrentIndex('nav_list')
+      lista_actual = 'nav_list'
+    } else {
+      id_actual = nav_view.getCurrentIndex('footer_list')
+      lista_actual = 'footer_list'
+    }
+
+    ItemsOriginal.children.length = 0
+    nav_view.populateChatList()
+
+    if (deleted_id == chat_id && accion == 'eliminar') {
+      console.log("Se fue por alla")
+      Chat.setear("mupi", true, false)
+      nav_view.push("qrc:app/qml/page/T_Home.qml")
+      nav_view.setCurrentIndex(1, 'footer_list')
+    } else {
+      console.log("Son unos comentarios")
+      nav_view.setCurrentIndex(id_actual, lista_actual)
     }
   }
 }

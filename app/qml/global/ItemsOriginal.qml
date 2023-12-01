@@ -21,7 +21,7 @@ panelNavegacion.navigationView.push("qrc:app/qml/page/T_Chat.qml")
 }else if (panelNavegacion.navigationView.mouseButton == 2) {
 console.log("Click hecho!!")
 if(panelNavegacion.menuDesplegable != null && panelNavegacion.menuDesplegable != undefined){
-panelNavegacion.menuDesplegable.showMenu(' + id + ')
+panelNavegacion.menuDesplegable.showMenu(' + id + ', "' + nombre + '")
 }
 }
 }

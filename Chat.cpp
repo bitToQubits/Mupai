@@ -67,8 +67,7 @@ void Chat::sendPrompt(const QString& prompt){
     QJsonObject json;
     json.insert("model", "dall-e-2");
     json.insert("prompt", prompt);
-    json.insert("size", "512x512");
-    //json.insert("n", "3");
+    json.insert("size", "1024x1024");
     json.insert("response_format", "b64_json");
 
     // Create a network access manager
@@ -216,7 +215,11 @@ void Chat::sendMessage(const QString& text, const QString& role = "user"){
 
     // Create the JSON object for the body
     QJsonObject json;
-    json.insert("model", "gpt-3.5-turbo");
+    if (m_AI == "neumann"){
+        json.insert("model", "gpt-4");
+    }else{
+        json.insert("model", "gpt-3.5-turbo");
+    }
 
     m_messages.append(createMessage(role, text));
 
@@ -304,14 +307,16 @@ void Chat::setear(const QString ID, bool es_nuevo, const bool es_plantilla)
             //Haciendo consulta a la tabla plantillas para extraer las instrucciones.
             QSqlQuery query;
             query.prepare("SELECT * FROM templates WHERE ID = ?");
-            query.addBindValue(ID);
+            query.addBindValue(m_AI);
             query.exec();
             query.next();
-            m_es_plantilla = true;
-            m_AI = query.value(0).toString();
-            plantilla = query.value(4).toString();
-            m_nombre_plantilla = query.value(2).toString();
-            m_desc_plantilla = query.value(3).toString();
+            setEs_plantilla(true);
+            setAI(query.value(0).toString());
+            setNombre_plantilla(query.value(2).toString());
+            plantilla = "Tu nombre es: " + m_nombre_plantilla + "." + query.value(4).toString();
+            setDesc_plantilla(query.value(3).toString());
+            setImg_plantilla(query.value(6).toString());
+            qDebug() << query.value(6).toString();
             m_img_plantilla = query.value(6).toString();
         }
     }else{
@@ -321,23 +326,23 @@ void Chat::setear(const QString ID, bool es_nuevo, const bool es_plantilla)
         query.exec();
         query.next();
         m_ID = query.value(0).toInt();
-        m_nombre = query.value(2).toString();
-        m_tema = query.value(3).toString();
-        m_fecha = query.value(4).toString();
-        m_AI = query.value(5).toString();
-        m_es_plantilla = query.value(6).toBool();
+        setNombre(query.value(2).toString());
+        setTema(query.value(3).toString());
+        setFecha(query.value(4).toString());
+        setAI(query.value(5).toString());
+        setEs_plantilla(query.value(6).toBool());
         if(m_es_plantilla){
             //Haciendo consulta a la tabla templates para extraer las instrucciones.
             QSqlQuery query;
             query.prepare("SELECT * FROM templates WHERE ID = ?");
-            query.addBindValue(ID);
+            query.addBindValue(m_AI);
             query.exec();
             query.next();
-            m_AI = query.value(0).toString();
-            plantilla = query.value(4).toString();
-            m_nombre_plantilla = query.value(2).toString();
-            m_desc_plantilla = query.value(3).toString();
-            m_img_plantilla = query.value(6).toString();
+            setAI(query.value(0).toString());
+            setNombre_plantilla(query.value(2).toString());
+            plantilla = "Tu nombre es: " + m_nombre_plantilla + "." + query.value(4).toString();
+            setDesc_plantilla(query.value(3).toString());
+            setImg_plantilla(query.value(6).toString());
         }
     }
 }
@@ -366,6 +371,24 @@ void Chat::removeChat(int ID)
         query.prepare("DELETE FROM chats_messages WHERE chat_id = ?");
         query.addBindValue(ID);
         query.exec();
+    }else{
+        m_status_server = false;
+    }
+}
+
+void Chat::guardarTitulo(int ID, QString nombre)
+{
+    if(createConnection()){
+        QSqlQuery query;
+        query.prepare("UPDATE chats SET nombre = ? WHERE ID = ?");
+        query.addBindValue(nombre);
+        query.addBindValue(ID);
+        if(query.exec()){
+            m_status_server = true;
+            emit tituloCambiado();
+        }else{
+            m_status_server = false;
+        }
     }else{
         m_status_server = false;
     }

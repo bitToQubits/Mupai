@@ -77,6 +77,8 @@ public slots:
     QList<QObject *> getChats();
     void obtenerMensajes(int ID);
     void removeChat(int ID);
+    void guardarTitulo(int ID, QString nombre);
+
 signals:
     void AIChanged();
     void IDChanged();
@@ -96,6 +98,8 @@ signals:
     void messagesChanged();
 
     void nuevoChat(QString nombre, int ID);
+    void editarChat(int ID, QString nombre);
+    void tituloCambiado();
 
     void nombre_plantillaChanged();
 

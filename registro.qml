@@ -34,7 +34,7 @@ Item {
       Rectangle {
         id: rectangle
         width: parent.width
-        height: 350
+        height: 290
         anchors.verticalCenter: parent.verticalCenter
         color: 'transparent'
 
@@ -47,7 +47,8 @@ Item {
           anchors.horizontalCenter: parent.horizontalCenter
         }
 
-        FluButton {
+
+        /*FluButton {
           id: googleButton
           anchors.top: registreSuCuenta.bottom
           highlighted: false
@@ -69,17 +70,16 @@ Item {
             acceptedDevices: PointerDevice.Mouse
             cursorShape: Qt.PointingHandCursor
           }
-        }
-
+        }*/
         FluText {
           id: utilizarEmail
           text: qsTr("o manualmente introduce tus datos")
           font.pixelSize: 18
           font.weight: 200
           font.family: fuenteSecundaria.font.family
-          anchors.top: googleButton.bottom
+          anchors.top: registreSuCuenta.bottom
           anchors.topMargin: 10
-          anchors.horizontalCenter: googleButton.horizontalCenter
+          anchors.horizontalCenter: registreSuCuenta.horizontalCenter
         }
 
         RowLayout {

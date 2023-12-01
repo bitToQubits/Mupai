@@ -123,7 +123,7 @@ Item {
       Rectangle {
         id: rectangle
         width: parent.width
-        height: 350
+        height: 250
         anchors.verticalCenter: parent.verticalCenter
         color: 'transparent'
 
@@ -136,7 +136,8 @@ Item {
           anchors.horizontalCenter: parent.horizontalCenter
         }
 
-        FluButton {
+
+        /*FluButton {
           id: googleButton
           anchors.top: inicieSesion.bottom
           highlighted: false
@@ -158,17 +159,16 @@ Item {
             acceptedDevices: PointerDevice.Mouse
             cursorShape: Qt.PointingHandCursor
           }
-        }
-
+        }*/
         FluText {
           id: utilizarEmail
           text: qsTr("o utiliza tu email y contraseña")
           font.pixelSize: 18
           font.weight: 200
           font.family: fuenteSecundaria.font.family
-          anchors.top: googleButton.bottom
+          anchors.top: inicieSesion.bottom
           anchors.topMargin: 20
-          anchors.horizontalCenter: googleButton.horizontalCenter
+          anchors.horizontalCenter: inicieSesion.horizontalCenter
           color: (FluTheme.dark) ? '#FFFFFF' : '#1a2228'
         }
 
