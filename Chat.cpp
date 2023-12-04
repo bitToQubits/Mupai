@@ -1,12 +1,14 @@
 #include "Chat.h"
 #include "database.h"
 #include "session.h"
+#include <QIODevice>
 #define session Session::getInstance().getSession()
 
 Chat::Chat(QObject *parent)
     : QObject{parent}
 {
     isLoading(false);
+    isLoading_msg(false);
     networkManager = new QNetworkAccessManager(this);
 
 }
@@ -56,6 +58,15 @@ void Chat::sendPrompt(const QString& prompt){
     isLoading(true);
     if(m_messages.isEmpty()){
         m_ID = crearChat(prompt);
+        if (m_AI == "neumann"){
+            sendMessage(neumann, "system");
+        }else if(m_AI == "davinci"){
+            sendMessage(davinci, "system");
+        }else if(m_AI == "chaplin"){
+            sendMessage(chaplin, "system");
+        }else{
+            sendMessage(mupi, "system");
+        }
     }
     QUrl url("https://api.openai.com/v1/images/generations");
     QNetworkRequest request(url);
@@ -65,8 +76,9 @@ void Chat::sendPrompt(const QString& prompt){
 
     // Create the JSON object for the body
     QJsonObject json;
-    json.insert("model", "dall-e-2");
+    json.insert("model", "dall-e-3");
     json.insert("prompt", prompt);
+    json.insert("n", 1);
     json.insert("size", "1024x1024");
     json.insert("response_format", "b64_json");
 
@@ -99,16 +111,22 @@ void Chat::onImgRequestFinished(QNetworkReply *reply) {
 
     if(images.isEmpty()){
         qDebug() << "Error del lado del servidor";
+        m_status_server = false;
     }else{
+        m_status_server = true;
         //messages.append(createMessage("assistant",jsonObj.value("data")));
         saveMessage(jsonObj.value("data"), "assistant", 0);
     }
+
+    m_messages.append(createMessage("assistant",jsonObj.value("data")));
+
     if(m_messages.at(1).toObject().value("role").toString() == "user" && m_messages.size() == 3){
         emit nuevoChat(m_messages.at(1).toObject().value("user").toString(), m_ID);
-    }else{
-        responseImages(images);
-        emit nuevaImagen();
     }
+
+    responseImages(images);
+    emit nuevaImagen();
+
 
     reply->deleteLater();
     isLoading(false);
@@ -116,7 +134,7 @@ void Chat::onImgRequestFinished(QNetworkReply *reply) {
 
 int Chat::crearChat(const QString& nombre){
     if(createConnection()){
-
+        m_status_server = true;
         QSqlQuery query;
         //TO-DO: AGREGAR TEMAS DE BUSQUEDA
         query.prepare("INSERT INTO chats (user_id, nombre, inteligencia, es_plantilla)"
@@ -129,8 +147,10 @@ int Chat::crearChat(const QString& nombre){
         query.exec();
 
         if(!(query.numRowsAffected() > 0)){
+            m_status_server = false;
             return 0;
         }
+        m_status_server = true;
 
         query.clear();
 
@@ -141,6 +161,7 @@ int Chat::crearChat(const QString& nombre){
         query.next();
 
         if(query.isValid()){
+            m_status_server = true;
             return query.value(0).toInt();
         }else{
             m_status_server = false; //bobo
@@ -161,23 +182,27 @@ bool Chat::saveMessage(const QJsonValue content, const QString& rol, int tipo){
 
         if(tipo == 1){
             query.prepare("INSERT INTO chats_messages (chat_id,mensaje, rol, tipo) VALUES (?,?,?,?)");
+            query.addBindValue(m_ID);
+            query.addBindValue(content);
+            query.addBindValue(rol);
+            query.addBindValue(tipo);
         }else{
             query.prepare("INSERT INTO chats_messages (chat_id,imagen, rol, tipo) VALUES (?,?,?,?)");
-            content.toString();
-            qDebug() << content;
+            //content.toString();
+            //Preparar la variable content convertir content a QByteArray
+            query.addBindValue(m_ID);
+            query.addBindValue("No guardamos imagenes en nuestro servidor");
+            query.addBindValue(rol);
+            query.addBindValue(1);
         }
-
-        query.addBindValue(m_ID);
-        query.addBindValue(content);
-        query.addBindValue(rol);
-        query.addBindValue(tipo);
 
         query.exec();
 
         if(query.numRowsAffected() > 0){
+            m_status_server = true;
             return true;
         }else{
-            m_status_server = false; //bobo
+            m_status_server = false;
             return false;
         }
 
@@ -188,7 +213,7 @@ bool Chat::saveMessage(const QJsonValue content, const QString& rol, int tipo){
 }
 
 void Chat::sendMessage(const QString& text, const QString& role = "user"){
-    isLoading(true);
+    isLoading_msg(true);
     if(m_messages.isEmpty() && role == "user"){
         m_ID = crearChat(text);
         if (m_AI == "neumann"){
@@ -224,17 +249,59 @@ void Chat::sendMessage(const QString& text, const QString& role = "user"){
     m_messages.append(createMessage(role, text));
 
     json.insert("messages", m_messages);
+    json.insert("stream", true);
 
     // Create a network access manager
     QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+    QNetworkReply* reply = manager->post(request, QJsonDocument(json).toJson());
 
     if(role != "system"){
-        // Connect the finished signal to a slot
+        emit nuevoMensaje();
         connect(manager, &QNetworkAccessManager::finished, this, &Chat::onPostRequestFinished);
-    }
+        // Connect the finished signal to a slot
+        respuesta = "";
+        connect(reply, &QIODevice::readyRead, [=]() {
 
-    // Send the POST request
-    manager->post(request, QJsonDocument(json).toJson());
+            if(reply->error() == QNetworkReply::NoError)
+            {
+                m_status_server = true;
+                QString response = QString::fromUtf8(reply->readAll());
+
+                response.replace("\n\n", "},");
+                if(response.contains(",data: [DONE]},")){
+                    response.remove(",data: [DONE]},");
+                }else{
+                    response.remove(response.lastIndexOf(","), 1);
+                }
+                response.replace("data:", "{\"data\":");
+                response.prepend("{\"conjunto\": [");
+                response.append("]}");
+                QJsonDocument doc = QJsonDocument::fromJson(response.toUtf8());
+                QJsonObject jsonObj = doc.object();
+
+                if(doc.isNull()){
+                    qDebug() << response;
+                }else{
+                    //Iterar a traves de los objetos
+                    QJsonArray jsonArray = jsonObj["conjunto"].toArray();
+                    for (int i = 0; i < jsonArray.size(); i++) {
+                        QJsonObject jsonObject = jsonArray[i].toObject();
+                        if(jsonObject["data"].toObject()["choices"].toArray().at(0).toObject().value("delta") != QJsonValue::Undefined){
+                            if(jsonObject["data"].toObject()["choices"].toArray().at(0).toObject().value("delta").toObject().value("content").toString() != ""){
+                                emit nuevoToken(jsonObject["data"].toObject()["choices"].toArray().at(0).toObject().value("delta").toObject().value("content").toString());
+                                respuesta+= jsonObject["data"].toObject()["choices"].toArray().at(0).toObject().value("delta").toObject().value("content").toString();
+                            }
+                        }
+                    }
+                }
+            }
+            else // handle error
+            {
+                m_status_server = false;
+                qDebug() << "Error";
+            }
+        });
+    }
 }
 
 void Chat::onPostRequestFinished(QNetworkReply *reply) {
@@ -242,28 +309,25 @@ void Chat::onPostRequestFinished(QNetworkReply *reply) {
         qDebug() << reply->errorString();
         int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
         qDebug() << "HTTP status code:" << statusCode;
-        isLoading(false);
+        isLoading_msg(false);
+        m_status_server = false;
         return;
     }
 
-    QString responseString = QString::fromUtf8(reply->readAll());
-    QJsonDocument doc = QJsonDocument::fromJson(responseString.toUtf8());
-    QJsonObject jsonObj = doc.object();
-    QString text = jsonObj.value("choices").toArray().at(0).toObject().value("message").toObject().value("content").toString();
-    if(text.isEmpty()){
-        text = "Error del lado del servidor: Contactar con el desarrollador.";
+    if(respuesta.isEmpty()){
+        m_status_server = false;
+        respuesta = "Error del lado del servidor: Contactar con el desarrollador.";
     }else{
-        m_messages.append(createMessage("assistant",text));
-        saveMessage(text, "assistant", 1);
+        m_status_server = true;
+        m_messages.append(createMessage("assistant",respuesta));
+        saveMessage(respuesta, "assistant", 1);
         //Chequear si existe ya el primer mensaje de usuario de la conversacion
         if(m_messages.at(1).toObject().value("role").toString() == "user" && m_messages.size() == 3){
             emit nuevoChat(m_messages.at(1).toObject().value("user").toString(), m_ID);
         }
-        responseData(text.trimmed());
-        emit nuevoMensaje(text.trimmed());
     }
     reply->deleteLater();
-    isLoading(false);
+    isLoading_msg(false);
 }
 
 QJsonObject Chat::createMessage(const QString& role,const QString& content){
@@ -316,7 +380,6 @@ void Chat::setear(const QString ID, bool es_nuevo, const bool es_plantilla)
             plantilla = "Tu nombre es: " + m_nombre_plantilla + "." + query.value(4).toString();
             setDesc_plantilla(query.value(3).toString());
             setImg_plantilla(query.value(6).toString());
-            qDebug() << query.value(6).toString();
             m_img_plantilla = query.value(6).toString();
         }
     }else{
@@ -353,10 +416,8 @@ void Chat::obtenerMensajes(int ID){
     query.addBindValue(ID);
     query.exec();
     m_messages = {};
-    qDebug () << "Llego a obtener mensajes" << ID;
     while(query.next()){
         m_messages.append(createMessage(query.value(4).toString(),query.value(2).toString()));
-        qDebug() << "content: " << query.value(2).toString() << "rol: " << query.value(4).toString();
     }
 }
 
@@ -364,6 +425,7 @@ void Chat::removeChat(int ID)
 {
     qDebug() << "Chat_cpp: eliminarChat";
     if(createConnection()){
+        m_status_server = true;
         QSqlQuery query;
         query.prepare("DELETE FROM chats WHERE ID = ?");
         query.addBindValue(ID);
@@ -379,6 +441,7 @@ void Chat::removeChat(int ID)
 void Chat::guardarTitulo(int ID, QString nombre)
 {
     if(createConnection()){
+        m_status_server = true;
         QSqlQuery query;
         query.prepare("UPDATE chats SET nombre = ? WHERE ID = ?");
         query.addBindValue(nombre);

@@ -276,6 +276,7 @@ bool Plantilla::eliminar(const int ID)
     if(query.numRowsAffected() > 0){
         return true;
     }else{
+        m_status_server = false;
         return false;
     }
 }

@@ -189,7 +189,7 @@ FluScrollablePage {
                        scrollbar_header.increase()
                      }
             onClicked: {
-              ItemsOriginal.navigationView.setCurrentIndex(2, 'footer_list')
+              //ItemsOriginal.navigationView.setCurrentIndex(2, 'footer_list')
               Chat.setear(model.id_model, true, false)
               ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Chat.qml")
             }
@@ -247,7 +247,7 @@ FluScrollablePage {
             anchors.fill: parent
             hoverEnabled: true
             onClicked: {
-              ItemsOriginal.navigationView.setCurrentIndex(2, 'footer_list')
+              //ItemsOriginal.navigationView.setCurrentIndex(2, 'footer_list')
               Chat.setear(modelData.ID, true, true)
               ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Chat.qml")
             }
@@ -326,7 +326,7 @@ FluScrollablePage {
       text: "Utilizar"
       onClicked: {
         Chat.setear(menu_item.selectedPlantilla, true, true)
-        ItemsOriginal.navigationView.setCurrentIndex(2, 'footer_list')
+        //ItemsOriginal.navigationView.setCurrentIndex(2, 'footer_list')
         ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Chat.qml")
       }
     }

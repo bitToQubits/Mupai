@@ -30,7 +30,7 @@ class Chat : public QObject
     Q_PROPERTY(QString img_plantilla READ img_plantilla WRITE setImg_plantilla NOTIFY Img_plantillaChanged)
 
     Q_PROPERTY_AUTO(bool,isLoading)
-    Q_PROPERTY_AUTO(QJsonValue,responseData);
+    Q_PROPERTY_AUTO(bool,isLoading_msg)
     Q_PROPERTY_AUTO(QVariantList, responseImages);
     Q_PROPERTY(bool status_server READ status_server NOTIFY statusServerChanged)
 public:
@@ -78,11 +78,12 @@ public slots:
     void obtenerMensajes(int ID);
     void removeChat(int ID);
     void guardarTitulo(int ID, QString nombre);
+    //void testear();
 
 signals:
     void AIChanged();
     void IDChanged();
-    void nuevoMensaje(QString );
+    void nuevoMensaje();
     void nuevaImagen();
 
     void statusServerChanged();
@@ -106,6 +107,8 @@ signals:
     void Img_plantillaChanged();
 
     void desc_plantillaChanged();
+
+    void nuevoToken(QString token);
 
 private:
     QString m_AI = "mupi";
@@ -152,8 +155,9 @@ private:
                     three other personalities called Chaplin, Davinci and Neumann. \
                     Chaplin is funny, Davinci is creative, and Neumann is analytical. \
                    ";
+    QString respuesta;
     QString plantilla;
-    bool m_status_server;
+    bool m_status_server = true;
     int crearChat(const QString &nombre);
     //Tipo, 1 para texto, 0 para imagen
     bool saveMessage(QJsonValue content, const QString &rol, int tipo);

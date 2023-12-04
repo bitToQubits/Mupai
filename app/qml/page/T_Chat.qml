@@ -3,7 +3,6 @@ import QtQuick.Layouts
 import QtQuick.Window
 import QtQuick.Controls
 import FluentUI
-import "../component"
 import app.chat
 
 Item {
@@ -91,7 +90,12 @@ Item {
     Connections {
       target: Chat
       function onNuevoMensaje() {
-        appendMessage(false, Chat.responseData)
+        appendMessage(false)
+      }
+
+      function onNuevoToken(token) {
+        //Seleccionar el ultimo mensaje de la lista
+        model_message.get(model_message.count - 1).content += token
       }
 
       function onNuevaImagen() {
@@ -446,7 +450,6 @@ Item {
           height: 60
           color: 'transparent'
           border.color: {
-            console.log("Es plantilla", Chat.es_plantilla)
             switch (Chat.AI) {
             case "davinci":
               return "#e85072"
@@ -623,10 +626,20 @@ Item {
                                   text = text.replace("/imagina", "")
                                   Chat.sendPrompt(text)
                                   textbox.clear()
+                                  if (!Chat.status_server) {
+                                    showError(
+                                      "No se pudo conectar con el servidor",
+                                      3000)
+                                  }
                                 } else {
                                   appendMessage(true, text)
                                   Chat.sendMessage(text, "user")
                                   textbox.clear()
+                                  if (!Chat.status_server) {
+                                    showError(
+                                      "No se pudo conectar con el servidor",
+                                      3000)
+                                  }
                                 }
                               } else {
                                 appendMessage(true, text)
@@ -746,7 +759,7 @@ Item {
     }
   }
 
-  function appendMessage(isMy, text) {
+  function appendMessage(isMy, text = "") {
     model_message.append({
                            "isMy": isMy,
                            "is_image": false,

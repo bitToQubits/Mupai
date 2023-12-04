@@ -10,51 +10,12 @@
         <file>images/Center.png</file>
         <file>registro.qml</file>
         <file>login.qml</file>
-        <file>app/qml/component/CodeExpander.qml</file>
         <file>app/qml/global/ItemsFooter.qml</file>
         <file>app/qml/global/ItemsOriginal.qml</file>
         <file>app/qml/global/MainEvent.qml</file>
         <file>app/qml/global/qmldir</file>
-        <file>app/qml/page/T_Awesome.qml</file>
-        <file>app/qml/page/T_Badge.qml</file>
-        <file>app/qml/page/T_BreadcrumbBar.qml</file>
-        <file>app/qml/page/T_Buttons.qml</file>
-        <file>app/qml/page/T_CalendarPicker.qml</file>
-        <file>app/qml/page/T_Carousel.qml</file>
-        <file>app/qml/page/T_CheckBox.qml</file>
-        <file>app/qml/page/T_ColorPicker.qml</file>
-        <file>app/qml/page/T_DatePicker.qml</file>
-        <file>app/qml/page/T_Dialog.qml</file>
-        <file>app/qml/page/T_Expander.qml</file>
-        <file>app/qml/page/T_FlipView.qml</file>
         <file>app/qml/page/T_Home.qml</file>
-        <file>app/qml/page/T_InfoBar.qml</file>
-        <file>app/qml/page/T_MediaPlayer.qml</file>
-        <file>app/qml/page/T_Menu.qml</file>
-        <file>app/qml/page/T_MultiWindow.qml</file>
-        <file>app/qml/page/T_Pivot.qml</file>
-        <file>app/qml/page/T_Progress.qml</file>
-        <file>app/qml/page/T_RatingControl.qml</file>
-        <file>app/qml/page/T_Rectangle.qml</file>
-        <file>app/qml/page/T_Settings.qml</file>
-        <file>app/qml/page/T_Slider.qml</file>
-        <file>app/qml/page/T_StatusView.qml</file>
-        <file>app/qml/page/T_TableView.qml</file>
-        <file>app/qml/page/T_TabView.qml</file>
-        <file>app/qml/page/T_TextBox.qml</file>
-        <file>app/qml/page/T_Theme.qml</file>
-        <file>app/qml/page/T_TimePicker.qml</file>
-        <file>app/qml/page/T_ToggleSwitch.qml</file>
-        <file>app/qml/page/T_Tooltip.qml</file>
-        <file>app/qml/page/T_TreeView.qml</file>
-        <file>app/qml/page/T_Typography.qml</file>
-        <file>app/qml/window/AboutWindow.qml</file>
-        <file>app/qml/window/ChatWindow.qml</file>
-        <file>app/qml/window/LoginWindow.qml</file>
         <file>app/qml/window/MainWindow.qml</file>
-        <file>app/qml/window/MediaWindow.qml</file>
-        <file>app/qml/window/SingleInstanceWindow.qml</file>
-        <file>app/qml/window/SingleTaskWindow.qml</file>
         <file>app/qml/window/StandardWindow.qml</file>
         <file>app/res/image/control/Acrylic.png</file>
         <file>app/res/image/control/AnimatedIcon.png</file>
@@ -188,7 +149,6 @@
         <file>app/res/image/vonNeumann.png</file>
         <file>app/res/image/chaplin.png</file>
         <file>app/res/image/corinna.png</file>
-        <file>app/qml/page/T_Chat.qml</file>
         <file>images/Mupiii.svg</file>
         <file>images/Mupiii2.svg</file>
         <file>images/Davinci.svg</file>
@@ -198,5 +158,6 @@
         <file>app/qml/page/T_Community.qml</file>
         <file>app/qml/page/T_Template.qml</file>
         <file>app/qml/page/community.js</file>
+        <file>app/qml/page/T_Chat.qml</file>
     </qresource>
 </RCC>

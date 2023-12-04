@@ -66,7 +66,7 @@ FluContentPage {
             anchors.fill: parent
             hoverEnabled: true
             onClicked: {
-              ItemsOriginal.navigationView.setCurrentIndex(2, 'footer_list')
+              //ItemsOriginal.navigationView.setCurrentIndex(2, 'footer_list')
               Chat.setear(modelData.ID, true, true)
               ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Chat.qml")
             }
@@ -152,12 +152,11 @@ FluContentPage {
       text: "Utilizar"
       onClicked: {
         Chat.setear(menu_item.selectedPlantilla, true, true)
-        ItemsOriginal.navigationView.setCurrentIndex(2, 'footer_list')
+        //ItemsOriginal.navigationView.setCurrentIndex(2, 'footer_list')
         ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Chat.qml")
       }
     }
     function showMenu(id, id_usuario) {
-      console.log(id_usuario, id, "id, id_usuario")
       menu_item.selectedPlantilla = id
       menu_item.user_id = id_usuario
       menu_item.popup()

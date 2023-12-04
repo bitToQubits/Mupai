@@ -9,16 +9,18 @@
 static bool createConnection()
 {
 
-    QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QPSQL");
 
-    db.setHostName("localhost");
+    db.setHostName("mupai-do-user-14978458-0.c.db.ondigitalocean.com");
     db.setDatabaseName("mupai");
-    db.setUserName("root");
-    db.setPassword("");
-    db.setPort(3309);
+    db.setUserName("doadmin");
+    db.setPassword("AVNS_Ab_h9CxdUdXYFGaorT_");
+    db.setPort(25060);
 
     if (!db.open()) {
         qDebug() << "Error para conectar con el servidor.";
+        //Debugguear el mensaje de error, mostrar error
+        qDebug() << db.lastError().text();
         return false;
     }
 

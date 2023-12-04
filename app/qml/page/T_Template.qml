@@ -5,7 +5,6 @@ import QtQuick.Layouts
 import QtQuick.Window
 import FluentUI
 import QtQuick.Dialogs
-import "../component"
 import "qrc:app/qml/global/"
 import app.plantilla
 import app.chat
@@ -189,13 +188,12 @@ FluScrollablePage {
       ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Template.qml")
     }
     onNeutralClicked: {
-      console.log("Clickeo en neutral")
       Chat.setear(Plantilla.ID, true, true)
-      ItemsOriginal.navigationView.setCurrentIndex(2, 'footer_list')
+      //ItemsOriginal.navigationView.setCurrentIndex(2, 'footer_list')
       ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Chat.qml")
     }
     onNegativeClicked: {
-      ItemsOriginal.navigationView.setCurrentIndex(1, 'footer_list')
+      //ItemsOriginal.navigationView.setCurrentIndex(1, 'footer_list')
       ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Home.qml")
     }
   }

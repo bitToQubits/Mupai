@@ -33,7 +33,6 @@ Item {
                    }
                  }
   }
-
   FluMenu {
     id: menu_item
     focus: false
@@ -99,11 +98,58 @@ Item {
     }
     Component.onCompleted: {
       populateChatList()
-      nav_view.setCurrentIndex(1, 'footer_list')
+      nav_view.setCurrentIndex(-1, 'nav_list')
       nav_view.push("qrc:app/qml/page/T_Home.qml")
       ItemsOriginal.navigationView = nav_view
       ItemsFooter.navigationView = nav_view
       ItemsOriginal.menuDesplegable = menu_item
+    }
+  }
+
+  Item {
+    x: 309
+    y: 15
+
+    FluButton {
+      id: inicio_boton
+      anchors.left: parent.left
+      width: 70
+
+      Text {
+        font.family: "Segoe Fluent Icons"
+        font.pixelSize: 14
+        //horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+        anchors.centerIn: parent
+        color: FluTheme.dark ? Qt.rgba(1, 1, 1, 1) : Qt.rgba(0, 0, 0, 1)
+        text: (String.fromCharCode(FluentIcons.Home).toString(12)) + " Inicio"
+      }
+
+      onClicked: {
+        ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Home.qml")
+      }
+    }
+
+    FluButton {
+      id: nuevo_chat
+      anchors.left: inicio_boton.right
+      anchors.leftMargin: 10
+      width: 110
+
+      Text {
+        font.family: "Segoe Fluent Icons"
+        font.pixelSize: 14
+        //horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+        anchors.centerIn: parent
+        color: FluTheme.dark ? Qt.rgba(1, 1, 1, 1) : Qt.rgba(0, 0, 0, 1)
+        text: (String.fromCharCode(FluentIcons.DictionaryAdd).toString(
+                 12)) + " Nuevo Chat"
+      }
+      onClicked: {
+        Chat.setear("mupi", true, false)
+        ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Chat.qml")
+      }
     }
   }
 
@@ -146,10 +192,9 @@ Item {
     nav_view.populateChatList()
 
     if (deleted_id == chat_id && accion == 'eliminar') {
-      console.log("Se fue por alla")
       Chat.setear("mupi", true, false)
       nav_view.push("qrc:app/qml/page/T_Home.qml")
-      nav_view.setCurrentIndex(1, 'footer_list')
+      //nav_view.setCurrentIndex(1, 'footer_list')
     } else {
       console.log("Son unos comentarios")
       nav_view.setCurrentIndex(id_actual, lista_actual)
