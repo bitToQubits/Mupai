@@ -155,6 +155,30 @@ Item {
         ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Chat.qml")
       }
     }
+
+    FluButton {
+      id: grafico
+      anchors.left: nuevo_chat.right
+      anchors.leftMargin: 10
+      width: 85
+
+      Text {
+        font.family: "Segoe Fluent Icons"
+        font.pixelSize: 14
+        //horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+        anchors.centerIn: parent
+        color: FluTheme.dark ? Qt.rgba(1, 1, 1, 1) : Qt.rgba(0, 0, 0, 1)
+        text: (String.fromCharCode(FluentIcons.PieSingle).toString(
+                 12)) + " Gráfico"
+      }
+      onClicked: {
+        Chat.setear("mupi", true, false)
+        ItemsOriginal.navigationView.setCurrentIndex(-1, 'footer_list')
+        ItemsOriginal.navigationView.setCurrentIndex(-1, 'nav_list')
+        ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Charts.qml")
+      }
+    }
   }
 
   FluContentDialog {

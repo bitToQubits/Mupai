@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QString>
-#include "database.h"
+#include <QSqlQuery>
 
 class Register : public QObject
 {
@@ -74,7 +74,6 @@ private:
     QString m_confirmPassword = "";
     QString m_firstName = "";
     QString m_lastName = "";
-    Database& db = Database::getInstance();
     QString m_error_server;
 };
 

@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QFile>
 #include <QList>
-#include "database.h"
+#include <QSqlQuery>
 
 class Plantilla : public QObject
 {
@@ -90,7 +90,6 @@ private:
     int m_status_form = 0;
     bool m_status_server = true;
     bool m_reporte_publico = true;
-    Database& db = Database::getInstance();
 };
 
 #endif // TEMPLATE_H

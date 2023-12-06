@@ -56,7 +56,6 @@ void Register::registrarse()
             return;
         }
 
-        if(db.openConnection()){
             m_status_server = true;
             QSqlQuery query;
 
@@ -78,17 +77,11 @@ void Register::registrarse()
                     m_status_server = true;
                 }else{
                     m_status_server = false;
-                    m_error_server = query.lastError().text();
                 }
             }else{
                 m_status_form = -2;
                 emit emailExists();
             }
-           db.closeConnection();
-        }else{
-            m_status_server = false;
-            m_error_server = db.getDatabase().lastError().text();
-        }
 
     }
 }

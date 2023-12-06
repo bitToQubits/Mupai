@@ -29,7 +29,6 @@ void Login::loguearse()
     if(m_email.size() == 0 || m_password.size() == 0){
         m_status_form = false;
     }else{
-        if(db.openConnection()){
             QSqlQuery query;
             query.prepare("SELECT * FROM users WHERE user_email = :email AND "
                           "password = :password LIMIT 1");
@@ -38,7 +37,6 @@ void Login::loguearse()
             query.exec();
             if(query.size() == 0){
                 m_status_form = false;
-                m_error_server = query.lastError().text();
             }else{
                 while(query.next()){
                     qint32 ID_user = query.value(0).toInt();
@@ -62,12 +60,7 @@ void Login::loguearse()
                 m_status_form = true;
                 m_status_server = true;
             }
-            db.closeConnection();
-        }else{
-            m_status_server = false;
-            m_error_server = db.getDatabase().lastError().text();
         }
-    }
 }
 
 void Login::loguearse_con_google()

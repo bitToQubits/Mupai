@@ -1,4 +1,4 @@
-#include <QGuiApplication>
+#include <QApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QQuickWindow>
@@ -14,6 +14,7 @@
 #include "Chat.h"
 #include "Template.h"
 #include "database.h"
+#include "Graficos.h"
 #define session Session::getInstance().getSession()
 
 #if defined(STATICLIB)
@@ -28,14 +29,14 @@ int main(int argc, char *argv[])
         qputenv("QT_QPA_PLATFORM","windows:darkmode=2");
     #endif
 
-    QGuiApplication::setOrganizationName("Mupia INC");
+    QApplication::setOrganizationName("Mupia INC");
     //QGuiApplication::setOrganizationDomain("https://zhuzichu520.github.io");
-    QGuiApplication::setApplicationName("Mupi");
+    QApplication::setApplicationName("Mupi");
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
-    QGuiApplication app(argc, argv);
+    QApplication app(argc, argv);
 
     app.setWindowIcon(QIcon(":/images/Icon.png"));
     QQmlApplicationEngine engine;
@@ -73,6 +74,9 @@ int main(int argc, char *argv[])
 
     Plantilla *plantilla = new Plantilla(&app);
     qmlRegisterSingletonInstance("app.plantilla", 1,0, "Plantilla", plantilla);
+
+    Graficos *grafico = new Graficos(&app);
+    qmlRegisterSingletonInstance("app.graficos", 1,0, "Graficos", grafico);
 
     QObject::connect(appInfo,&AppInfo::langChanged,&app,[context,appInfo]{
         context->setContextProperty("lang",appInfo->lang());

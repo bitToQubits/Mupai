@@ -1,4 +1,4 @@
-QT += quick sql core gui concurrent network multimedia
+QT += quick sql core gui concurrent network multimedia charts
 CONFIG += c++17
 DEFINES += QT_DEPRECATED_WARNINGS QT_NO_WARNING_OUTPUT
 
@@ -8,6 +8,7 @@ DEFINES += QT_DEPRECATED_WARNINGS QT_NO_WARNING_OUTPUT
 
 SOURCES += \
         Chat.cpp \
+        Graficos.cpp \
         Login.cpp \
         Register.cpp \
         Template.cpp \
@@ -57,6 +58,7 @@ mac: {
 
 HEADERS += \
     Chat.h \
+    Graficos.h \
     Login.h \
     Register.h \
     Template.h \

@@ -32,7 +32,6 @@ qint32 Chat::ID() const
 }
 
 QList<QObject *>Chat::getChats(){
-    if(db.openConnection()){
         QSqlQuery query;
         query.prepare("SELECT ID, nombre, tema, fecha FROM chats WHERE user_id = :id ORDER BY ID ASC");
         query.bindValue(":id", session.value("user/id").toInt());
@@ -46,11 +45,7 @@ QList<QObject *>Chat::getChats(){
             chat->m_tema = query.value(3).toString();
             chats.append(chat);
         }
-        //db.closeConnection();
         return chats;
-    }else{
-        return QList<QObject*>(); //lista vacia
-    }
 }
 
 QJsonObject Chat::createMessage(const QString& role,const QString& content){
@@ -146,7 +141,6 @@ void Chat::onImgRequestFinished(QNetworkReply *reply) {
 }
 
 int Chat::crearChat(const QString& nombre){
-    if(db.openConnection()){
         m_status_server = true;
         QSqlQuery query;
         //TO-DO: AGREGAR TEMAS DE BUSQUEDA
@@ -161,7 +155,6 @@ int Chat::crearChat(const QString& nombre){
 
         if(!(query.numRowsAffected() > 0)){
             //Debug error message
-            qDebug() << query.lastError().text();
             m_status_server = false;
             return 0;
         }
@@ -183,16 +176,13 @@ int Chat::crearChat(const QString& nombre){
             m_status_server = false; //bobo
             return 0;
         }
-        //db.closeConnection();
-    }else{
         m_status_server = false;
         return 0;
-    }
+
 }
 
 //Tipo, 1 para texto, 0 para imagen
 bool Chat::saveMessage(const QJsonValue content, const QString& rol, int tipo){
-    if(db.openConnection()){
 
         QSqlQuery query;
 
@@ -220,12 +210,8 @@ bool Chat::saveMessage(const QJsonValue content, const QString& rol, int tipo){
             return false;
         }
 
-        db.closeConnection();
-
-    }else{
         m_status_server = false;
         return false;
-    }
 }
 
 void Chat::sendMessage(const QString& text, const QString& role = "user"){
@@ -434,7 +420,6 @@ void Chat::obtenerMensajes(int ID){
 
 void Chat::removeChat(int ID)
 {
-    if(db.openConnection()){
         m_status_server = true;
         QSqlQuery query;
         query.prepare("DELETE FROM chats WHERE ID = :id");
@@ -443,15 +428,10 @@ void Chat::removeChat(int ID)
         query.prepare("DELETE FROM chats_messages WHERE chat_id = :id_chat");
         query.bindValue(":id_chat", ID);
         query.exec();
-        //db.closeConnection();
-    }else{
-        m_status_server = false;
-    }
 }
 
 void Chat::guardarTitulo(int ID, QString nombre)
 {
-    if(db.openConnection()){
         m_status_server = true;
         QSqlQuery query;
         query.prepare("UPDATE chats SET nombre = :nombre WHERE ID = :id");
@@ -463,10 +443,6 @@ void Chat::guardarTitulo(int ID, QString nombre)
         }else{
             m_status_server = false;
         }
-        //db.closeConnection();
-    }else{
-        m_status_server = false;
-    }
 }
 
 bool Chat::status_server() const

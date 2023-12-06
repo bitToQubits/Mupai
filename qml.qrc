@@ -161,5 +161,6 @@
         <file>app/qml/page/T_Chat.qml</file>
         <file>app/qml/page/T_Settings.qml</file>
         <file>images/Icon.ico</file>
+        <file>app/qml/page/T_Charts.qml</file>
     </qresource>
 </RCC>

@@ -11,7 +11,7 @@
 #include <QClipboard>
 #include <QByteArray>
 #include <QFile>
-#include "database.h"
+#include <QSqlQuery>
 #include "app/src/stdafx.h"
 
 
@@ -168,7 +168,6 @@ private:
     QString m_nombre_plantilla;
     QString m_img_plantilla;
     QString m_desc_plantilla;
-    Database& db = Database::getInstance();
 };
 
 #endif // CHAT_H

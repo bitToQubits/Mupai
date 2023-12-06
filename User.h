@@ -4,7 +4,7 @@
 #include <QObject>
 #include <session.h>
 #include <QString>
-#include "database.h"
+#include <QSqlQuery>
 
 #define session Session::getInstance().getSession()
 
@@ -61,7 +61,6 @@ private:
     QString m_email = session.value("user/email","").toString();
     QString m_photo = session.value("user/imgbase","").toString();
     QString m_password = session.value("user/password","").toString();
-    Database& db = Database::getInstance();
 };
 
 #endif // USER_H

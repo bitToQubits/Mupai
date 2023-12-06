@@ -99,9 +99,6 @@ void Plantilla::guardar()
             m_status_form = 0;
 
         }else{
-            if(db.openConnection()){
-                qDebug() << "Se conecto";
-
                 QSqlQuery query;
 
                     if(m_ID != 0){
@@ -165,10 +162,6 @@ void Plantilla::guardar()
                     }else{
                         m_status_server = false;
                     }
-                    //db.closeConnection();
-            }else{
-                m_status_server = false;
-            }
 
         }
 
@@ -191,7 +184,6 @@ QList<QObject*> Plantilla::getTemplates(bool publico = true, int limite = -1)
 {
         //Declarar objeto con propiedades title, description, etc
         QList<QObject*> plantillas;
-        if(db.openConnection()){
 
             QSqlQuery query;
 
@@ -228,10 +220,6 @@ QList<QObject*> Plantilla::getTemplates(bool publico = true, int limite = -1)
                 plantilla->m_img = query.value("img").toString();
                 plantillas.append(plantilla);
             }
-            //db.closeConnection();
-        }else{
-            m_status_server = false;
-        }
 
         return plantillas;
 }
@@ -250,11 +238,6 @@ void Plantilla::setear(const int ID, bool es_nuevo)
         m_status_server = true;
         m_reporte_publico = true;
     }else{
-        if(!db.openConnection()){
-            m_status_server = false;
-            return;
-        }
-
         QSqlQuery query;
         query.prepare("SELECT * FROM templates WHERE ID = :id");
         query.bindValue(":id",ID);
@@ -266,16 +249,11 @@ void Plantilla::setear(const int ID, bool es_nuevo)
         m_instr = query.value("instrucciones").toString();
         m_publica = query.value("publica").toBool();
         m_img = query.value("img").toString();
-        //db.closeConnection();
     }
 }
 
 bool Plantilla::eliminar(const int ID)
 {
-    if(!db.openConnection()){
-        m_status_server = false;
-        return false;
-    }
 
     QSqlQuery query;
     query.prepare("DELETE FROM templates WHERE ID = :id");
@@ -287,7 +265,6 @@ bool Plantilla::eliminar(const int ID)
         m_status_server = false;
         return false;
     }
-    //db.closeConnection();
 }
 
 

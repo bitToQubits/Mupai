@@ -1,5 +1,4 @@
 #include "User.h"
-#include "database.h"
 
 User::User(QObject *parent) :
     QObject{parent}
@@ -94,10 +93,6 @@ int User::guardarConfiguracion()
         return -2; //Error: no se pueden dejar vacios alguno de estos campos
     }
 
-    if(!db.openConnection()){
-        return -1; //Error: no se pudo crear la conexion
-    }
-
     QSqlQuery query;
     query.prepare("SELECT ID FROM users WHERE user_email = ? and ID != ?");
     query.addBindValue(m_email);
@@ -130,7 +125,6 @@ int User::guardarConfiguracion()
     }else{
         return -1; //Error: no se pudo realizar la consulta
     }
-    //db.closeConnection();
 }
 
 QString User::password() const

@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QString>
-#include "database.h"
+#include <QSqlQuery>
 
 class Login : public QObject
 {
@@ -55,7 +55,6 @@ private:
     QString m_password;
     bool m_status_form = false;
     bool m_status_server = true;
-    Database& db = Database::getInstance();
     QString m_error_server;
 };
 

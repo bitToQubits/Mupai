@@ -9,13 +9,9 @@ import "community.js" as Logic
 import app.user
 import app.chat
 
-FluContentPage {
+Item {
   id: reporte_plantillas
-
-  title: "Plantillas de conversación"
-  leftPadding: 10
-  rightPadding: 10
-  bottomPadding: 20
+  clip: true
 
   Component {
     id: com_item
@@ -185,47 +181,69 @@ FluContentPage {
     }
   }
 
-  FluTextBox {
-    id: text_box
-    placeholderText: "Por favor, introduzca una palabra clave"
+  FluText {
+    id: titulo
+    text: "Personalidades"
+    fontStyle: FluText.Title
     anchors {
-      left: parent.left
       top: parent.top
-      topMargin: 15
+      topMargin: 20
+      horizontalCenter: parent.horizontalCenter
     }
   }
 
-  FluFilledButton {
-    text: "Buscar"
+  FluText {
+    id: desc
+    text: "Explora qué personalidades han creado otros usuarios"
+    fontStyle: FluText.SubTitle
+    font.bold: false
     anchors {
-      left: text_box.right
-      verticalCenter: text_box.verticalCenter
-      leftMargin: 14
+      top: titulo.bottom
+      topMargin: 10
+      horizontalCenter: titulo.horizontalCenter
     }
-    onClicked: {
-      grid_view.model = Logic.buscar(text_box.text)
+  }
+
+  Item {
+    id: busqueda
+    anchors {
+      horizontalCenter: titulo.horizontalCenter
+      top: desc.bottom
+      topMargin: 15
+    }
+    height: 40
+    width: 320
+    RowLayout {
+      FluTextBox {
+        id: text_box
+        placeholderText: "Por favor, introduzca una palabra clave"
+      }
+      FluFilledButton {
+        text: "Buscar"
+        onClicked: {
+          grid_view.model = Logic.buscar(text_box.text)
+        }
+      }
     }
   }
 
   GridView {
     id: grid_view
-    anchors {
-      topMargin: 15
-      top: text_box.bottom
-      left: parent.left
-      right: parent.right
-      bottom: parent.bottom
-    }
     ScrollBar.vertical: FluScrollBar {}
+    width: parent.width / 1.2
+    height: parent.height - 200
+    anchors {
+      horizontalCenter: parent.horizontalCenter
+      top: busqueda.bottom
+      topMargin: 15
+    }
     clip: true
-    implicitHeight: contentHeight
     cellHeight: 120
     cellWidth: 320
     model: {
       Logic.modelo = Plantilla.getTemplates(Plantilla.reporte_publico, -1)
       return Logic.modelo
     }
-    interactive: false
     delegate: com_item
   }
 }
