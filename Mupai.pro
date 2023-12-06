@@ -13,13 +13,13 @@ SOURCES += \
         Template.cpp \
         User.cpp \
         main.cpp \
-        app/src/controller/ChatController.cpp \
         app/src/AppInfo.cpp \
         app/src/lang/En.cpp \
-        app/src/lang/Lang.cpp \
-        app/src/lang/Zh.cpp
+        app/src/lang/Lang.cpp
 
 RESOURCES += qml.qrc
+
+OUTPUT += Console
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
@@ -35,8 +35,21 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 CONFIG(debug,debug|release) {
     DESTDIR = $$absolute_path($${_PRO_FILE_PWD_}/../bin/debug)
 } else {
-    DESTDIR = $$absolute_path($${_PRO_FILE_PWD_}/../bin/release)
+   DESTDIR = $$absolute_path($${_PRO_FILE_PWD_}/../bin/release)
 }
+
+RC_ICONS = images/Icon.ico
+
+# Check if the configuration is for release
+CONFIG(release, debug|release) {
+    # Add the path to your library files
+    LIBS += -L"C:/Qt/6.4.3/mingw_64/qml/FluentUI"
+
+    # Add the name of your library
+    # Replace 'YourLibraryName' with the actual name of your library
+    LIBS += -FluentUI
+}
+
 
 mac: {
     QMAKE_INFO_PLIST = Info.plist
@@ -52,16 +65,10 @@ HEADERS += \
     session.h \
     app/src/lang/En.h \
     app/src/lang/Lang.h \
-    app/src/lang/Zh.h \
     app/src/stdafx.h \
-    app/src/controller/ChatController.h \
     app/src/AppInfo.h
 
-win32: LIBS += -L'C:/Program Files/MySQL/MySQL Connector C 6.1/lib/' -llibmysql
-
-INCLUDEPATH += 'C:/Program Files/MySQL/MySQL Connector C 6.1/include'
-DEPENDPATH += 'C:/Program Files/MySQL/MySQL Connector C 6.1/include'
-
 DISTFILES += \
+    C:/Users/cloud/Downloads/Icon.ico \
     login.qml \
     registro.qml

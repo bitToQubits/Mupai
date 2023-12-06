@@ -1,7 +1,6 @@
 #include "login.h"
 #include <QString>
 #include <QtDebug>
-#include "database.h"
 #include <session.h>
 #define session Session::getInstance().getSession()
 
@@ -30,15 +29,16 @@ void Login::loguearse()
     if(m_email.size() == 0 || m_password.size() == 0){
         m_status_form = false;
     }else{
-        if(createConnection()){
+        if(db.openConnection()){
             QSqlQuery query;
-            query.prepare("SELECT * FROM users WHERE user_email = ? AND "
-                          "password = ? LIMIT 1");
-            query.addBindValue(m_email);
-            query.addBindValue(m_password);
+            query.prepare("SELECT * FROM users WHERE user_email = :email AND "
+                          "password = :password LIMIT 1");
+            query.bindValue(":email",m_email);
+            query.bindValue(":password",m_password);
             query.exec();
             if(query.size() == 0){
                 m_status_form = false;
+                m_error_server = query.lastError().text();
             }else{
                 while(query.next()){
                     qint32 ID_user = query.value(0).toInt();
@@ -62,8 +62,10 @@ void Login::loguearse()
                 m_status_form = true;
                 m_status_server = true;
             }
+            db.closeConnection();
         }else{
             m_status_server = false;
+            m_error_server = db.getDatabase().lastError().text();
         }
     }
 }
@@ -104,4 +106,9 @@ void Login::clear(){
     m_password = "";
     m_status_form = false;
     m_status_server = true;
+}
+
+QString Login::error_server() const
+{
+    return m_error_server;
 }

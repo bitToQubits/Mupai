@@ -11,6 +11,7 @@
 #include <QClipboard>
 #include <QByteArray>
 #include <QFile>
+#include "database.h"
 #include "app/src/stdafx.h"
 
 
@@ -68,7 +69,7 @@ public slots:
     void sendMessage(const QString &text, const QString& role);
     void onPostRequestFinished(QNetworkReply *reply);
     QJsonObject createMessage(const QString &role, const QString &content);
-    void clipText(const QString &text);
+    void clipText(QString text, bool is_img);
 
     void setear(const QString ID, bool es_nuevo, bool es_plantilla);
     void sendPrompt(const QString &prompt);
@@ -78,7 +79,6 @@ public slots:
     void obtenerMensajes(int ID);
     void removeChat(int ID);
     void guardarTitulo(int ID, QString nombre);
-    //void testear();
 
 signals:
     void AIChanged();
@@ -168,6 +168,7 @@ private:
     QString m_nombre_plantilla;
     QString m_img_plantilla;
     QString m_desc_plantilla;
+    Database& db = Database::getInstance();
 };
 
 #endif // CHAT_H

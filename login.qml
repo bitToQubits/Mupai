@@ -212,6 +212,7 @@ Item {
             Login.loguearse()
             if (!Login.status_server) {
               showError("Error para conectarse al servidor", 3000)
+              showError(Login.error_server, 3000)
             }
 
             if (!Login.status_form && Login.status_server) {

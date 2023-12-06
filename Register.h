@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QString>
+#include "database.h"
 
 class Register : public QObject
 {
@@ -15,6 +16,7 @@ class Register : public QObject
                         WRITE setConfirmPassword NOTIFY confirmPasswordChanged)
     Q_PROPERTY(int status_form READ status_form NOTIFY statusChanged)
     Q_PROPERTY(bool status_server READ status_server NOTIFY statusServerChanged)
+    Q_PROPERTY(QString error_server READ error_server NOTIFY error_serverChanged)
 
 public:
     explicit Register(QObject *parent = nullptr);
@@ -40,6 +42,8 @@ public:
     QString lastName() const;
     void setlastName(const QString &newLastName);
 
+    QString error_server() const;
+
 public slots:
     void registrarse_con_google();
     void clear();
@@ -60,6 +64,8 @@ signals:
 
     void emailExists();
 
+    void error_serverChanged();
+
 private:
     QString m_email = "";
     QString m_password = "";
@@ -68,6 +74,8 @@ private:
     QString m_confirmPassword = "";
     QString m_firstName = "";
     QString m_lastName = "";
+    Database& db = Database::getInstance();
+    QString m_error_server;
 };
 
 #endif // REGISTER_H

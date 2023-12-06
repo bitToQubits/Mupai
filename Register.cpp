@@ -1,6 +1,5 @@
 #include "Register.h"
 #include <QtDebug>
-#include "database.h"
 #include <QString>
 
 Register::Register(QObject *parent)
@@ -57,36 +56,38 @@ void Register::registrarse()
             return;
         }
 
-        if(createConnection()){
-
+        if(db.openConnection()){
+            m_status_server = true;
             QSqlQuery query;
 
-            query.prepare("SELECT ID FROM users WHERE user_email = ?");
-            query.addBindValue(m_email);
+            query.prepare("SELECT ID FROM users WHERE user_email = :user_email");
+            query.bindValue(":user_email",m_email);
 
             query.exec();
 
             if(query.size() == 0){
                 query.prepare("INSERT INTO users (first_name, last_name, user_email, password)"
-                              "VALUES (?,?,?,?)");
-                query.addBindValue(m_firstName);
-                query.addBindValue(m_lastName);
-                query.addBindValue(m_email);
-                query.addBindValue(m_password);
-                query.exec();
+                              "VALUES (:firstname,:lastname,:email,:password)");
+                query.bindValue(":firstname",m_firstName);
+                query.bindValue(":lastname",m_lastName);
+                query.bindValue(":email",m_email);
+                query.bindValue(":password",m_password);
 
-                if(query.numRowsAffected() > 0){
+                if(query.exec()){
                     m_status_form = 1;
+                    m_status_server = true;
                 }else{
                     m_status_server = false;
+                    m_error_server = query.lastError().text();
                 }
             }else{
                 m_status_form = -2;
                 emit emailExists();
             }
-
+           db.closeConnection();
         }else{
             m_status_server = false;
+            m_error_server = db.getDatabase().lastError().text();
         }
 
     }
@@ -155,4 +156,9 @@ void Register::setlastName(const QString &newLastName)
         return;
     m_lastName = newLastName;
     emit lastNameChanged();
+}
+
+QString Register::error_server() const
+{
+    return m_error_server;
 }

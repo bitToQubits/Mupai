@@ -11,9 +11,9 @@
 #include <session.h>
 #include "app\src\lang\Lang.h"
 #include "app\src\AppInfo.h"
-#include "app\src\controller/ChatController.h"
 #include "Chat.h"
 #include "Template.h"
+#include "database.h"
 #define session Session::getInstance().getSession()
 
 #if defined(STATICLIB)
@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
 
     QGuiApplication::setOrganizationName("Mupia INC");
     //QGuiApplication::setOrganizationDomain("https://zhuzichu520.github.io");
-    QGuiApplication::setApplicationName("Mupia");
+    QGuiApplication::setApplicationName("Mupi");
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -39,6 +39,12 @@ int main(int argc, char *argv[])
 
     app.setWindowIcon(QIcon(":/images/Icon.png"));
     QQmlApplicationEngine engine;
+
+    Database& db = Database::getInstance();
+
+    if(!db.openConnection()){
+        return 0;
+    }
 
     QQmlContext * context = engine.rootContext();
 
@@ -50,7 +56,6 @@ int main(int argc, char *argv[])
         FluentUI::initialize(&engine);
     #endif
 
-    qmlRegisterType<ChatController>("Controller",1,0,"ChatController");
     Lang* lang = appInfo->lang();
     context->setContextProperty("lang",lang);
 

@@ -186,6 +186,7 @@ Item {
                 }
               } else {
                 showError("Error para conectar al servidor", 3000)
+                showError(Register.error_server, 3000)
               }
             }
           }

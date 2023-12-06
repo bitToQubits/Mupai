@@ -126,6 +126,8 @@ Item {
       }
 
       onClicked: {
+        ItemsOriginal.navigationView.setCurrentIndex(-1, 'footer_list')
+        ItemsOriginal.navigationView.setCurrentIndex(-1, 'nav_list')
         ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Home.qml")
       }
     }
@@ -148,6 +150,8 @@ Item {
       }
       onClicked: {
         Chat.setear("mupi", true, false)
+        ItemsOriginal.navigationView.setCurrentIndex(-1, 'footer_list')
+        ItemsOriginal.navigationView.setCurrentIndex(-1, 'nav_list')
         ItemsOriginal.navigationView.push("qrc:app/qml/page/T_Chat.qml")
       }
     }

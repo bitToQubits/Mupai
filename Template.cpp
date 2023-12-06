@@ -1,6 +1,5 @@
 #include "Template.h"
 #include <QtDebug>
-#include "database.h"
 #include "session.h"
 #define session Session::getInstance().getSession()
 
@@ -100,30 +99,34 @@ void Plantilla::guardar()
             m_status_form = 0;
 
         }else{
-            if(createConnection()){
+            if(db.openConnection()){
                 qDebug() << "Se conecto";
 
                 QSqlQuery query;
 
                     if(m_ID != 0){
-                        query.prepare("UPDATE templates SET nombre = ?, descripcion = ?, instrucciones = ?, publica = ?, img = ? WHERE ID = ?");
-                        query.addBindValue(m_nombre);
-                        query.addBindValue(m_desc);
-                        query.addBindValue(m_instr);
-                        query.addBindValue(m_publica);
-                        qDebug() << m_img;
+                        query.prepare("UPDATE templates SET nombre = :nombre, descripcion = :desc, instrucciones = :ins, publica = :publica, img = :img WHERE ID = :id");
+                        query.bindValue(":nombre",m_nombre);
+                        query.bindValue(":desc", m_desc);
+                        query.bindValue(":ins", m_instr);
+                        if(m_publica){
+                            query.bindValue(":publica",true);
+                        }else{
+                            query.bindValue(":publica",false);
+                        }
+
                         if(m_img == ""){
-                            query.addBindValue("0");
+                            query.bindValue(":img","0");
                         }else{
 
                             if(m_img.contains("file:///"))
-                                query.addBindValue(convertFileToBase64(m_img));
+                                query.bindValue(":img",convertFileToBase64(m_img));
                             else {
-                                query.addBindValue(m_img);
+                                query.bindValue(":img", m_img);
                             }
 
                         }
-                        query.addBindValue(m_ID);
+                        query.bindValue(":id", m_ID);
                         if(query.exec()){
                             m_status_form = 1;
                         }else{
@@ -133,17 +136,21 @@ void Plantilla::guardar()
                     }
 
                     query.prepare("INSERT INTO templates (user_id, nombre, descripcion, instrucciones, publica, img)"
-                                  "VALUES (?,?,?,?,?,?)");
-                    query.addBindValue(session.value("user/id").toInt());
-                    query.addBindValue(m_nombre);
-                    query.addBindValue(m_desc);
-                    query.addBindValue(m_instr);
-                    query.addBindValue(m_publica);
+                                  "VALUES (:id,:nombre,:desc,:ins,:publica,:img)");
+                    query.bindValue(":id",session.value("user/id").toInt());
+                    query.bindValue(":nombre",m_nombre);
+                    query.bindValue(":desc",m_desc);
+                    query.bindValue(":ins",m_instr);
+                    if(m_publica){
+                        query.bindValue(":publica",true);
+                    }else{
+                        query.bindValue(":publica",false);
+                    }
 
                     if(m_img == "")
-                        query.addBindValue("0");
+                        query.bindValue(":img","0");
                     else
-                        query.addBindValue(convertFileToBase64(m_img));
+                        query.bindValue(":img",convertFileToBase64(m_img));
 
                     query.exec();
 
@@ -158,7 +165,7 @@ void Plantilla::guardar()
                     }else{
                         m_status_server = false;
                     }
-
+                    //db.closeConnection();
             }else{
                 m_status_server = false;
             }
@@ -184,28 +191,28 @@ QList<QObject*> Plantilla::getTemplates(bool publico = true, int limite = -1)
 {
         //Declarar objeto con propiedades title, description, etc
         QList<QObject*> plantillas;
-        if(createConnection()){
+        if(db.openConnection()){
 
             QSqlQuery query;
 
             if(publico){
                 if(limite > 0)
-                    query.prepare("SELECT * FROM templates WHERE publica = 1 ORDER BY ID DESC LIMIT ?");
+                    query.prepare("SELECT * FROM templates WHERE publica = true ORDER BY ID DESC LIMIT :limit");
                 else
-                    query.prepare("SELECT * FROM templates WHERE publica = 1 ORDER BY ID DESC");
+                    query.prepare("SELECT * FROM templates WHERE publica = true ORDER BY ID DESC");
 
                 if(limite > 0)
-                    query.addBindValue(limite);
+                    query.bindValue(":limit", limite);
             }else{
                 if(limite > 0)
-                    query.prepare("SELECT * FROM templates WHERE user_id = ? ORDER BY ID DESC LIMIT ?");
+                    query.prepare("SELECT * FROM templates WHERE user_id = :user_id ORDER BY ID DESC LIMIT :limit");
                 else
-                    query.prepare("SELECT * FROM templates WHERE user_id = ? ORDER BY ID DESC");
+                    query.prepare("SELECT * FROM templates WHERE user_id = :user_id ORDER BY ID DESC");
 
-                query.addBindValue(session.value("user/id").toInt());
+                query.bindValue(":user_id",session.value("user/id").toInt());
 
                 if(limite > 0)
-                    query.addBindValue(limite);
+                    query.bindValue(":limit",limite);
             }
 
             query.exec();
@@ -221,7 +228,7 @@ QList<QObject*> Plantilla::getTemplates(bool publico = true, int limite = -1)
                 plantilla->m_img = query.value("img").toString();
                 plantillas.append(plantilla);
             }
-
+            //db.closeConnection();
         }else{
             m_status_server = false;
         }
@@ -243,35 +250,36 @@ void Plantilla::setear(const int ID, bool es_nuevo)
         m_status_server = true;
         m_reporte_publico = true;
     }else{
-        if(!createConnection()){
+        if(!db.openConnection()){
             m_status_server = false;
             return;
         }
 
         QSqlQuery query;
-        query.prepare("SELECT * FROM templates WHERE ID = ?");
-        query.addBindValue(ID);
+        query.prepare("SELECT * FROM templates WHERE ID = :id");
+        query.bindValue(":id",ID);
         query.exec();
         query.next();
-        m_ID = query.value(0).toInt();
-        m_nombre = query.value(2).toString();
-        m_desc = query.value(3).toString();
-        m_instr = query.value(4).toString();
-        m_publica = query.value(5).toBool();
-        m_img = query.value(6).toString();
+        m_ID = query.value("ID").toInt();
+        m_nombre = query.value("nombre").toString();
+        m_desc = query.value("descripcion").toString();
+        m_instr = query.value("instrucciones").toString();
+        m_publica = query.value("publica").toBool();
+        m_img = query.value("img").toString();
+        //db.closeConnection();
     }
 }
 
 bool Plantilla::eliminar(const int ID)
 {
-    if(!createConnection()){
+    if(!db.openConnection()){
         m_status_server = false;
         return false;
     }
 
     QSqlQuery query;
-    query.prepare("DELETE FROM templates WHERE ID = ?");
-    query.addBindValue(ID);
+    query.prepare("DELETE FROM templates WHERE ID = :id");
+    query.bindValue(":id",ID);
     query.exec();
     if(query.numRowsAffected() > 0){
         return true;
@@ -279,6 +287,7 @@ bool Plantilla::eliminar(const int ID)
         m_status_server = false;
         return false;
     }
+    //db.closeConnection();
 }
 
 

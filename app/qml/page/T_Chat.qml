@@ -80,7 +80,7 @@ Item {
         TapHandler {
           acceptedButtons: Qt.RightButton
           onTapped: {
-            menu_item.showMenu(item_image.source)
+            menu_item.showMenu(item_image.source, true)
           }
         }
       }
@@ -613,7 +613,9 @@ Item {
           font.pixelSize: 14
           Keys.onPressed: event => {
                             if (event.key == '16777220'
-                                && textbox.key != '16777248') {
+                                && textbox.key != '16777248'
+                                && Chat.isLoading == false
+                                && Chat.isLoading_msg == false) {
 
                               var text = textbox.text.trim()
                               if (text == '') {
@@ -724,15 +726,17 @@ Item {
     property string pasteText: "Pegar"
     property string selectAllText: "Seleccionar"
     property string selectedText
+    property string es_imagen
     FluMenuItem {
       text: "Copiar"
       onClicked: {
-        Chat.clipText(menu_item.selectedText)
+        Chat.clipText(menu_item.selectedText, menu_item.es_imagen)
         showSuccess("Copiado correctamente")
       }
     }
-    function showMenu(text) {
+    function showMenu(text, es_imagen = false) {
       menu_item.selectedText = text
+      menu_item.es_imagen = es_imagen
       menu_item.popup()
     }
   }

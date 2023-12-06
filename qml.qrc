@@ -159,5 +159,7 @@
         <file>app/qml/page/T_Template.qml</file>
         <file>app/qml/page/community.js</file>
         <file>app/qml/page/T_Chat.qml</file>
+        <file>app/qml/page/T_Settings.qml</file>
+        <file>images/Icon.ico</file>
     </qresource>
 </RCC>

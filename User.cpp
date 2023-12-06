@@ -94,7 +94,7 @@ int User::guardarConfiguracion()
         return -2; //Error: no se pueden dejar vacios alguno de estos campos
     }
 
-    if(!createConnection()){
+    if(!db.openConnection()){
         return -1; //Error: no se pudo crear la conexion
     }
 
@@ -130,7 +130,7 @@ int User::guardarConfiguracion()
     }else{
         return -1; //Error: no se pudo realizar la consulta
     }
-
+    //db.closeConnection();
 }
 
 QString User::password() const

@@ -1,7 +1,7 @@
 #include "Chat.h"
-#include "database.h"
 #include "session.h"
 #include <QIODevice>
+#include <QImage>
 #define session Session::getInstance().getSession()
 
 Chat::Chat(QObject *parent)
@@ -32,10 +32,10 @@ qint32 Chat::ID() const
 }
 
 QList<QObject *>Chat::getChats(){
-    if(createConnection()){
+    if(db.openConnection()){
         QSqlQuery query;
-        query.prepare("SELECT ID, nombre, tema, fecha FROM chats WHERE user_id = ? ORDER BY ID ASC");
-        query.addBindValue(session.value("user/id").toInt());
+        query.prepare("SELECT ID, nombre, tema, fecha FROM chats WHERE user_id = :id ORDER BY ID ASC");
+        query.bindValue(":id", session.value("user/id").toInt());
         query.exec();
         QList<QObject*> chats;
         while(query.next()){
@@ -46,12 +46,26 @@ QList<QObject *>Chat::getChats(){
             chat->m_tema = query.value(3).toString();
             chats.append(chat);
         }
+        //db.closeConnection();
         return chats;
     }else{
         return QList<QObject*>(); //lista vacia
     }
 }
 
+QJsonObject Chat::createMessage(const QString& role,const QString& content){
+    QJsonObject message;
+    message.insert("role",role);
+    message.insert("content",content);
+    return message;
+}
+
+QJsonObject Chat::createMessage(const QString& role,const QJsonValue& content){
+    QJsonObject message;
+    message.insert("role",role);
+    message.insert("content",content);
+    return message;
+}
 
 //Crear imagen con el endpoint de openai
 void Chat::sendPrompt(const QString& prompt){
@@ -76,7 +90,7 @@ void Chat::sendPrompt(const QString& prompt){
 
     // Create the JSON object for the body
     QJsonObject json;
-    json.insert("model", "dall-e-3");
+    json.insert("model", "dall-e-2");
     json.insert("prompt", prompt);
     json.insert("n", 1);
     json.insert("size", "1024x1024");
@@ -114,13 +128,12 @@ void Chat::onImgRequestFinished(QNetworkReply *reply) {
         m_status_server = false;
     }else{
         m_status_server = true;
-        //messages.append(createMessage("assistant",jsonObj.value("data")));
-        saveMessage(jsonObj.value("data"), "assistant", 0);
+        saveMessage("No se guardan imagenes en nuestros servidores", "assistant", 0);
     }
 
-    m_messages.append(createMessage("assistant",jsonObj.value("data")));
-
-    if(m_messages.at(1).toObject().value("role").toString() == "user" && m_messages.size() == 3){
+    //m_messages.append(createMessage("assistant",jsonObj.value("data")));
+    qDebug() << "numero de mensajes" << m_messages.count();
+    if(m_messages.at(1).toObject().value("role").toString() == "user" && m_messages.size() == 2){
         emit nuevoChat(m_messages.at(1).toObject().value("user").toString(), m_ID);
     }
 
@@ -133,29 +146,32 @@ void Chat::onImgRequestFinished(QNetworkReply *reply) {
 }
 
 int Chat::crearChat(const QString& nombre){
-    if(createConnection()){
+    if(db.openConnection()){
         m_status_server = true;
         QSqlQuery query;
         //TO-DO: AGREGAR TEMAS DE BUSQUEDA
         query.prepare("INSERT INTO chats (user_id, nombre, inteligencia, es_plantilla)"
-                      "VALUES (?,?,?,?)");
-        query.addBindValue(session.value("user/id").toInt());
-        query.addBindValue(nombre);
-        query.addBindValue(m_AI);
-        query.addBindValue(m_es_plantilla);
+                      "VALUES (:user,:nombre,:ai,:es_plantilla)");
+        query.bindValue(":user",session.value("user/id").toInt());
+        query.bindValue(":nombre",nombre);
+        query.bindValue(":ai",m_AI);
+        query.bindValue(":es_plantilla",m_es_plantilla);
 
         query.exec();
 
         if(!(query.numRowsAffected() > 0)){
+            //Debug error message
+            qDebug() << query.lastError().text();
             m_status_server = false;
             return 0;
         }
+
         m_status_server = true;
 
         query.clear();
 
-        query.prepare("SELECT ID FROM chats WHERE user_id = ? ORDER BY ID DESC LIMIT 1");
-        query.addBindValue(session.value("user/id").toInt());
+        query.prepare("SELECT ID FROM chats WHERE user_id = :id ORDER BY ID DESC LIMIT 1");
+        query.bindValue(":id", session.value("user/id").toInt());
 
         query.exec();
         query.next();
@@ -167,7 +183,7 @@ int Chat::crearChat(const QString& nombre){
             m_status_server = false; //bobo
             return 0;
         }
-
+        //db.closeConnection();
     }else{
         m_status_server = false;
         return 0;
@@ -176,24 +192,22 @@ int Chat::crearChat(const QString& nombre){
 
 //Tipo, 1 para texto, 0 para imagen
 bool Chat::saveMessage(const QJsonValue content, const QString& rol, int tipo){
-    if(createConnection()){
+    if(db.openConnection()){
 
         QSqlQuery query;
 
         if(tipo == 1){
-            query.prepare("INSERT INTO chats_messages (chat_id,mensaje, rol, tipo) VALUES (?,?,?,?)");
-            query.addBindValue(m_ID);
-            query.addBindValue(content);
-            query.addBindValue(rol);
-            query.addBindValue(tipo);
+            query.prepare("INSERT INTO chats_messages (chat_id,mensaje, rol, tipo) VALUES (:chat_id,:mensaje,:rol,:tipo)");
+            query.bindValue(":chat_id", m_ID);
+            query.bindValue(":mensaje", content.toString());
+            query.bindValue(":rol",rol);
+            query.bindValue(":tipo",1);
         }else{
-            query.prepare("INSERT INTO chats_messages (chat_id,imagen, rol, tipo) VALUES (?,?,?,?)");
-            //content.toString();
-            //Preparar la variable content convertir content a QByteArray
-            query.addBindValue(m_ID);
-            query.addBindValue("No guardamos imagenes en nuestro servidor");
-            query.addBindValue(rol);
-            query.addBindValue(1);
+            query.prepare("INSERT INTO chats_messages (chat_id,mensaje, rol, tipo) VALUES (:chat_id,:mensaje,:rol,:tipo)");
+            query.bindValue(":chat_id", m_ID);
+            query.bindValue(":mensaje", "No guardamos imagenes en nuestro servidor");
+            query.bindValue(":rol",rol);
+            query.bindValue(":tipo",1);
         }
 
         query.exec();
@@ -205,6 +219,8 @@ bool Chat::saveMessage(const QJsonValue content, const QString& rol, int tipo){
             m_status_server = false;
             return false;
         }
+
+        db.closeConnection();
 
     }else{
         m_status_server = false;
@@ -330,24 +346,19 @@ void Chat::onPostRequestFinished(QNetworkReply *reply) {
     isLoading_msg(false);
 }
 
-QJsonObject Chat::createMessage(const QString& role,const QString& content){
-    QJsonObject message;
-    message.insert("role",role);
-    message.insert("content",content);
-    return message;
-}
-
-QJsonObject Chat::createMessage(const QString& role,const QJsonValue& content){
-    QJsonObject message;
-    message.insert("role",role);
-    message.insert("content",content);
-    return message;
-}
-
-void Chat::clipText(const QString& text){
-    qDebug()<<text;
-    QClipboard *clipboard = QGuiApplication::clipboard();
-    clipboard->setText(text);
+void Chat::clipText(QString text, bool is_img){
+    //Si es imagen, convertir base64 a imagen y copiarla
+    if(is_img){
+        text.remove("data:image/png;base64,");
+        QByteArray byteArray = QByteArray::fromBase64(text.toUtf8());
+        QImage image;
+        image.loadFromData(byteArray);
+        QClipboard *clipboard = QGuiApplication::clipboard();
+        clipboard->setImage(image);
+    }else{
+        QClipboard *clipboard = QGuiApplication::clipboard();
+        clipboard->setText(text);
+    }
 }
 
 void Chat::setear(const QString ID, bool es_nuevo, const bool es_plantilla)
@@ -370,22 +381,22 @@ void Chat::setear(const QString ID, bool es_nuevo, const bool es_plantilla)
         if(es_plantilla){
             //Haciendo consulta a la tabla plantillas para extraer las instrucciones.
             QSqlQuery query;
-            query.prepare("SELECT * FROM templates WHERE ID = ?");
-            query.addBindValue(m_AI);
+            query.prepare("SELECT * FROM templates WHERE ID = :ai");
+            query.bindValue(":ai", m_AI);
             query.exec();
             query.next();
             setEs_plantilla(true);
-            setAI(query.value(0).toString());
-            setNombre_plantilla(query.value(2).toString());
-            plantilla = "Tu nombre es: " + m_nombre_plantilla + "." + query.value(4).toString();
-            setDesc_plantilla(query.value(3).toString());
-            setImg_plantilla(query.value(6).toString());
-            m_img_plantilla = query.value(6).toString();
+            setAI(query.value("ID").toString());
+            setNombre_plantilla(query.value("nombre").toString());
+            plantilla = "Tu nombre es: " + m_nombre_plantilla + "." + query.value("instrucciones").toString();
+            setDesc_plantilla(query.value("descripcion").toString());
+            setImg_plantilla(query.value("img").toString());
+            m_img_plantilla = query.value("img").toString();
         }
     }else{
         QSqlQuery query;
-        query.prepare("SELECT * FROM chats WHERE ID = ?");
-        query.addBindValue(ID);
+        query.prepare("SELECT * FROM chats WHERE ID = :ai");
+        query.bindValue(":ai", ID);
         query.exec();
         query.next();
         m_ID = query.value(0).toInt();
@@ -397,23 +408,23 @@ void Chat::setear(const QString ID, bool es_nuevo, const bool es_plantilla)
         if(m_es_plantilla){
             //Haciendo consulta a la tabla templates para extraer las instrucciones.
             QSqlQuery query;
-            query.prepare("SELECT * FROM templates WHERE ID = ?");
-            query.addBindValue(m_AI);
+            query.prepare("SELECT * FROM templates WHERE ID = :ai");
+            query.bindValue(":ai",m_AI);
             query.exec();
             query.next();
-            setAI(query.value(0).toString());
-            setNombre_plantilla(query.value(2).toString());
-            plantilla = "Tu nombre es: " + m_nombre_plantilla + "." + query.value(4).toString();
-            setDesc_plantilla(query.value(3).toString());
-            setImg_plantilla(query.value(6).toString());
+            setAI(query.value("ID").toString());
+            setNombre_plantilla(query.value("nombre").toString());
+            plantilla = "Tu nombre es: " + m_nombre_plantilla + "." + query.value("instrucciones").toString();
+            setDesc_plantilla(query.value("descripcion").toString());
+            setImg_plantilla(query.value("img").toString()); //shelow shaq
         }
     }
 }
 
 void Chat::obtenerMensajes(int ID){
     QSqlQuery query;
-    query.prepare("SELECT * FROM chats_messages WHERE chat_id = ?");
-    query.addBindValue(ID);
+    query.prepare("SELECT * FROM chats_messages WHERE chat_id = :ai");
+    query.bindValue(":ai", ID);
     query.exec();
     m_messages = {};
     while(query.next()){
@@ -423,16 +434,16 @@ void Chat::obtenerMensajes(int ID){
 
 void Chat::removeChat(int ID)
 {
-    qDebug() << "Chat_cpp: eliminarChat";
-    if(createConnection()){
+    if(db.openConnection()){
         m_status_server = true;
         QSqlQuery query;
-        query.prepare("DELETE FROM chats WHERE ID = ?");
-        query.addBindValue(ID);
+        query.prepare("DELETE FROM chats WHERE ID = :id");
+        query.bindValue(":id", ID);
         query.exec();
-        query.prepare("DELETE FROM chats_messages WHERE chat_id = ?");
-        query.addBindValue(ID);
+        query.prepare("DELETE FROM chats_messages WHERE chat_id = :id_chat");
+        query.bindValue(":id_chat", ID);
         query.exec();
+        //db.closeConnection();
     }else{
         m_status_server = false;
     }
@@ -440,18 +451,19 @@ void Chat::removeChat(int ID)
 
 void Chat::guardarTitulo(int ID, QString nombre)
 {
-    if(createConnection()){
+    if(db.openConnection()){
         m_status_server = true;
         QSqlQuery query;
-        query.prepare("UPDATE chats SET nombre = ? WHERE ID = ?");
-        query.addBindValue(nombre);
-        query.addBindValue(ID);
+        query.prepare("UPDATE chats SET nombre = :nombre WHERE ID = :id");
+        query.bindValue(":nombre",nombre);
+        query.bindValue(":id",ID);
         if(query.exec()){
             m_status_server = true;
             emit tituloCambiado();
         }else{
             m_status_server = false;
         }
+        //db.closeConnection();
     }else{
         m_status_server = false;
     }

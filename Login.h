@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QString>
+#include "database.h"
 
 class Login : public QObject
 {
@@ -11,6 +12,7 @@ class Login : public QObject
     Q_PROPERTY(QString password READ password WRITE setPassword NOTIFY passwordChanged)
     Q_PROPERTY(bool status_form READ status_form NOTIFY statusChanged)
     Q_PROPERTY(bool status_server READ status_server NOTIFY statusServerChanged)
+    Q_PROPERTY(QString error_server READ error_server NOTIFY error_serverChanged)
 
 public:
     explicit Login(QObject *parent = nullptr);
@@ -29,6 +31,8 @@ public:
 
     bool status_server() const;
 
+    QString error_server() const;
+
 public slots:
     void loguearse_con_google();
     void clear();
@@ -43,12 +47,16 @@ signals:
 
     void statusServerChanged();
 
+    void error_serverChanged();
+
 private:
 
     QString m_email;
     QString m_password;
     bool m_status_form = false;
     bool m_status_server = true;
+    Database& db = Database::getInstance();
+    QString m_error_server;
 };
 
 #endif // LOGIN_H
