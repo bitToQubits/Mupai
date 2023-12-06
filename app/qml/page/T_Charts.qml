@@ -43,17 +43,17 @@ Item {
       leftMargin: 20
       rightMargin: 20
     }
+    backgroundColor: "transparent"
     theme: ChartView.ChartThemeLight
     legend.alignment: Qt.AlignBottom
     antialiasing: true
 
-    property variant othersSlice: 0
+    legend.labelColor: FluTheme.dark ? "white" : "black"
 
     PieSeries {
       id: personalidades
     }
 
-    //Make a connection when response data changed
     Connections {
       target: personalidades
 
@@ -71,6 +71,10 @@ Item {
 
       function onReleased(slice) {
         slice.exploded = false
+      }
+
+      function onSliceAdded(slice) {
+        slice.labelColor = FluTheme.dark ? "white" : "black"
       }
     }
 

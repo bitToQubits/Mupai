@@ -332,9 +332,10 @@ void Chat::onPostRequestFinished(QNetworkReply *reply) {
     isLoading_msg(false);
 }
 
-void Chat::clipText(QString text, bool is_img){
+void Chat::clipText(QString text, QString is_img){
     //Si es imagen, convertir base64 a imagen y copiarla
-    if(is_img){
+    if(is_img == "true"){
+        qDebug() << text << ' ' << "LLego imagen";
         text.remove("data:image/png;base64,");
         QByteArray byteArray = QByteArray::fromBase64(text.toUtf8());
         QImage image;
@@ -342,6 +343,7 @@ void Chat::clipText(QString text, bool is_img){
         QClipboard *clipboard = QGuiApplication::clipboard();
         clipboard->setImage(image);
     }else{
+        qDebug() << text << ' ' << "LLego texto";
         QClipboard *clipboard = QGuiApplication::clipboard();
         clipboard->setText(text);
     }

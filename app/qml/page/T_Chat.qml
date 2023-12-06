@@ -737,6 +737,7 @@ Item {
     function showMenu(text, es_imagen = false) {
       menu_item.selectedText = text
       menu_item.es_imagen = es_imagen
+      console.log(selectedText, es_imagen)
       menu_item.popup()
     }
   }

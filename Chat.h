@@ -69,7 +69,7 @@ public slots:
     void sendMessage(const QString &text, const QString& role);
     void onPostRequestFinished(QNetworkReply *reply);
     QJsonObject createMessage(const QString &role, const QString &content);
-    void clipText(QString text, bool is_img);
+    void clipText(QString text, QString is_img);
 
     void setear(const QString ID, bool es_nuevo, bool es_plantilla);
     void sendPrompt(const QString &prompt);
